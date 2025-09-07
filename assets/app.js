@@ -1,63 +1,103 @@
-// Stage One demo credentials
-const DEMO_EMAIL = "demo@demo";
-const DEMO_PW = "letmein";
+// ---------- Helpers ----------
+const q  = (id)=>document.getElementById(id);
+const on = (el,ev,fn)=> el && el.addEventListener(ev,fn);
 
-// Helpers
-const q = id => document.getElementById(id);
-const on = (el, evt, fn) => el && el.addEventListener(evt, fn);
+// ---------- Session helpers ----------
+function getSession(){
+  try { return JSON.parse(localStorage.getItem('session')||'null'); }
+  catch(e){ return null; }
+}
+function setSession(obj){
+  try { localStorage.setItem('session', JSON.stringify(obj)); } catch(e){}
+}
+function clearSession(){
+  try { localStorage.removeItem('session'); } catch(e){}
+}
 
-// Landing elements (optional on other pages)
-const modal      = q("loginModal");
-const openLogin  = q("openLogin");
-const closeLogin = q("closeLogin");
-const loginForm  = q("loginForm");
-const email      = q("email");
-const pw         = q("password");
-const msg        = q("authMsg");
-const joinFree   = q("joinFree");
+// ---------- Modal (index) ----------
+const modal      = q('loginModal');
+const openLogin  = q('openLogin');
+const closeLogin = q('closeLogin');
 
-// Modal controls
-function showModal(){ if(modal){ modal.classList.add("show"); modal.setAttribute("aria-hidden","false"); } }
-function hideModal(){ if(modal){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); } }
-on(openLogin, "click", showModal);
-on(closeLogin,"click", hideModal);
-if (modal) modal.addEventListener("click", (e)=>{ if(e.target===modal) hideModal(); });
+function showModal(){
+  if(!modal) return;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+}
+function hideModal(){
+  if(!modal) return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+}
 
-// Password eye toggle
-document.querySelectorAll(".eye").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
+on(openLogin,'click',showModal);
+on(closeLogin,'click',hideModal);
+if (modal) modal.addEventListener('click',(e)=>{ if(e.target===modal) hideModal(); });
+
+// Password eye toggles (all pages; harmless if none)
+document.querySelectorAll('.eye').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
     const inp = document.querySelector(btn.dataset.eye);
     if(!inp) return;
-    inp.type = inp.type === "password" ? "text" : "password";
-    btn.textContent = inp.type === "password" ? "Show" : "Hide";
+    const to = inp.type === 'password' ? 'text' : 'password';
+    inp.type = to;
+    btn.textContent = to === 'password' ? 'Show' : 'Hide';
   });
 });
 
-// Join Free -> guest session -> home
-on(joinFree, "click", ()=>{
-  localStorage.setItem("session", JSON.stringify({ user:"guest", ts:Date.now(), kind:"free" }));
-  window.location.href = "home.html";
-});
+// ---------- Login & Join Free (index) ----------
+const DEMO_EMAIL = 'demo@demo';
+const DEMO_PW    = 'letmein';
 
-// Login submit
-on(loginForm, "submit", e=>{
-  e.preventDefault(); if (msg) msg.hidden = true;
-  const em = (email?.value || "").trim().toLowerCase();
-  if ((em === DEMO_EMAIL || em.endsWith("@example.com")) && (pw?.value === DEMO_PW)) {
-    localStorage.setItem("session", JSON.stringify({ user: em, ts: Date.now(), kind:"login" }));
-    window.location.href = "home.html";
-  } else if (msg) {
-    msg.textContent = "Invalid login. Use demo@demo / letmein.";
-    msg.hidden = false;
+const loginForm = q('loginForm');
+const emailInp  = q('email');
+const passInp   = q('password');
+const authMsg   = q('authMsg');
+const joinFree  = q('joinFree');
+
+on(loginForm,'submit',(e)=>{
+  e.preventDefault();
+  if (authMsg) authMsg.hidden = true;
+  const em = (emailInp?.value||'').trim().toLowerCase();
+  const pw = (passInp?.value||'');
+  if ((em === DEMO_EMAIL || em.endsWith('@example.com')) && pw === DEMO_PW){
+    setSession({ user: em || 'demo@demo', kind:'login', ts:Date.now() });
+    window.location.href = 'home.html';
+  }else{
+    if (authMsg){
+      authMsg.textContent = 'Invalid login. Use demo@demo / letmein.';
+      authMsg.hidden = false;
+    }
   }
 });
 
-// Placeholders
-on(q("signup"), ()=>alert("Sign up coming in Stage Two"));
-on(q("reset"),  ()=>alert("Password reset coming in Stage Two"));
+on(joinFree,'click',()=>{
+  setSession({ user:'guest', kind:'free', ts:Date.now() });
+  window.location.href = 'home.html';
+});
 
-// Home: Sign Out
-on(q("logoutBtn"), ()=>{
-  try { localStorage.removeItem("session"); } catch(e) {}
-  window.location.href = "index.html";
+// ---------- Home-only behaviour (guard + upsell + welcome) ----------
+document.addEventListener('DOMContentLoaded', ()=>{
+  const welcome = q('welcome');   // only exists on home.html
+  if (!welcome) return;           // not on home → skip
+
+  const session = getSession();
+  if (!session){
+    // no session → send back to index
+    window.location.replace('index.html');
+    return;
+  }
+
+  const label = session.kind === 'free' ? 'Guest' : (session.user||'').split('@')[0] || 'Member';
+  welcome.textContent = `Hi, ${label}`;
+
+  const upsell = q('upsell');
+  if (upsell) upsell.hidden = session.kind !== 'free';
+});
+
+// ---------- Sign out (home) ----------
+const logoutBtn = q('logoutBtn');
+on(logoutBtn,'click', ()=>{
+  clearSession();
+  window.location.href = 'index.html';
 });
