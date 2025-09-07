@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <title>Learn — Fine Arts Online Academy (FAOA)</title>
+  <title>Learn — Art Online by Jody Graham</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -12,76 +12,54 @@
 <!-- Top nav -->
 <header class="nav">
   <div class="logo-block">
-    <div class="logo">Fine Arts Online Academy</div>
+    <div class="logo">Art Online</div>
     <div class="logo-sub">by Jody Graham</div>
   </div>
   <div class="nav-right">
-    <a class="btn ghost" href="home.html">Home</a>
+    <a class="btn ghost" href="index.html" aria-label="Go back to sign in">Back</a>
   </div>
 </header>
 
-<main class="hero-wrap">
-  <!-- Background (uses existing .home-bg image; change to .learn-bg if you add it in CSS) -->
-  <div class="bg learn-bg" aria-hidden="true"></div>
+<main class="hero-wrap learn-bg">
+  <div class="bg" aria-hidden="true"></div>
   <div class="overlay" aria-hidden="true"></div>
 
   <section class="hero hero-left" style="max-width:760px;">
     <h1 class="hero-title">Create. Learn. Grow.</h1>
     <p class="hero-sub">
-      Art demonstrations, courses and more — guided by award-winning artist
+      Art demonstrations and structured courses guided by award-winning artist
       <strong>Jody Graham</strong>.
     </p>
-    <p class="hero-cap">From $19.99. Cancel anytime.</p>
 
-    <div class="hero-buttons" style="justify-content:flex-start">
+    <!-- CTA row -->
+    <div class="hero-buttons">
       <a class="cta-btn" href="index.html" id="openLogin">Sign In</a>
       <button class="cta-btn" id="joinFree" type="button">Join Free</button>
-      <a class="cta-btn ghost" href="home.html">Back to Home</a>
     </div>
 
     <hr style="border:none;height:1px;background:var(--stroke);margin:24px 0" />
 
-    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin-bottom:8px">What you get</h2>
-    <p class="hero-sub" style="margin-top:0">
-      Stream structured courses, short workshops, and behind-the-scenes extras.
-      Learn at your own pace across phone, tablet and desktop — always in dark mode.
-    </p>
-
-    <ul class="hero-cap" style="line-height:1.8;margin-top:12px">
-      <li>Foundations: mark-making, line, shadow &amp; form, composition.</li>
-      <li>Programs: 3-day intensives &amp; 30-day guided challenges.</li>
-      <li>Sketchbook extras, live snippets, highlights and member Q&amp;A.</li>
-      <li>Recommended rows tailored for you as the library grows.</li>
-    </ul>
-
-    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin:24px 0 8px">Pricing</h2>
-    <p class="hero-sub" style="margin-top:0">
-      <strong>$19.99 / month</strong> — cancel anytime. No lock-in.
-    </p>
-
-    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin:24px 0 8px">Explore before you buy</h2>
-    <p class="hero-sub" style="margin-top:0">
-      Tap <em>Join Free</em> to browse as a guest. When you're ready, sign in to unlock the full experience.
-    </p>
-
-    <div class="hero-buttons" style="justify-content:flex-start;margin-top:14px">
-      <a class="cta-btn" href="index.html" id="openLogin-2">Sign In</a>
-      <button class="cta-btn" id="joinFree-2" type="button">Join Free</button>
-      <a class="cta-btn ghost" href="home.html">Back to Home</a>
+    <!-- About Jody Graham -->
+    <div class="about">
+      <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);">About Jody Graham</h2>
+      <p class="hero-sub" style="margin-top:6px">
+        Jody Graham is a Sydney-based multidisciplinary artist whose practice spans drawing,
+        sculpture, mixed media, installation and performance. Known for using unconventional
+        mark-making tools, she explores gesture, texture and the physical act of drawing.
+      </p>
+      <p class="hero-cap" style="margin-top:10px">
+        She has taught art for more than two decades through art schools, workshops and community
+        programs, helping students of all levels explore creativity and confidence in their work.
+        In 2022 she won the prestigious <em>Adelaide Perry Prize for Drawing</em> and continues to
+        lead courses and exhibitions across Australia.
+      </p>
     </div>
   </section>
 </main>
 
-<script src="assets/app.js"></script>
 <script>
-  // Wire both "Join Free" buttons to the existing app.js handler
-  const jf1 = document.getElementById('joinFree');
-  const jf2 = document.getElementById('joinFree-2');
-  if (jf1) jf1.addEventListener('click', ()=> {
-    localStorage.setItem('session', JSON.stringify({ user:'guest', kind:'free', ts:Date.now() }));
-    window.location.href = 'home.html';
-  });
-  if (jf2) jf2.addEventListener('click', ()=> {
+  // "Join Free" starts a guest session and lands on home
+  document.getElementById('joinFree')?.addEventListener('click', () => {
     localStorage.setItem('session', JSON.stringify({ user:'guest', kind:'free', ts:Date.now() }));
     window.location.href = 'home.html';
   });
