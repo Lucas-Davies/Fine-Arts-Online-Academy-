@@ -1,43 +1,45 @@
-/* ========== tokens ========== */
 :root{
   --ink:#eef3ff; --muted:rgba(238,243,255,.75);
   --stroke:rgba(255,255,255,.18);
   --surface:rgba(0,0,0,.40);
-  --danger:#ff5b62; --blue:#0A84FF;
+  --danger:#ff5b62; 
+  --blue:#0A84FF; /* iOS blue */
 }
 
-/* ========== base ========== */
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+body{margin:0;color:var(--ink);
+     font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
 .no-scroll{overflow:hidden}
 
-/* ========== top nav (Netflix-style) ========== */
+/* Top nav */
 .nav{
-  position:fixed; inset:0 0 auto 0; height:64px; display:flex;
-  align-items:center; justify-content:space-between; padding:0 24px; z-index:5;
+  position:fixed; top:0; left:0; right:0; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; z-index:5;
   background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
 }
-.brand{font-weight:800; letter-spacing:.2px}
+.brand{font-weight:800; letter-spacing:.2px; color:var(--blue)}
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
-     border-radius:8px; padding:10px 14px; font-weight:700; border:1px solid transparent; cursor:pointer}
-.sign-in{background:#e50914; color:#fff}
+     border-radius:8px; padding:10px 14px; font-weight:700;
+     border:1px solid transparent; cursor:pointer}
+.sign-in{background:var(--blue); color:#fff}
 
-/* ========== hero ========== */
+/* Hero */
 .hero-wrap{
   min-height:100dvh; position:relative; overflow:hidden;
   display:grid; place-items:center; padding:0 20px;
 }
 .bg{
   position:absolute; inset:0;
-  background:url("assets/login-bg.jpg") center/cover no-repeat fixed;
+  background:url("assets/login-bg.jpg?v=5") center/cover no-repeat fixed;
   filter:saturate(1.05) contrast(1.05);
 }
 .overlay{
   position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.75) 75%),
-    radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.35), transparent 70%);
+    linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.78) 75%),
+    radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 .hero{
   position:relative; z-index:1; text-align:center; max-width:min(920px, 92vw);
@@ -46,27 +48,34 @@ body{margin:0;color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"SF Pr
   margin:0 0 12px; font-weight:900;
   font-size: clamp(28px, 6vw, 56px); line-height:1.1;
 }
-.hero-sub{
-  margin:0 0 18px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);
-}
-
-/* email + CTA */
-.cta{display:grid; grid-template-columns: 1fr auto; gap:10px; justify-content:center; margin:18px auto 8px; max-width:720px}
-.cta input{
-  width:100%; padding:14px 16px; border-radius:8px; border:1px solid var(--stroke);
-  background:rgba(0,0,0,.55); color:var(--ink); outline:none;
-}
-.cta-btn{background:#e50914; color:#fff; border:0; border-radius:8px; padding:0 20px; font-weight:800}
+.hero-sub{margin:0 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);}
 .hero-cap{color:var(--muted); margin-top:8px}
 
-/* ========== modal login ========== */
+/* Hero buttons */
+.hero-buttons {
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin:24px 0;
+}
+.cta-btn {
+  background:var(--blue);
+  color:#fff;
+  font-weight:800;
+  border:0;
+  border-radius:8px;
+  padding:12px 24px;
+  font-size:1rem;
+}
+.btn:hover{filter:brightness(1.08)}
+
+/* Modal login */
 .modal{position:fixed; inset:0; display:none; place-items:center; z-index:10;
        background:rgba(0,0,0,.55); backdrop-filter:blur(4px)}
 .modal.show{display:grid}
 .card{
   width:min(92vw, 520px); background:var(--surface); border:1px solid var(--stroke);
-  border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65);
-  position:relative;
+  border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65); position:relative;
 }
 .close{position:absolute; right:10px; top:10px; background:transparent; border:1px solid var(--stroke); color:var(--ink);
        border-radius:8px; padding:6px 10px; cursor:pointer}
@@ -84,7 +93,7 @@ input{
      background:transparent; border:1px solid var(--stroke); color:var(--ink);
      padding:4px 8px; border-radius:8px; cursor:pointer}
 .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-.primary{background:#0A84FF; color:#fff}
+.primary{background:var(--blue); color:#fff}
 .ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
 
 .msg{margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25)}
