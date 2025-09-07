@@ -9,23 +9,23 @@
 </head>
 <body class="no-scroll">
 
-<!-- Top nav -->
-<header class="nav">
-  <div class="brand">Fine Arts Online Academy</div>
-</header>
+<!-- Two-line brand lives in the hero's top-left corner -->
+<header class="nav" aria-hidden="true"></header>
 
-<!-- Hero -->
 <main class="hero-wrap">
   <div class="bg" aria-hidden="true"></div>
   <div class="overlay" aria-hidden="true"></div>
 
-  <section class="hero hero-left">
-    <!-- NEW: two-line brand in the middle, left-aligned -->
-    <div class="brand-hero">
-      <div class="brand-line1">Fine Arts Online Academy</div>
-      <div class="brand-line2">by Jody Graham</div>
-    </div>
+  <!-- Brand block pinned top-left of the hero -->
+  <div class="brand-hero-pin">
+    <div class="brand-top">Fine Arts Online Academy</div>
+    <div class="brand-sub">by Jody Graham</div>
+  </div>
 
+  <!-- Central hero content -->
+  <section class="hero">
+    <h1 class="hero-title">Create. Learn. Grow.</h1>
+    <p class="hero-sub">Lessons, demos and workshops that build your art.</p>
     <p class="hero-sub">From $19.99. Cancel anytime.</p>
 
     <div class="hero-buttons">
@@ -38,7 +38,7 @@
   </section>
 </main>
 
-<!-- Login modal -->
+<!-- Sign-in modal (centered; hero remains visible behind) -->
 <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-label="Member login">
   <div class="card">
     <button class="close" id="closeLogin" aria-label="Close">✕</button>
