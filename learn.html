@@ -4,39 +4,87 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <title>Learn More — FAOA</title>
+  <title>Learn — Fine Arts Online Academy (FAOA)</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
-<body class="no-scroll">
+<body>
 
-  <header class="nav">
-    <div class="logo-block">
-      <div class="logo">Fine Arts Online Academy</div>
-      <div class="logo-sub">by Jody Graham</div>
+<!-- Top nav -->
+<header class="nav">
+  <div class="logo-block">
+    <div class="logo">Fine Arts Online Academy</div>
+    <div class="logo-sub">by Jody Graham</div>
+  </div>
+  <div class="nav-right">
+    <a class="btn ghost" href="home.html">Home</a>
+  </div>
+</header>
+
+<main class="hero-wrap">
+  <!-- Background (uses existing .home-bg image; change to .learn-bg if you add it in CSS) -->
+  <div class="bg home-bg" aria-hidden="true"></div>
+  <div class="overlay" aria-hidden="true"></div>
+
+  <section class="hero hero-left" style="max-width:760px;">
+    <h1 class="hero-title">Create. Learn. Grow.</h1>
+    <p class="hero-sub">
+      Art demonstrations, courses and more — guided by award-winning artist
+      <strong>Jody Graham</strong>.
+    </p>
+    <p class="hero-cap">From $19.99. Cancel anytime.</p>
+
+    <div class="hero-buttons" style="justify-content:flex-start">
+      <a class="cta-btn" href="index.html" id="openLogin">Sign In</a>
+      <button class="cta-btn" id="joinFree" type="button">Join Free</button>
+      <a class="cta-btn ghost" href="home.html">Back to Home</a>
     </div>
-    <a class="btn primary" href="index.html">Back</a>
-  </header>
 
-  <main class="hero-wrap">
-    <div class="overlay"></div>
-    <section class="hero hero-left" style="max-width:760px;">
-      <h1 class="hero-title">Discover FAOA</h1>
-      <p class="hero-sub">Your online studio for art demonstrations, structured courses, and ongoing inspiration.</p>
+    <hr style="border:none;height:1px;background:var(--stroke);margin:24px 0" />
 
-      <ul style="line-height:1.7">
-        <li><strong>From $19.99/month</strong> — affordable, flexible membership.</li>
-        <li><strong>Cancel anytime</strong> — no lock-ins, no pressure.</li>
-        <li><strong>Explore before you buy</strong> — join free as a guest, browse the library, and decide later.</li>
-        <li><strong>Fresh content monthly</strong> — demonstrations, live workshops, and sketchbook extras.</li>
-        <li><strong>Made by Jody Graham</strong> — practising artist and educator.</li>
-      </ul>
+    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin-bottom:8px">What you get</h2>
+    <p class="hero-sub" style="margin-top:0">
+      Stream structured courses, short workshops, and behind-the-scenes extras.
+      Learn at your own pace across phone, tablet and desktop — always in dark mode.
+    </p>
 
-      <div class="hero-buttons">
-        <a class="btn cta-btn" href="index.html">Join Free</a>
-        <a class="btn cta-btn ghost" href="index.html">Back to Home</a>
-      </div>
-    </section>
-  </main>
+    <ul class="hero-cap" style="line-height:1.8;margin-top:12px">
+      <li>Foundations: mark-making, line, shadow &amp; form, composition.</li>
+      <li>Programs: 3-day intensives &amp; 30-day guided challenges.</li>
+      <li>Sketchbook extras, live snippets, highlights and member Q&amp;A.</li>
+      <li>Recommended rows tailored for you as the library grows.</li>
+    </ul>
 
+    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin:24px 0 8px">Pricing</h2>
+    <p class="hero-sub" style="margin-top:0">
+      <strong>$19.99 / month</strong> — cancel anytime. No lock-in.
+    </p>
+
+    <h2 class="hero-title" style="font-size:clamp(22px,4.2vw,34px);margin:24px 0 8px">Explore before you buy</h2>
+    <p class="hero-sub" style="margin-top:0">
+      Tap <em>Join Free</em> to browse as a guest. When you're ready, sign in to unlock the full experience.
+    </p>
+
+    <div class="hero-buttons" style="justify-content:flex-start;margin-top:14px">
+      <a class="cta-btn" href="index.html" id="openLogin-2">Sign In</a>
+      <button class="cta-btn" id="joinFree-2" type="button">Join Free</button>
+      <a class="cta-btn ghost" href="home.html">Back to Home</a>
+    </div>
+  </section>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+  // Wire both "Join Free" buttons to the existing app.js handler
+  const jf1 = document.getElementById('joinFree');
+  const jf2 = document.getElementById('joinFree-2');
+  if (jf1) jf1.addEventListener('click', ()=> {
+    localStorage.setItem('session', JSON.stringify({ user:'guest', kind:'free', ts:Date.now() }));
+    window.location.href = 'home.html';
+  });
+  if (jf2) jf2.addEventListener('click', ()=> {
+    localStorage.setItem('session', JSON.stringify({ user:'guest', kind:'free', ts:Date.now() }));
+    window.location.href = 'home.html';
+  });
+</script>
 </body>
 </html>
