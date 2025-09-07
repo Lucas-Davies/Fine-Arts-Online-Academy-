@@ -1,4 +1,35 @@
 :root{
+  /* Top-left logo badge + subline */
+.logo-block{
+  display:flex; flex-direction:column; gap:4px;
+  position:relative; z-index:6;  /* above gradient */
+  margin-top:8px;                 /* slight nudge down from the nav */
+}
+.logo{
+  display:inline-block;
+  background:var(--blue);
+  color:#fff;
+  font-weight:900;
+  letter-spacing:.2px;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:clamp(14px, 2.4vw, 18px);
+}
+.logo-sub{
+  color:#fff;
+  opacity:.95;
+  font-size:clamp(11px, 1.9vw, 14px);
+  font-weight:700;
+  margin-left:2px; /* small visual indent under the badge */
+}
+
+/* keep existing .nav gradient — logo sits on top-left inside it */
+.nav{
+  position:fixed; top:0; left:0; right:0; height:64px;
+  display:flex; align-items:flex-start; justify-content:space-between;
+  padding:8px 24px; z-index:5;
+  background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
+}
   --ink:#eef3ff; --muted:rgba(238,243,255,.75);
   --stroke:rgba(255,255,255,.18);
   --surface:rgba(0,0,0,.40);
