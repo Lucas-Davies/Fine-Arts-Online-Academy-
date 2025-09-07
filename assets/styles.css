@@ -47,27 +47,40 @@ body{
 .btn:hover{filter:brightness(1.08)}
 
 /* ===== Backgrounds ===== */
-/* layout */
-.hero-wrap, .page-wrap { min-height: 100dvh; position: relative; overflow: hidden; }
 
-/* base bg element (no image here) */
+/* layout */
+.hero-wrap, .page-wrap {
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* base bg element (holds the image; no default image here) */
 .bg {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   filter: saturate(1.05) contrast(1.05);
+  z-index: 0; /* sits behind everything */
 }
 
 /* pick the image per page by scoping to the wrapper */
-.login-bg .bg { background: url("./login-bg.jpg?v=12") center / cover no-repeat; }
-.home-bg  .bg { background: url("./home-bg.jpg?v=3")  center / cover no-repeat; }
-.learn-bg .bg { background: url("./learn-bg.jpg?v=5")  center / cover no-repeat; }
+.login-bg .bg { background: url("./login-bg.jpg?v=12") center/cover no-repeat; }
+.home-bg  .bg { background: url("./home-bg.jpg?v=3")  center/cover no-repeat; }
+.learn-bg .bg { background: url("./learn-bg.jpg?v=5")  center/cover no-repeat; }
 
 /* lighting overlay sits above the image */
 .overlay{
-  position: absolute; inset: 0; pointer-events: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
   background:
     linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.78) 75%),
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
+
+/* make sure your page content is above overlay */
+.hero-content { position: relative; z-index: 2; }
 
 /* ===== Landing / Learn hero ===== */
 .hero{
