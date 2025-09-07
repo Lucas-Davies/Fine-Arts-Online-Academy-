@@ -21,13 +21,13 @@
   </div>
 </header>
 
-<!-- Page background -->
+<!-- Background -->
 <main class="page-wrap">
   <div class="bg home-bg" aria-hidden="true"></div>
   <div class="overlay" aria-hidden="true"></div>
 
   <section class="wrap">
-    <!-- Guest upsell (only shows for free/guest sessions) -->
+    <!-- Upsell for guest/free sessions -->
     <div id="upsell" class="upsell" hidden>
       <div class="upsell-text">
         <h2>Explore before you buy</h2>
@@ -122,7 +122,7 @@
 
 <script src="assets/app.js"></script>
 <script>
-  // Allow guest + member
+  // Session + upsell (guest allowed)
   let session = null;
   try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
   if (!session) { window.location.replace('index.html'); }
