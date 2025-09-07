@@ -40,17 +40,16 @@
   <!-- Sign-in modal (centered over hero) -->
   <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-label="Member login">
     <div class="card">
-      <button class="close" id="closeLogin" aria-label="Close">✕</button>
+      <!-- No close button; backdrop/Esc closes -->
 
-      <h2 class="card-title">Fine Arts Online Academy (FAOA)</h2>
-      <p class="card-sub">by Jody Graham — $19.99/month</p>
+      <h2 class="card-title">Sign In</h2>
+      <p class="card-sub">Welcome back to Fine Arts Online Academy</p>
 
       <form id="loginForm" class="form" novalidate>
-        <label>Email
-          <input id="email" type="email" required placeholder="you@example.com" />
-        </label>
+        <label for="email">Email</label>
+        <input id="email" type="email" required placeholder="you@example.com" />
 
-        <label class="has-eye">Password
+        <label for="password" class="has-eye">Password
           <input id="password" type="password" required minlength="6" placeholder="••••••••" />
           <button class="eye" type="button" data-eye="#password">Show</button>
         </label>
@@ -58,8 +57,7 @@
         <p id="authMsg" class="msg" role="alert" aria-live="polite" hidden></p>
 
         <div class="row">
-          <button class="btn primary" type="submit">Log in</button>
-          <button class="btn ghost" type="button" id="signup">Sign up</button>
+          <button class="btn primary" type="submit">Sign In</button>
           <button class="btn ghost" type="button" id="reset">Forgot password</button>
         </div>
       </form>
@@ -67,5 +65,14 @@
   </div>
 
   <script src="assets/app.js"></script>
+  <script>
+    // Optional: simple "Forgot password" placeholder (Stage Two will replace)
+    const resetBtn = document.getElementById('reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', ()=> {
+        alert('Password reset coming in Stage Two');
+      });
+    }
+  </script>
 </body>
 </html>
