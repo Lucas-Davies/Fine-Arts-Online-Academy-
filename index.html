@@ -1,72 +1,71 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="color-scheme" content="dark" />
-<title>Fine Arts Online Academy (FAOA)</title>
-<link rel="stylesheet" href="assets/styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Fine Arts Online Academy (FAOA)</title>
+  <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body class="no-scroll">
 
-<!-- Two-line brand lives in the hero's top-left corner -->
-<header class="nav" aria-hidden="true"></header>
-
-<main class="hero-wrap">
-  <div class="bg" aria-hidden="true"></div>
-  <div class="overlay" aria-hidden="true"></div>
-
-  <!-- Brand block pinned top-left of the hero -->
-  <div class="logo-block">
-    <div class="logo">Fine Arts Online Academy</div>
-    <div class="logo-sub">by Jody Graham</div>
-  </div>
-
-  <!-- Central hero content -->
-  <section class="hero">
-    <h1 class="hero-title">Create. Learn. Grow.</h1>
-    <p class="hero-sub">Lessons, demos and workshops that build your art.</p>
-    <p class="hero-sub">From $19.99. Cancel anytime.</p>
-
-    <div class="hero-buttons">
-      <button class="btn cta-btn" id="openLogin">Sign In</button>
-      <button class="btn cta-btn" id="joinFree">Join Free</button>
-      <a class="btn cta-btn ghost" href="learn.html">Learn More</a>
+  <!-- Top nav with logo -->
+  <header class="nav">
+    <div class="logo-block">
+      <div class="logo">Fine Arts Online Academy</div>
+      <div class="logo-sub">by Jody Graham</div>
     </div>
+  </header>
 
-    <p class="hero-cap">Let your creativity take over.</p>
-  </section>
-</main>
+  <!-- Hero (no page scroll; full-bleed background) -->
+  <main class="hero-wrap">
+    <div class="bg" aria-hidden="true"></div>
+    <div class="overlay" aria-hidden="true"></div>
 
-<!-- Sign-in modal (centered; hero remains visible behind) -->
-<div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-label="Member login">
-  <div class="card">
-    <button class="close" id="closeLogin" aria-label="Close">✕</button>
+    <section class="hero">
+      <h1 class="hero-title">Create. Learn. Grow.</h1>
+      <p class="hero-sub">Lessons, demos and workshops that build your art.</p>
+      <p class="hero-sub">From $19.99. Cancel anytime.</p>
 
-    <h2 class="card-title">Fine Arts Online Academy (FAOA)</h2>
-    <p class="card-sub">by Jody Graham — $19.99/month</p>
-
-    <form id="loginForm" class="form" novalidate>
-      <label>Email
-        <input id="email" type="email" required placeholder="you@example.com" />
-      </label>
-
-      <label class="has-eye">Password
-        <input id="password" type="password" required minlength="6" placeholder="••••••••" />
-        <button class="eye" type="button" data-eye="#password">Show</button>
-      </label>
-
-      <p id="authMsg" class="msg" role="alert" aria-live="polite" hidden></p>
-
-      <div class="row">
-        <button class="btn primary" type="submit">Log in</button>
-        <button class="btn ghost" type="button" id="signup">Sign up</button>
-        <button class="btn ghost" type="button" id="reset">Forgot password</button>
+      <div class="hero-buttons">
+        <button class="btn cta-btn" id="openLogin">Sign In</button>
+        <button class="btn cta-btn" id="joinFree">Join Free</button>
+        <a class="btn cta-btn ghost" href="learn.html">Learn More</a>
       </div>
-    </form>
-  </div>
-</div>
 
-<script src="assets/app.js"></script>
+      <p class="hero-cap">Let your creativity take over.</p>
+    </section>
+  </main>
+
+  <!-- Sign-in modal (centered over hero) -->
+  <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-label="Member login">
+    <div class="card">
+      <button class="close" id="closeLogin" aria-label="Close">✕</button>
+
+      <h2 class="card-title">Fine Arts Online Academy (FAOA)</h2>
+      <p class="card-sub">by Jody Graham — $19.99/month</p>
+
+      <form id="loginForm" class="form" novalidate>
+        <label>Email
+          <input id="email" type="email" required placeholder="you@example.com" />
+        </label>
+
+        <label class="has-eye">Password
+          <input id="password" type="password" required minlength="6" placeholder="••••••••" />
+          <button class="eye" type="button" data-eye="#password">Show</button>
+        </label>
+
+        <p id="authMsg" class="msg" role="alert" aria-live="polite" hidden></p>
+
+        <div class="row">
+          <button class="btn primary" type="submit">Log in</button>
+          <button class="btn ghost" type="button" id="signup">Sign up</button>
+          <button class="btn ghost" type="button" id="reset">Forgot password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>
