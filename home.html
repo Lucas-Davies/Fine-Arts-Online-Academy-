@@ -9,7 +9,6 @@
 </head>
 <body>
 
-<!-- Top nav -->
 <header class="nav">
   <div class="brand">Fine Arts Online Academy</div>
   <div class="nav-right">
@@ -18,13 +17,11 @@
   </div>
 </header>
 
-<!-- Page background -->
 <main class="page-wrap">
   <div class="bg home-bg" aria-hidden="true"></div>
   <div class="overlay" aria-hidden="true"></div>
 
   <section class="wrap">
-    <!-- Guest upsell (only shows for free/guest sessions) -->
     <div id="upsell" class="upsell" hidden>
       <div class="upsell-text">
         <h2>Explore before you buy</h2>
@@ -36,7 +33,6 @@
       </div>
     </div>
 
-    <!-- Rows -->
     <section class="section">
       <h2 class="section-title">Fundamentals</h2>
       <div id="row-fundamentals" class="row"></div>
@@ -61,7 +57,7 @@
 
 <script src="assets/app.js"></script>
 <script>
-  // -------- Route guard (allow guest + member) --------
+  // Route guard (allow guest + member)
   let session = null;
   try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
   if (!session) { window.location.replace('index.html'); }
@@ -73,12 +69,10 @@
     welcome.textContent = `Hi, ${label}`;
   }
 
-  // Show upsell for guest/free
-  if (session?.kind === 'free') {
-    document.getElementById('upsell').hidden = false;
-  }
+  // Guest upsell
+  if (session?.kind === 'free') document.getElementById('upsell').hidden = false;
 
-  // -------- Demo content data --------
+  // Demo content
   const fundamentals = [
     { tag: "Core", kicker: "Drawing Basics", title: "Line, Shape & Gesture" },
     { tag: "Core", kicker: "Shading", title: "Light, Shadow & Form" },
@@ -103,11 +97,9 @@
     { tag: "BTS", kicker: "Studio", title: "Setup Tour" },
   ];
 
-  // Limit content for guest
   const isGuest = session?.kind === 'free';
   const limit = (arr, n) => isGuest ? arr.slice(0, n) : arr;
 
-  // -------- Render helpers --------
   function card({tag, kicker, title}) {
     const el = document.createElement('article');
     el.className = 'card';
@@ -118,22 +110,15 @@
         <div class="title">${title}</div>
       </div>`;
     el.addEventListener('click', () => {
-      if (isGuest) {
-        // Upsell for guest
-        alert('Join to watch this full course. From $19.99. Cancel anytime.');
-      } else {
-        alert('Open course page (coming soon)');
-      }
+      if (isGuest) alert('Join to watch this full course. From $19.99. Cancel anytime.');
+      else alert('Open course page (coming soon)');
     });
     return el;
   }
-
   function mountRow(id, items) {
     const row = document.getElementById(id);
     limit(items, 4).forEach(i => row.appendChild(card(i)));
   }
-
-  // -------- Build page --------
   mountRow('row-fundamentals', fundamentals);
   mountRow('row-recommended', recommended);
   mountRow('row-latest', latest);
