@@ -1,20 +1,22 @@
 :root{
-  --ink:#eef3ff; --muted:rgba(238,243,255,.75);
+  --ink:#eef3ff;
+  --muted:rgba(238,243,255,.75);
   --stroke:rgba(255,255,255,.18);
   --surface:rgba(0,0,0,.40);
-  --danger:#ff5b62; 
-  --blue:#0A84FF; /* iOS blue */
+  --danger:#ff5b62;
+  --blue:#0A84FF;         /* iOS blue */
   --greyText:#cfd3e1;
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;color:var(--ink);
-  font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif
+  margin:0; color:var(--ink);
+  font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
 }
+.no-scroll{overflow:hidden}
 
-/* -------- Nav + blue logo badge -------- */
+/* ===== Top nav + blue logo badge (all pages) ===== */
 .nav{
   position:fixed; top:0; left:0; right:0; height:64px;
   display:flex; align-items:flex-start; justify-content:space-between;
@@ -38,20 +40,20 @@ body{
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   border-radius:8px; padding:10px 14px; font-weight:700;
-  border:1px solid transparent; cursor:pointer
+  border:1px solid transparent; cursor:pointer;
 }
 .primary{background:var(--blue); color:#fff}
 .ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
 .btn:hover{filter:brightness(1.08)}
 
-/* -------- Backgrounds & overlay -------- */
+/* ===== Full-bleed background + overlay (all pages) ===== */
 .hero-wrap, .page-wrap{ min-height:100dvh; position:relative; overflow:hidden }
 .bg{
   position:absolute; inset:0;
-  background:url("./login-bg.jpg?v=10") center/cover no-repeat; /* fallback if home-bg missing */
+  background:url("./login-bg.jpg?v=12") center/cover no-repeat; /* index fallback */
   filter:saturate(1.05) contrast(1.05);
 }
-.home-bg{ background:url("./home-bg.jpg?v=2") center/cover no-repeat; }
+.home-bg{ background:url("./home-bg.jpg?v=3") center/cover no-repeat; }
 .overlay{
   position:absolute; inset:0; pointer-events:none;
   background:
@@ -59,7 +61,61 @@ body{
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 
-/* -------- Home layout -------- */
+/* ===== Landing / Learn hero ===== */
+.hero{
+  position:relative; z-index:1; max-width:min(920px, 92vw);
+  margin:0 auto; padding-top:26vh; text-align:center;
+}
+.hero-left{ text-align:left; padding-left:4vw; padding-right:4vw }
+.hero-title{
+  margin:0 0 12px; font-weight:900;
+  font-size:clamp(28px, 6vw, 56px); line-height:1.1;
+}
+.hero-sub{ margin:10px 0 12px; color:var(--muted); font-size:clamp(14px, 2.2vw, 20px) }
+.hero-cap{ color:var(--muted); margin-top:8px }
+
+/* Landing hero buttons */
+.hero-buttons{
+  display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap;
+}
+.cta-btn{
+  background:var(--blue); color:#fff; font-weight:800; border:0; border-radius:8px;
+  padding:12px 20px; font-size:1rem;
+}
+.cta-btn.ghost{ background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink) }
+
+/* ===== Sign-in modal (index) ===== */
+.modal{
+  position:fixed; inset:0; display:none; place-items:center; z-index:10;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(4px);
+}
+.modal.show{ display:grid }
+.modal .card{
+  width:min(92vw, 520px); max-height:90vh; overflow:auto;
+  background:var(--surface); border:1px solid var(--stroke);
+  border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65); position:relative;
+}
+.close{
+  position:absolute; right:10px; top:10px; background:transparent; border:1px solid var(--stroke); color:var(--ink);
+  border-radius:8px; padding:6px 10px; cursor:pointer;
+}
+.card-title{ margin:4px 0 2px; font-weight:800; text-align:center }
+.card-sub{ margin:0 0 16px; color:var(--muted); text-align:center }
+.form{ display:grid; gap:14px }
+label{ display:grid; gap:6px; color:var(--muted) }
+input{
+  width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.55); color:var(--ink);
+}
+.has-eye{ position:relative }
+.eye{
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  background:transparent; border:1px solid var(--stroke); color:var(--ink);
+  padding:4px 8px; border-radius:8px; cursor:pointer;
+}
+.msg{ margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25) }
+
+/* ===== Home layout ===== */
 .wrap{
   position:relative; z-index:1;
   padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px;
@@ -69,7 +125,17 @@ body{
   margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px;
 }
 
-/* --- Netflix-style carousels --- */
+/* Upsell banner */
+.upsell{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:14px; border-radius:12px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.45); margin:0 0 16px;
+}
+.upsell h2{ margin:0 0 4px; font-size:18px }
+.upsell p{ margin:0; color:var(--muted) }
+.upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
+
+/* ===== Netflix-style carousels ===== */
 .row{
   display:grid;
   grid-auto-flow:column;
@@ -81,6 +147,7 @@ body{
 }
 .row::-webkit-scrollbar{ display:none }
 
+/* Carousel cards (scoped so modal styles are untouched) */
 .row > .card{
   position:relative;
   min-height:150px;
@@ -101,12 +168,8 @@ body{
   font-size:16px; font-weight:800; letter-spacing:.2px;
 }
 
-/* -------- Upsell banner -------- */
-.upsell{
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:14px; border-radius:12px; border:1px solid var(--stroke);
-  background:rgba(0,0,0,.45); margin:0 0 16px
+/* Responsive tweak */
+@media (max-width: 680px){
+  .nav{ padding:8px 16px }
+  .wrap{ padding-left:16px; padding-right:16px }
 }
-.upsell h2{ margin:0 0 4px; font-size:18px }
-.upsell p{ margin:0; color:var(--muted) }
-.upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
