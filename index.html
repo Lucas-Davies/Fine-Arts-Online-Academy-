@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<title>Login — Fine Arts Online Academy (FAOA)</title>
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<main class="auth-wrap">
+  <section class="auth-card" role="main" aria-label="Login">
+    <h1>Fine Arts Online Academy (FAOA)</h1>
+    <h2>by Jody Graham — $19.99/month</h2>
+
+    <form id="loginForm" class="auth-grid" novalidate>
+      <div class="auth-row">
+        <label for="email">Email</label>
+        <input id="email" type="email" required placeholder="you@example.com"/>
+      </div>
+      <div class="auth-row input-with-eye">
+        <label for="password">Password</label>
+        <input id="password" type="password" required minlength="6" placeholder="••••••••"/>
+        <button type="button" class="eye" data-eye="#password">Show</button>
+      </div>
+      <div id="authMsg" role="alert" aria-live="polite"></div>
+      <div class="row">
+        <button class="btn primary" type="submit">Log in</button>
+        <button class="btn ghost" type="button" id="signup">Sign up</button>
+        <a class="btn ghost" href="#" id="reset">Forgot password</a>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
