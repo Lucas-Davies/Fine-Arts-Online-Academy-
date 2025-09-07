@@ -32,7 +32,7 @@ body{margin:0;color:var(--ink);
 }
 .bg{
   position:absolute; inset:0;
-  background:url("assets/login-bg.jpg?v=5") center/cover no-repeat fixed;
+  background:url("./login-bg.jpg?v=7") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
 .overlay{
