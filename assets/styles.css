@@ -21,21 +21,24 @@ body{margin:0;color:var(--ink);
   background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
 }
 .brand{font-weight:800; letter-spacing:.2px; color:var(--blue)}
+.nav-right{display:flex; align-items:center; gap:10px}
+.welcome{color:var(--muted); font-size:14px}
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
      border-radius:8px; padding:10px 14px; font-weight:700;
      border:1px solid transparent; cursor:pointer}
 
-/* Hero */
-.hero-wrap{
+/* Shared hero/bg */
+.hero-wrap, .page-wrap{
   min-height:100dvh; position:relative; overflow:hidden;
-  display:grid; place-items:center; padding:0 20px;
+  display:block;
 }
 .bg{
   position:absolute; inset:0;
-  /* IMPORTANT: styles.css is in /assets, so use a relative path to this folder */
+  /* Landing uses login-bg; home overrides with .home-bg */
   background:url("./login-bg.jpg?v=8") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
+.home-bg{ background:url("./home-bg.jpg?v=1") center/cover no-repeat; }
 .overlay{
   position:absolute; inset:0; pointer-events:none;
   background:
@@ -43,13 +46,13 @@ body{margin:0;color:var(--ink);
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 
-/* Center block but left-aligned text */
+/* Landing hero (index & learn) */
 .hero{
   position:relative; z-index:1; max-width:min(920px, 92vw);
+  margin:0 auto; padding-top:20vh; padding-left:0; padding-right:0;
   text-align:center;
 }
-.hero-left{ text-align:left; } /* left-aligns hero content */
-
+.hero-left{ text-align:left; padding-left:4vw; padding-right:4vw; }
 .brand-hero{ margin:0 0 12px; }
 .brand-line1{
   color:var(--blue);
@@ -63,36 +66,28 @@ body{margin:0;color:var(--ink);
   font-size: clamp(16px, 3.2vw, 26px);
   margin-top:6px;
 }
-
-.hero-sub{
-  margin:10px 0 12px; color:var(--muted);
-  font-size: clamp(14px, 2.2vw, 20px);
+.hero-title{
+  margin:0 0 12px; font-weight:900;
+  font-size: clamp(28px, 6vw, 56px); line-height:1.1;
 }
+.hero-sub{margin:10px 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);}
 .hero-cap{color:var(--muted); margin-top:8px}
 
-/* Hero buttons */
+/* Landing hero buttons */
 .hero-buttons {
-  display:flex;
-  justify-content:flex-start;   /* align the row left to match brand */
-  gap:16px;
-  margin:24px 0;
-  flex-wrap:wrap;
+  display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap;
 }
+.hero-left .hero-buttons { justify-content:flex-start; }
 .cta-btn {
-  background:var(--blue);
-  color:#fff;
-  font-weight:800;
-  border:0;
-  border-radius:8px;
-  padding:12px 20px;
-  font-size:1rem;
+  background:var(--blue); color:#fff; font-weight:800; border:0; border-radius:8px;
+  padding:12px 20px; font-size:1rem;
 }
 .cta-btn.ghost {
-  background:rgba(0,0,0,.45);
-  border:1px solid var(--stroke);
-  color:var(--ink);
+  background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink);
 }
 .btn:hover{filter:brightness(1.08)}
+.primary{background:var(--blue); color:#fff}
+.ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
 
 /* Modal login */
 .modal{position:fixed; inset:0; display:none; place-items:center; z-index:10;
@@ -118,8 +113,39 @@ input{
      background:transparent; border:1px solid var(--stroke); color:var(--ink);
      padding:4px 8px; border-radius:8px; cursor:pointer}
 .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-.primary{background:var(--blue); color:#fff}
-.ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
 
-.msg{margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25)}
-.sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(1px,1px,1px,1px)}
+/* ---------- HOME PAGE styles ---------- */
+.wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px; }
+.section{ margin-top:18px; }
+.section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px; }
+.row{
+  display:grid; grid-auto-flow:column; grid-auto-columns: clamp(160px, 32vw, 240px);
+  gap:12px; overflow-x:auto; padding:6px 2px 14px; scroll-snap-type:x mandatory;
+}
+.row::-webkit-scrollbar{ display:none }
+.card{
+  position:relative; min-height:150px; border-radius:18px; border:1px solid var(--stroke);
+  overflow:hidden; scroll-snap-align:start;
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+}
+.card::before{
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(600px 320px at 20% -10%, rgba(10,132,255,.25), transparent 60%);
+}
+.card .meta{ position:absolute; inset:auto 10px 10px 10px; display:flex; flex-direction:column; gap:6px }
+.card .kicker{ font-size:12px; color:var(--muted) }
+.card .title{ font-size:16px; font-weight:800; letter-spacing:.2px }
+.tag{
+  position:absolute; top:10px; left:10px; font-size:12px; padding:4px 8px; border-radius:999px;
+  background:rgba(0,0,0,.35); border:1px solid var(--stroke)
+}
+
+/* Upsell banner */
+.upsell{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:14px; border-radius:12px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.45); margin:0 0 14px;
+}
+.upsell h2{ margin:0 0 4px; font-size:18px }
+.upsell p{ margin:0; color:var(--muted) }
+.upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
