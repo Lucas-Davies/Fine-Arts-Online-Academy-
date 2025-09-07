@@ -9,33 +9,38 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
-body{margin:0;color:var(--ink);
-     font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+body{
+  margin:0;color:var(--ink);
+  font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif
+}
 .no-scroll{overflow:hidden}
 
-/* Top nav */
+/* --- Top nav shell (used for spacing only on landing) --- */
 .nav{
   position:fixed; top:0; left:0; right:0; height:64px;
-  display:flex; align-items:center; justify-content:space-between;
   padding:0 24px; z-index:5;
   background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
 }
 .brand{font-weight:800; letter-spacing:.2px; color:var(--blue)}
 .nav-right{display:flex; align-items:center; gap:10px}
 .welcome{color:var(--muted); font-size:14px}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
-     border-radius:8px; padding:10px 14px; font-weight:700;
-     border:1px solid transparent; cursor:pointer}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border-radius:8px; padding:10px 14px; font-weight:700;
+  border:1px solid transparent; cursor:pointer
+}
+.primary{background:var(--blue); color:#fff}
+.ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
+.btn:hover{filter:brightness(1.08)}
 
-/* Shared hero/bg */
+/* --- Background/overlay for landing & learn --- */
 .hero-wrap, .page-wrap{
   min-height:100dvh; position:relative; overflow:hidden;
-  display:block;
 }
 .bg{
   position:absolute; inset:0;
-  /* Landing uses login-bg; home overrides with .home-bg */
-  background:url("./login-bg.jpg?v=8") center/cover no-repeat;
+  /* styles.css lives in /assets, so use a relative path */
+  background:url("./login-bg.jpg?v=9") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
 .home-bg{ background:url("./home-bg.jpg?v=1") center/cover no-repeat; }
@@ -46,26 +51,25 @@ body{margin:0;color:var(--ink);
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 
-/* Landing hero (index & learn) */
+/* --- Brand pin (top-left on landing) --- */
+.brand-hero-pin{
+  position:absolute; top:88px; left:4vw; z-index:2;
+}
+.brand-top{
+  color:var(--blue); font-weight:900;
+  font-size: clamp(28px, 6.6vw, 56px); line-height:1.05;
+}
+.brand-sub{
+  color:var(--greyText); font-weight:700;
+  font-size: clamp(14px, 2.8vw, 22px); margin-top:6px;
+}
+
+/* --- Center hero block --- */
 .hero{
   position:relative; z-index:1; max-width:min(920px, 92vw);
-  margin:0 auto; padding-top:20vh; padding-left:0; padding-right:0;
-  text-align:center;
+  margin:0 auto; padding-top:26vh; text-align:center;
 }
 .hero-left{ text-align:left; padding-left:4vw; padding-right:4vw; }
-.brand-hero{ margin:0 0 12px; }
-.brand-line1{
-  color:var(--blue);
-  font-weight:900;
-  font-size: clamp(32px, 7vw, 64px);
-  line-height:1.05;
-}
-.brand-line2{
-  color:var(--greyText);
-  font-weight:700;
-  font-size: clamp(16px, 3.2vw, 26px);
-  margin-top:6px;
-}
 .hero-title{
   margin:0 0 12px; font-weight:900;
   font-size: clamp(28px, 6vw, 56px); line-height:1.1;
@@ -73,64 +77,62 @@ body{margin:0;color:var(--ink);
 .hero-sub{margin:10px 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);}
 .hero-cap{color:var(--muted); margin-top:8px}
 
-/* Landing hero buttons */
-.hero-buttons {
-  display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap;
-}
-.hero-left .hero-buttons { justify-content:flex-start; }
-.cta-btn {
+/* --- Hero buttons --- */
+.hero-buttons{ display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap }
+.cta-btn{
   background:var(--blue); color:#fff; font-weight:800; border:0; border-radius:8px;
-  padding:12px 20px; font-size:1rem;
+  padding:12px 20px; font-size:1rem
 }
-.cta-btn.ghost {
-  background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink);
-}
-.btn:hover{filter:brightness(1.08)}
-.primary{background:var(--blue); color:#fff}
-.ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
+.cta-btn.ghost{ background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink) }
 
-/* Modal login */
-.modal{position:fixed; inset:0; display:none; place-items:center; z-index:10;
-       background:rgba(0,0,0,.55); backdrop-filter:blur(4px)}
-.modal.show{display:grid}
+/* --- Modal login (stays centered; hero stays visible) --- */
+.modal{
+  position:fixed; inset:0; display:none; place-items:center; z-index:10;
+  background:rgba(0,0,0,.55); backdrop-filter:blur(4px)
+}
+.modal.show{ display:grid }
 .card{
   width:min(92vw, 520px); background:var(--surface); border:1px solid var(--stroke);
-  border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65); position:relative;
+  border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65); position:relative
 }
-.close{position:absolute; right:10px; top:10px; background:transparent; border:1px solid var(--stroke); color:var(--ink);
-       border-radius:8px; padding:6px 10px; cursor:pointer}
-.card-title{margin:4px 0 2px; font-weight:800; text-align:center}
-.card-sub{margin:0 0 16px; color:var(--muted); text-align:center}
-
-.form{display:grid; gap:14px}
-label{display:grid; gap:6px; color:var(--muted)}
+.close{
+  position:absolute; right:10px; top:10px; background:transparent; border:1px solid var(--stroke); color:var(--ink);
+  border-radius:8px; padding:6px 10px; cursor:pointer
+}
+.card-title{ margin:4px 0 2px; font-weight:800; text-align:center }
+.card-sub{ margin:0 0 16px; color:var(--muted); text-align:center }
+.form{ display:grid; gap:14px }
+label{ display:grid; gap:6px; color:var(--muted) }
 input{
   width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--stroke);
-  background:rgba(0,0,0,.55); color:var(--ink);
+  background:rgba(0,0,0,.55); color:var(--ink)
 }
-.has-eye{position:relative}
-.eye{position:absolute; right:10px; top:50%; transform:translateY(-50%);
-     background:transparent; border:1px solid var(--stroke); color:var(--ink);
-     padding:4px 8px; border-radius:8px; cursor:pointer}
-.row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+.has-eye{ position:relative }
+.eye{
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  background:transparent; border:1px solid var(--stroke); color:var(--ink);
+  padding:4px 8px; border-radius:8px; cursor:pointer
+}
+.row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center }
+.msg{ margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25) }
 
-/* ---------- HOME PAGE styles ---------- */
-.wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px; }
-.section{ margin-top:18px; }
-.section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px; }
+/* --- HOME PAGE --- */
+.wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px }
+.section{ margin-top:18px }
+.section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px }
 .row{
   display:grid; grid-auto-flow:column; grid-auto-columns: clamp(160px, 32vw, 240px);
-  gap:12px; overflow-x:auto; padding:6px 2px 14px; scroll-snap-type:x mandatory;
+  gap:12px; overflow-x:auto; padding:6px 2px 14px; scroll-snap-type:x mandatory
 }
 .row::-webkit-scrollbar{ display:none }
 .card{
   position:relative; min-height:150px; border-radius:18px; border:1px solid var(--stroke);
   overflow:hidden; scroll-snap-align:start;
-  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02))
 }
 .card::before{
   content:""; position:absolute; inset:0;
-  background: radial-gradient(600px 320px at 20% -10%, rgba(10,132,255,.25), transparent 60%);
+  background: radial-gradient(600px 320px at 20% -10%, rgba(10,132,255,.25), transparent 60%)
 }
 .card .meta{ position:absolute; inset:auto 10px 10px 10px; display:flex; flex-direction:column; gap:6px }
 .card .kicker{ font-size:12px; color:var(--muted) }
@@ -139,12 +141,11 @@ input{
   position:absolute; top:10px; left:10px; font-size:12px; padding:4px 8px; border-radius:999px;
   background:rgba(0,0,0,.35); border:1px solid var(--stroke)
 }
-
-/* Upsell banner */
+/* Upsell */
 .upsell{
   display:flex; align-items:center; justify-content:space-between; gap:16px;
   padding:14px; border-radius:12px; border:1px solid var(--stroke);
-  background:rgba(0,0,0,.45); margin:0 0 14px;
+  background:rgba(0,0,0,.45); margin:0 0 14px
 }
 .upsell h2{ margin:0 0 4px; font-size:18px }
 .upsell p{ margin:0; color:var(--muted) }
