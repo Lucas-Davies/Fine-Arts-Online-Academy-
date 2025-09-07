@@ -28,8 +28,8 @@
       <p class="hero-sub">From $19.99. Cancel anytime.</p>
 
       <div class="hero-buttons">
-        <button class="btn cta-btn" id="openLogin" type="button">Sign In</button>
-        <button class="btn cta-btn" id="joinFree" type="button">Join Free</button>
+        <button class="btn cta-btn" id="openLogin">Sign In</button>
+        <button class="btn cta-btn" id="joinFree">Join Free</button>
         <a class="btn cta-btn ghost" href="learn.html">Learn More</a>
       </div>
 
@@ -38,16 +38,8 @@
   </main>
 
   <!-- Sign-in modal (centered over hero) -->
-  <div
-    id="loginModal"
-    class="modal"
-    aria-hidden="true"
-    aria-modal="true"
-    role="dialog"
-    aria-label="Member login"
-    tabindex="-1"
-  >
-    <div class="card" id="loginCard">
+  <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-label="Member login">
+    <div class="card">
       <!-- No close button; backdrop/Esc closes -->
 
       <h2 class="card-title">Sign In</h2>
@@ -55,26 +47,10 @@
 
       <form id="loginForm" class="form" novalidate>
         <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          required
-          placeholder="you@example.com"
-          autocomplete="username"
-          inputmode="email"
-        />
+        <input id="email" type="email" required placeholder="you@example.com" />
 
-        <label for="password" class="has-eye">Password
-          <input
-            id="password"
-            type="password"
-            required
-            minlength="6"
-            placeholder="••••••••"
-            autocomplete="current-password"
-          />
-          <button class="eye" type="button" data-eye="#password" aria-controls="password" aria-label="Show password">Show</button>
-        </label>
+        <label for="password">Password</label>
+        <input id="password" type="password" required minlength="6" placeholder="••••••••" />
 
         <p id="authMsg" class="msg" role="alert" aria-live="polite" hidden></p>
 
@@ -88,7 +64,7 @@
 
   <script src="assets/app.js"></script>
   <script>
-    // Keep your Stage One placeholder reset flow
+    // Simple "Forgot password" placeholder
     const resetBtn = document.getElementById('reset');
     if (resetBtn) {
       resetBtn.addEventListener('click', ()=> {
@@ -96,29 +72,18 @@
       });
     }
 
-    // Defensive: ensure clicks inside the card never close the modal,
-    // even if app.js isn't loaded for some reason.
-    (function(){
-      const modal = document.getElementById('loginModal');
-      const card  = document.getElementById('loginCard');
-      if (modal && card) {
-        card.addEventListener('click', (e)=> e.stopPropagation());
-        modal.addEventListener('click', (e)=> {
-          if (e.target === modal) {
-            // rely on app.js hideModal; fallback if missing:
-            if (typeof hideModal === 'function') hideModal();
-            else modal.classList.remove('show');
-          }
-        });
-        // ESC support fallback
-        window.addEventListener('keydown', (e)=>{
-          if (e.key === 'Escape' && modal.classList.contains('show')) {
-            if (typeof hideModal === 'function') hideModal();
-            else modal.classList.remove('show');
-          }
-        });
-      }
-    })();
+    // Prevent card clicks from closing modal
+    const modal = document.getElementById('loginModal');
+    const card  = modal?.querySelector('.card');
+    if (modal && card) {
+      card.addEventListener('click', e => e.stopPropagation());
+      modal.addEventListener('click', e => {
+        if (e.target === modal) modal.classList.remove('show');
+      });
+      window.addEventListener('keydown', e=>{
+        if (e.key === 'Escape') modal.classList.remove('show');
+      });
+    }
   </script>
 </body>
 </html>
