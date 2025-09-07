@@ -1,25 +1,3 @@
-<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <title>Home — Fine Arts Online Academy (FAOA)</title>
-  <link rel="stylesheet" href="assets/styles.css" />
-</head>
-<body>
-
-<header class="nav">
-  <div class="logo-block">
-    <div class="logo">Fine Arts Online Academy</div>
-    <div class="logo-sub">by Jody Graham</div>
-  </div>
-  <div class="nav-right">
-    <span id="welcome" class="welcome"></span>
-    <button class="btn primary" id="logoutBtn">Sign Out</button>
-  </div>
-</header>
-
 <main class="page-wrap">
   <div class="bg home-bg" aria-hidden="true"></div>
   <div class="overlay" aria-hidden="true"></div>
@@ -38,57 +16,83 @@
       </div>
     </div>
 
-    <!-- 2x2 hero grid -->
-    <section class="grid-hero">
-      <a class="tile-card" href="exclusive.html">
-        <span class="tile-badge">New</span>
-        <div class="tile-meta">
-          <div class="tile-kicker">Exclusive</div>
-          <h3 class="tile-title">Exclusive Updates</h3>
-        </div>
-      </a>
+    <!-- Carousel 1 -->
+    <section class="section">
+      <h2 class="section-title">Exclusive Updates</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
+    </section>
 
-      <a class="tile-card" href="fundamentals.html">
-        <span class="tile-badge">Core</span>
-        <div class="tile-meta">
-          <div class="tile-kicker">Fundamentals</div>
-          <h3 class="tile-title">Fundamentals of Mark Making</h3>
-        </div>
-      </a>
+    <!-- Carousel 2 -->
+    <section class="section">
+      <h2 class="section-title">Fundamentals of Mark Making</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
+    </section>
 
-      <a class="tile-card" href="courses-3day.html">
-        <span class="tile-badge">Short</span>
-        <div class="tile-meta">
-          <div class="tile-kicker">Workshops</div>
-          <h3 class="tile-title">3-Day Courses</h3>
-        </div>
-      </a>
+    <!-- Carousel 3 -->
+    <section class="section">
+      <h2 class="section-title">3-Day Courses</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
+    </section>
 
-      <a class="tile-card" href="courses-30day.html">
-        <span class="tile-badge">Series</span>
-        <div class="tile-meta">
-          <div class="tile-kicker">Programs</div>
-          <h3 class="tile-title">30-Day Courses</h3>
-        </div>
-      </a>
+    <!-- Carousel 4 -->
+    <section class="section">
+      <h2 class="section-title">30-Day Courses</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
+    </section>
+
+    <!-- Carousel 5 -->
+    <section class="section">
+      <h2 class="section-title">Recommended for You</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
+    </section>
+
+    <!-- Carousel 6 -->
+    <section class="section">
+      <h2 class="section-title">Latest Drops</h2>
+      <div class="row">
+        <div class="card">Placeholder 1</div>
+        <div class="card">Placeholder 2</div>
+        <div class="card">Placeholder 3</div>
+        <div class="card">Placeholder 4</div>
+        <div class="card">Placeholder 5</div>
+        <div class="card">Placeholder 6</div>
+      </div>
     </section>
 
   </section>
 </main>
-
-<script src="assets/app.js"></script>
-<script>
-  // Session/upsell
-  let session = null;
-  try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
-  if (!session) { window.location.replace('index.html'); }
-
-  const welcome = document.getElementById('welcome');
-  if (welcome && session?.user) {
-    const label = session.kind === 'free' ? 'Guest' : session.user.split('@')[0];
-    welcome.textContent = `Hi, ${label}`;
-  }
-  if (session?.kind === 'free') document.getElementById('upsell').hidden = false;
-</script>
-</body>
-</html>
