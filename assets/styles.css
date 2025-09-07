@@ -1,35 +1,4 @@
 :root{
-  /* Top-left logo badge + subline */
-.logo-block{
-  display:flex; flex-direction:column; gap:4px;
-  position:relative; z-index:6;  /* above gradient */
-  margin-top:8px;                 /* slight nudge down from the nav */
-}
-.logo{
-  display:inline-block;
-  background:var(--blue);
-  color:#fff;
-  font-weight:900;
-  letter-spacing:.2px;
-  padding:8px 12px;
-  border-radius:8px;
-  font-size:clamp(14px, 2.4vw, 18px);
-}
-.logo-sub{
-  color:#fff;
-  opacity:.95;
-  font-size:clamp(11px, 1.9vw, 14px);
-  font-weight:700;
-  margin-left:2px; /* small visual indent under the badge */
-}
-
-/* keep existing .nav gradient — logo sits on top-left inside it */
-.nav{
-  position:fixed; top:0; left:0; right:0; height:64px;
-  display:flex; align-items:flex-start; justify-content:space-between;
-  padding:8px 24px; z-index:5;
-  background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
-}
   --ink:#eef3ff; --muted:rgba(238,243,255,.75);
   --stroke:rgba(255,255,255,.18);
   --surface:rgba(0,0,0,.40);
@@ -46,15 +15,27 @@ body{
 }
 .no-scroll{overflow:hidden}
 
-/* --- Top nav shell (used for spacing only on landing) --- */
+/* -------- Nav + blue logo badge -------- */
 .nav{
   position:fixed; top:0; left:0; right:0; height:64px;
-  padding:0 24px; z-index:5;
+  display:flex; align-items:flex-start; justify-content:space-between;
+  padding:8px 24px; z-index:5;
   background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
 }
-.brand{font-weight:800; letter-spacing:.2px; color:var(--blue)}
+.logo-block{ display:flex; flex-direction:column; gap:4px; z-index:6 }
+.logo{
+  display:inline-block; background:var(--blue); color:#fff;
+  font-weight:900; letter-spacing:.2px;
+  padding:8px 12px; border-radius:8px;
+  font-size:clamp(14px, 2.4vw, 18px);
+}
+.logo-sub{
+  color:#fff; opacity:.95; font-weight:700;
+  font-size:clamp(11px, 1.9vw, 14px); margin-left:2px;
+}
 .nav-right{display:flex; align-items:center; gap:10px}
 .welcome{color:var(--muted); font-size:14px}
+
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   border-radius:8px; padding:10px 14px; font-weight:700;
@@ -64,14 +45,12 @@ body{
 .ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
 .btn:hover{filter:brightness(1.08)}
 
-/* --- Background/overlay for landing & learn --- */
-.hero-wrap, .page-wrap{
-  min-height:100dvh; position:relative; overflow:hidden;
-}
+/* -------- Backgrounds & overlay -------- */
+.hero-wrap, .page-wrap{ min-height:100dvh; position:relative; overflow:hidden }
 .bg{
   position:absolute; inset:0;
-  /* styles.css lives in /assets, so use a relative path */
-  background:url("./login-bg.jpg?v=9") center/cover no-repeat;
+  /* styles.css lives inside /assets → use a relative path */
+  background:url("./login-bg.jpg?v=10") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
 .home-bg{ background:url("./home-bg.jpg?v=1") center/cover no-repeat; }
@@ -82,48 +61,38 @@ body{
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 
-/* --- Brand pin (top-left on landing) --- */
-.brand-hero-pin{
-  position:absolute; top:88px; left:4vw; z-index:2;
-}
-.brand-top{
-  color:var(--blue); font-weight:900;
-  font-size: clamp(28px, 6.6vw, 56px); line-height:1.05;
-}
-.brand-sub{
-  color:var(--greyText); font-weight:700;
-  font-size: clamp(14px, 2.8vw, 22px); margin-top:6px;
-}
-
-/* --- Center hero block --- */
+/* -------- Landing hero -------- */
 .hero{
   position:relative; z-index:1; max-width:min(920px, 92vw);
-  margin:0 auto; padding-top:26vh; text-align:center;
+  margin:0 auto; padding-top:26vh; text-align:center
 }
-.hero-left{ text-align:left; padding-left:4vw; padding-right:4vw; }
+.hero-left{ text-align:left; padding-left:4vw; padding-right:4vw }
 .hero-title{
   margin:0 0 12px; font-weight:900;
-  font-size: clamp(28px, 6vw, 56px); line-height:1.1;
+  font-size: clamp(28px, 6vw, 56px); line-height:1.1
 }
-.hero-sub{margin:10px 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);}
-.hero-cap{color:var(--muted); margin-top:8px}
+.hero-sub{ margin:10px 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px) }
+.hero-cap{ color:var(--muted); margin-top:8px }
 
-/* --- Hero buttons --- */
-.hero-buttons{ display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap }
+/* -------- Hero buttons -------- */
+.hero-buttons{
+  display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap
+}
 .cta-btn{
   background:var(--blue); color:#fff; font-weight:800; border:0; border-radius:8px;
   padding:12px 20px; font-size:1rem
 }
 .cta-btn.ghost{ background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink) }
 
-/* --- Modal login (stays centered; hero stays visible) --- */
+/* -------- Modal login (centered; scrollable if small screens) -------- */
 .modal{
   position:fixed; inset:0; display:none; place-items:center; z-index:10;
   background:rgba(0,0,0,.55); backdrop-filter:blur(4px)
 }
 .modal.show{ display:grid }
 .card{
-  width:min(92vw, 520px); background:var(--surface); border:1px solid var(--stroke);
+  width:min(92vw, 520px); max-height:90vh; overflow:auto;
+  background:var(--surface); border:1px solid var(--stroke);
   border-radius:16px; padding:24px; box-shadow:0 24px 64px rgba(0,0,0,.65); position:relative
 }
 .close{
@@ -147,7 +116,7 @@ input{
 .row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center }
 .msg{ margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25) }
 
-/* --- HOME PAGE --- */
+/* -------- HOME PAGE -------- */
 .wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px }
 .section{ margin-top:18px }
 .section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px }
