@@ -25,6 +25,8 @@
   <div class="overlay" aria-hidden="true"></div>
 
   <section class="wrap">
+
+    <!-- Upsell for guests -->
     <div id="upsell" class="upsell" hidden>
       <div class="upsell-text">
         <h2>Explore before you buy</h2>
@@ -36,96 +38,57 @@
       </div>
     </div>
 
-    <section class="section">
-      <h2 class="section-title">Fundamentals</h2>
-      <div id="row-fundamentals" class="row"></div>
+    <!-- 2x2 hero grid -->
+    <section class="grid-hero">
+      <a class="tile-card" href="exclusive.html">
+        <span class="tile-badge">New</span>
+        <div class="tile-meta">
+          <div class="tile-kicker">Exclusive</div>
+          <h3 class="tile-title">Exclusive Updates</h3>
+        </div>
+      </a>
+
+      <a class="tile-card" href="fundamentals.html">
+        <span class="tile-badge">Core</span>
+        <div class="tile-meta">
+          <div class="tile-kicker">Fundamentals</div>
+          <h3 class="tile-title">Fundamentals of Mark Making</h3>
+        </div>
+      </a>
+
+      <a class="tile-card" href="courses-3day.html">
+        <span class="tile-badge">Short</span>
+        <div class="tile-meta">
+          <div class="tile-kicker">Workshops</div>
+          <h3 class="tile-title">3-Day Courses</h3>
+        </div>
+      </a>
+
+      <a class="tile-card" href="courses-30day.html">
+        <span class="tile-badge">Series</span>
+        <div class="tile-meta">
+          <div class="tile-kicker">Programs</div>
+          <h3 class="tile-title">30-Day Courses</h3>
+        </div>
+      </a>
     </section>
 
-    <section class="section">
-      <h2 class="section-title">Recommended for you</h2>
-      <div id="row-recommended" class="row"></div>
-    </section>
-
-    <section class="section">
-      <h2 class="section-title">Latest drops</h2>
-      <div id="row-latest" class="row"></div>
-    </section>
-
-    <section class="section">
-      <h2 class="section-title">Sketchbook extras</h2>
-      <div id="row-extras" class="row"></div>
-    </section>
   </section>
 </main>
 
 <script src="assets/app.js"></script>
 <script>
-  // Route guard (allow guest + member)
+  // Session/upsell
   let session = null;
   try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
   if (!session) { window.location.replace('index.html'); }
 
-  // Welcome chip
   const welcome = document.getElementById('welcome');
   if (welcome && session?.user) {
     const label = session.kind === 'free' ? 'Guest' : session.user.split('@')[0];
     welcome.textContent = `Hi, ${label}`;
   }
-
-  // Guest upsell
   if (session?.kind === 'free') document.getElementById('upsell').hidden = false;
-
-  // Demo content
-  const fundamentals = [
-    { tag: "Core", kicker: "Drawing Basics", title: "Line, Shape & Gesture" },
-    { tag: "Core", kicker: "Shading", title: "Light, Shadow & Form" },
-    { tag: "Core", kicker: "Composition", title: "Balance, Rhythm, Focus" },
-    { tag: "Core", kicker: "Figure", title: "Anatomy Foundations" },
-    { tag: "Core", kicker: "Materials", title: "Charcoal, Ink & Mixed" },
-    { tag: "Core", kicker: "Process", title: "From Sketch to Work" },
-  ];
-  const recommended = [
-    { tag: "Studio", kicker: "Negative Space", title: "In Motion" },
-    { tag: "Process", kicker: "Urban", title: "Sketching Walkthrough" },
-    { tag: "Textures", kicker: "Paper & Gesso", title: "Grit & Tooth" },
-    { tag: "Demo", kicker: "Gesture", title: "Fast Series" },
-  ];
-  const latest = [
-    { tag: "Drop", kicker: "Workshop", title: "Live Snippets" },
-    { tag: "Drop", kicker: "Composition", title: "Fix-Ups" },
-    { tag: "Drop", kicker: "Q&A", title: "Highlights" },
-  ];
-  const extras = [
-    { tag: "Poll", kicker: "Members", title: "Subscriber Requests" },
-    { tag: "BTS", kicker: "Studio", title: "Setup Tour" },
-  ];
-
-  const isGuest = session?.kind === 'free';
-  const limit = (arr, n) => isGuest ? arr.slice(0, n) : arr;
-
-  function card({tag, kicker, title}) {
-    const el = document.createElement('article');
-    el.className = 'card';
-    el.innerHTML = `
-      <span class="tag">${tag}</span>
-      <div class="meta">
-        <div class="kicker">${kicker}</div>
-        <div class="title">${title}</div>
-      </div>`;
-    el.addEventListener('click', () => {
-      if (isGuest) alert('Join to watch this full course. From $19.99. Cancel anytime.');
-      else alert('Open course page (coming soon)');
-    });
-    return el;
-  }
-  function mountRow(id, items) {
-    const row = document.getElementById(id);
-    limit(items, 4).forEach(i => row.appendChild(card(i)));
-  }
-  mountRow('row-fundamentals', fundamentals);
-  mountRow('row-recommended', recommended);
-  mountRow('row-latest', latest);
-  mountRow('row-extras', extras);
 </script>
 </body>
 </html>
