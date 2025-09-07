@@ -50,10 +50,10 @@ body{
 .bg{
   position:absolute; inset:0;
   /* styles.css lives inside /assets → use a relative path */
-  background:url("./login-bg.jpg?v=10") center/cover no-repeat;
+  background:url("./login-bg.jpg?v=11") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
-.home-bg{ background:url("./home-bg.jpg?v=1") center/cover no-repeat; }
+.home-bg{ background:url("./home-bg.jpg?v=2") center/cover no-repeat; }
 .overlay{
   position:absolute; inset:0; pointer-events:none;
   background:
@@ -61,7 +61,7 @@ body{
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
 
-/* -------- Landing hero -------- */
+/* -------- Landing hero (index & learn) -------- */
 .hero{
   position:relative; z-index:1; max-width:min(920px, 92vw);
   margin:0 auto; padding-top:26vh; text-align:center
@@ -74,7 +74,7 @@ body{
 .hero-sub{ margin:10px 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px) }
 .hero-cap{ color:var(--muted); margin-top:8px }
 
-/* -------- Hero buttons -------- */
+/* -------- Landing buttons -------- */
 .hero-buttons{
   display:flex; justify-content:center; gap:16px; margin:24px 0; flex-wrap:wrap
 }
@@ -84,7 +84,7 @@ body{
 }
 .cta-btn.ghost{ background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink) }
 
-/* -------- Modal login (centered; scrollable if small screens) -------- */
+/* -------- Modal login -------- */
 .modal{
   position:fixed; inset:0; display:none; place-items:center; z-index:10;
   background:rgba(0,0,0,.55); backdrop-filter:blur(4px)
@@ -116,37 +116,59 @@ input{
 .row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center }
 .msg{ margin:0; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,91,98,.25) }
 
-/* -------- HOME PAGE -------- */
+/* ====== HOME PAGE (uniform 2x2 grid) ====== */
 .wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px }
-.section{ margin-top:18px }
-.section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px }
-.row{
-  display:grid; grid-auto-flow:column; grid-auto-columns: clamp(160px, 32vw, 240px);
-  gap:12px; overflow-x:auto; padding:6px 2px 14px; scroll-snap-type:x mandatory
-}
-.row::-webkit-scrollbar{ display:none }
-.card{
-  position:relative; min-height:150px; border-radius:18px; border:1px solid var(--stroke);
-  overflow:hidden; scroll-snap-align:start;
-  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02))
-}
-.card::before{
-  content:""; position:absolute; inset:0;
-  background: radial-gradient(600px 320px at 20% -10%, rgba(10,132,255,.25), transparent 60%)
-}
-.card .meta{ position:absolute; inset:auto 10px 10px 10px; display:flex; flex-direction:column; gap:6px }
-.card .kicker{ font-size:12px; color:var(--muted) }
-.card .title{ font-size:16px; font-weight:800; letter-spacing:.2px }
-.tag{
-  position:absolute; top:10px; left:10px; font-size:12px; padding:4px 8px; border-radius:999px;
-  background:rgba(0,0,0,.35); border:1px solid var(--stroke)
-}
-/* Upsell */
+
+/* Upsell banner */
 .upsell{
   display:flex; align-items:center; justify-content:space-between; gap:16px;
   padding:14px; border-radius:12px; border:1px solid var(--stroke);
-  background:rgba(0,0,0,.45); margin:0 0 14px
+  background:rgba(0,0,0,.45); margin:0 0 16px
 }
 .upsell h2{ margin:0 0 4px; font-size:18px }
 .upsell p{ margin:0; color:var(--muted) }
 .upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
+
+/* The 2x2 grid itself */
+.grid-hero{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:16px;           /* EVEN spacing between all cards */
+}
+
+/* Uniform, clickable cards */
+.tile-card{
+  position:relative;
+  display:block; width:100%;
+  aspect-ratio: 16/9;          /* same size/shape everywhere */
+  border-radius:18px;
+  border:1px solid var(--stroke);
+  overflow:hidden;
+  text-decoration:none;        /* remove link underline */
+  color:inherit;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+}
+.tile-card::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(600px 320px at 20% -10%, rgba(10,132,255,.22), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35));
+}
+.tile-meta{
+  position:absolute; left:12px; right:12px; bottom:12px;
+  display:flex; flex-direction:column; gap:6px
+}
+.tile-kicker{ font-size:13px; color:var(--muted) }
+.tile-title{  font-size: clamp(18px, 2.6vw, 24px); margin:0; font-weight:900; letter-spacing:.2px }
+.tile-badge{
+  position:absolute; top:10px; left:10px;
+  font-size:12px; padding:4px 8px; border-radius:999px;
+  background:rgba(0,0,0,.35); border:1px solid var(--stroke)
+}
+.tile-card:hover{ filter:brightness(1.06) }
+
+/* Stack to 1 column on small screens */
+@media (max-width: 680px){
+  .grid-hero{ grid-template-columns: 1fr; }
+}
