@@ -99,7 +99,8 @@ body{
 .form{ display:grid; gap:14px }
 label{ display:grid; gap:6px; color:var(--muted) }
 input{
-  width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--stroke);
+  width:100%; padding:12px 40px 12px 14px;  /* room for eye button */
+  border-radius:10px; border:1px solid var(--stroke);
   background:rgba(0,0,0,.55); color:var(--ink);
 }
 
@@ -108,19 +109,24 @@ input{
 .eye{
   position:absolute; right:8px; top:50%; transform:translateY(-50%);
   background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink);
-  padding:4px 10px; border-radius:8px; cursor:pointer;
+  padding:4px 8px; border-radius:6px; cursor:pointer;
   font-size:12px; line-height:1;
 }
 
-/* Center buttons in modal footer */
+/* Center + fit modal footer buttons */
 .row{
-  display:flex; justify-content:center; flex-wrap:wrap; gap:10px;
+  display:flex; justify-content:center; flex-wrap:wrap; gap:8px;
 }
-.msg{
-  margin:0; padding:10px;
-  border-radius:10px; border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,91,98,.25);
+.row .btn{
+  flex:0 1 auto;
+  font-size:14px;
+  padding:8px 12px;
+  border-radius:8px;
+  white-space:nowrap;
 }
+
+/* Remove the ✕ entirely */
+.close{ display:none }
 
 /* ===== Home layout ===== */
 .wrap{
