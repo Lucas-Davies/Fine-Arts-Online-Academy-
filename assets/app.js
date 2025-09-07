@@ -15,24 +15,37 @@ function clearSession(){
 }
 
 // ---------- Modal (index) ----------
-const modal      = q('loginModal');
-const openLogin  = q('openLogin');
-const closeLogin = q('closeLogin');
+const modal     = q('loginModal');
+const openLogin = q('openLogin');        // button on index hero
 
 function showModal(){
   if(!modal) return;
   modal.classList.add('show');
   modal.setAttribute('aria-hidden','false');
+  // close on ESC
+  window.addEventListener('keydown', escClose);
 }
 function hideModal(){
   if(!modal) return;
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden','true');
+  window.removeEventListener('keydown', escClose);
+}
+function escClose(e){
+  if(e.key === 'Escape') hideModal();
 }
 
 on(openLogin,'click',showModal);
-on(closeLogin,'click',hideModal);
-if (modal) modal.addEventListener('click',(e)=>{ if(e.target===modal) hideModal(); });
+
+// Close when clicking the backdrop ONLY (not inside the card)
+if (modal) {
+  modal.addEventListener('click',(e)=>{
+    if (e.target === modal) hideModal();
+  });
+  // stop propagation for clicks inside the auth card
+  const card = modal.querySelector('.card');
+  if (card) card.addEventListener('click',(e)=>e.stopPropagation());
+}
 
 // Password eye toggles (all pages; harmless if none)
 document.querySelectorAll('.eye').forEach(btn=>{
@@ -58,16 +71,18 @@ const joinFree  = q('joinFree');
 on(loginForm,'submit',(e)=>{
   e.preventDefault();
   if (authMsg) authMsg.hidden = true;
+
   const em = (emailInp?.value||'').trim().toLowerCase();
   const pw = (passInp?.value||'');
-  if ((em === DEMO_EMAIL || em.endsWith('@example.com')) && pw === DEMO_PW){
+
+  const ok = (em === DEMO_EMAIL || em.endsWith('@example.com')) && pw === DEMO_PW;
+
+  if (ok){
     setSession({ user: em || 'demo@demo', kind:'login', ts:Date.now() });
     window.location.href = 'home.html';
-  }else{
-    if (authMsg){
-      authMsg.textContent = 'Invalid login. Use demo@demo / letmein.';
-      authMsg.hidden = false;
-    }
+  } else if (authMsg){
+    authMsg.textContent = 'Invalid login. Use demo@demo / letmein.';
+    authMsg.hidden = false;
   }
 });
 
@@ -83,12 +98,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   const session = getSession();
   if (!session){
-    // no session → send back to index
     window.location.replace('index.html');
     return;
   }
 
-  const label = session.kind === 'free' ? 'Guest' : (session.user||'').split('@')[0] || 'Member';
+  const label = session.kind === 'free'
+    ? 'Guest'
+    : ((session.user||'').split('@')[0] || 'Member');
+
   welcome.textContent = `Hi, ${label}`;
 
   const upsell = q('upsell');
