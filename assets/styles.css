@@ -4,6 +4,7 @@
   --surface:rgba(0,0,0,.40);
   --danger:#ff5b62; 
   --blue:#0A84FF; /* iOS blue */
+  --greyText:#cfd3e1;
 }
 
 *{box-sizing:border-box}
@@ -23,7 +24,6 @@ body{margin:0;color:var(--ink);
 .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
      border-radius:8px; padding:10px 14px; font-weight:700;
      border:1px solid transparent; cursor:pointer}
-.sign-in{background:var(--blue); color:#fff}
 
 /* Hero */
 .hero-wrap{
@@ -32,7 +32,8 @@ body{margin:0;color:var(--ink);
 }
 .bg{
   position:absolute; inset:0;
-  background:url("./login-bg.jpg?v=7") center/cover no-repeat;
+  /* IMPORTANT: styles.css is in /assets, so use a relative path to this folder */
+  background:url("./login-bg.jpg?v=8") center/cover no-repeat;
   filter:saturate(1.05) contrast(1.05);
 }
 .overlay{
@@ -41,22 +42,41 @@ body{margin:0;color:var(--ink);
     linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.78) 75%),
     radial-gradient(80% 60% at 50% 10%, rgba(0,0,0,.45), transparent 70%);
 }
+
+/* Center block but left-aligned text */
 .hero{
-  position:relative; z-index:1; text-align:center; max-width:min(920px, 92vw);
+  position:relative; z-index:1; max-width:min(920px, 92vw);
+  text-align:center;
 }
-.hero-title{
-  margin:0 0 12px; font-weight:900;
-  font-size: clamp(28px, 6vw, 56px); line-height:1.1;
+.hero-left{ text-align:left; } /* left-aligns hero content */
+
+.brand-hero{ margin:0 0 12px; }
+.brand-line1{
+  color:var(--blue);
+  font-weight:900;
+  font-size: clamp(32px, 7vw, 64px);
+  line-height:1.05;
 }
-.hero-sub{margin:0 0 12px; color:var(--muted); font-size: clamp(14px, 2.2vw, 20px);}
+.brand-line2{
+  color:var(--greyText);
+  font-weight:700;
+  font-size: clamp(16px, 3.2vw, 26px);
+  margin-top:6px;
+}
+
+.hero-sub{
+  margin:10px 0 12px; color:var(--muted);
+  font-size: clamp(14px, 2.2vw, 20px);
+}
 .hero-cap{color:var(--muted); margin-top:8px}
 
 /* Hero buttons */
 .hero-buttons {
   display:flex;
-  justify-content:center;
+  justify-content:flex-start;   /* align the row left to match brand */
   gap:16px;
   margin:24px 0;
+  flex-wrap:wrap;
 }
 .cta-btn {
   background:var(--blue);
@@ -64,8 +84,13 @@ body{margin:0;color:var(--ink);
   font-weight:800;
   border:0;
   border-radius:8px;
-  padding:12px 24px;
+  padding:12px 20px;
   font-size:1rem;
+}
+.cta-btn.ghost {
+  background:rgba(0,0,0,.45);
+  border:1px solid var(--stroke);
+  color:var(--ink);
 }
 .btn:hover{filter:brightness(1.08)}
 
