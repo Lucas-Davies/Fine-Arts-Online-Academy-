@@ -30,6 +30,7 @@
       display:flex; align-items:center; justify-content:center;
       text-align:center; color:#eef3ff;
       background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      text-decoration:none;
     }
     .row > .card .title{ font-weight:800; letter-spacing:.2px }
     .upsell{ display:flex; align-items:center; justify-content:space-between; gap:16px;
@@ -79,7 +80,12 @@
     <section class="section">
       <h2 class="section-title">Fundamentals</h2>
       <div class="row">
-        <div class="card"><div class="title">Course 1</div></div>
+        <!-- LINKED: Fundamentals Course 1 -->
+        <a class="card" href="courses/fundamental1.html#/?courseId=fundamental1" aria-label="Open Fundamentals Course 1">
+          <div class="title">Course 1</div>
+        </a>
+
+        <!-- Placeholders (not yet linked) -->
         <div class="card"><div class="title">Course 2</div></div>
         <div class="card"><div class="title">Course 3</div></div>
         <div class="card"><div class="title">Course 4</div></div>
