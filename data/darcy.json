@@ -1,0 +1,107 @@
+{
+  "title": "Darcy — Fundamentals",
+  "pointsPerModule": 25,
+  "modules": [
+    {
+      "title": "Introduction",
+      "summary": "What you’ll learn, materials overview, and safety.",
+      "tips": "Have charcoal, eraser, paper, board, and clips ready.",
+      "video": "../videos/darcy/intro.mp4",
+      "questions": [
+        {"q":"Two learning outcomes?", "a":"Tool familiarity and first mark-making."},
+        {"q":"Minimum setup?", "a":"Charcoal, kneadable eraser, A3 paper, board."},
+        {"q":"Workspace tip?", "a":"Good light and a surface you can stand at."}
+      ]
+    },
+    {
+      "title": "Exercise 1 — Basic Strokes",
+      "summary": "Pressure control for line weight and tone.",
+      "video": "../videos/darcy/ex1.mp4",
+      "questions": [
+        {"q":"Why vary pressure?", "a":"To achieve tonal range and depth."},
+        {"q":"Recommended grip?", "a":"Side-on for broad strokes; relaxed wrist."},
+        {"q":"Paper angle tip?", "a":"Tilt to keep movement natural and wide."}
+      ]
+    },
+    {
+      "title": "Exercise 2 — Hatching & Cross-Hatching",
+      "summary": "Build value with parallel and crossing lines.",
+      "video": "../videos/darcy/ex2.mp4",
+      "questions": [
+        {"q":"Line spacing rule?", "a":"Closer lines = darker value."},
+        {"q":"Cross-hatching benefit?", "a":"Adds complexity and depth quickly."},
+        {"q":"Common mistake?", "a":"Pressing too hard early; commit gradually."}
+      ]
+    },
+    {
+      "title": "Exercise 3 — Edges & Erasing",
+      "summary": "Hard vs soft edges; subtractive drawing with eraser.",
+      "video": "../videos/darcy/ex3.mp4",
+      "questions": [
+        {"q":"Subtractive drawing?", "a":"Pulling lights out with an eraser."},
+        {"q":"Soft edge use?", "a":"For transitions and atmosphere."},
+        {"q":"Eraser tip?", "a":"Knead into a fine point for highlights."}
+      ]
+    },
+    {
+      "title": "Exercise 4 — Forms",
+      "summary": "Spheres, cubes, cylinders; light logic.",
+      "video": "../videos/darcy/ex4.mp4",
+      "questions": [
+        {"q":"Three light zones?", "a":"Light, halftone, shadow."},
+        {"q":"Core shadow position?", "a":"Away from the light; follows form."},
+        {"q":"Cast shadow cue?", "a":"Anchors objects to surfaces."}
+      ]
+    },
+    {
+      "title": "Exercise 5 — Composition Thumbnails",
+      "summary": "Small quick studies to plan balance.",
+      "video": "../videos/darcy/ex5.mp4",
+      "questions": [
+        {"q":"Why thumbnails?", "a":"Fast iteration; decisions before details."},
+        {"q":"Focus tool?", "a":"Squint to see big value shapes."},
+        {"q":"Balance check?", "a":"Distribute darks/lights across the frame."}
+      ]
+    },
+    {
+      "title": "Exercise 6 — Gesture",
+      "summary": "Energy and flow; drawing from the shoulder.",
+      "video": "../videos/darcy/ex6.mp4",
+      "questions": [
+        {"q":"Gesture aim?", "a":"Capture movement and rhythm quickly."},
+        {"q":"Timing tip?", "a":"Short poses; increase speed progressively."},
+        {"q":"Line quality?", "a":"Long confident lines over scratchy marks."}
+      ]
+    },
+    {
+      "title": "Exercise 7 — Texture",
+      "summary": "Suggest surfaces with mark types.",
+      "video": "../videos/darcy/ex7.mp4",
+      "questions": [
+        {"q":"Three texture marks?", "a":"Stipples, scumbles, directional strokes."},
+        {"q":"Unify textures?", "a":"Glaze a light tone over busy areas."},
+        {"q":"Contrast strategy?", "a":"Reserve crisp accents for focal points."}
+      ]
+    },
+    {
+      "title": "Exercise 8 — Value Study",
+      "summary": "Five-value scale to map a scene simply.",
+      "video": "../videos/darcy/ex8.mp4",
+      "questions": [
+        {"q":"Why limit values?", "a":"Clarity; easier to control composition."},
+        {"q":"Mid-value role?", "a":"Holds most shapes; avoid over-darkening."},
+        {"q":"Edge hierarchy?", "a":"Sharper edges pull focus."}
+      ]
+    },
+    {
+      "title": "Exercise 9 — Bringing it Together",
+      "summary": "Compose a small finished study using all tools.",
+      "video": "../videos/darcy/ex9.mp4",
+      "questions": [
+        {"q":"Start with?", "a":"Big simple shapes; no details."},
+        {"q":"Refine order?", "a":"Gesture → forms → values → accents."},
+        {"q":"Final pass?", "a":"Check edges; add selective highlights."}
+      ]
+    }
+  ]
+}
