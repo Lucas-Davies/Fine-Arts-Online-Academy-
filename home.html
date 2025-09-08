@@ -7,46 +7,45 @@
   <title>Home — Fine Arts Online Academy (FAOA)</title>
   <link rel="stylesheet" href="assets/styles.css" />
   <style>
-    /* Continue Carousel custom layout */
-    .continue-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin: 16px 0 32px;
+    /* --- Minimal fallback so rows/cards work even if styles.css is missing pieces --- */
+    .wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px }
+    .section{ margin-top:18px }
+    .section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px }
+
+    .row{
+      display:grid;
+      grid-auto-flow:column;
+      grid-auto-columns: clamp(160px, 32vw, 240px);
+      gap:12px;
+      overflow-x:auto;
+      padding:6px 2px 14px;
+      scroll-snap-type:x mandatory;
     }
-    .continue-card {
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.4);
-      display: flex;
-      flex-direction: column;
+    .row::-webkit-scrollbar{ display:none }
+
+    .row > .card{
+      position:relative; min-height:150px;
+      border-radius:18px; border:1px solid rgba(255,255,255,.18);
+      overflow:hidden; scroll-snap-align:start;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; color:#eef3ff;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
     }
-    .continue-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-    .continue-card .meta {
-      padding: 12px;
-    }
-    .continue-card .title {
-      font-weight: 600;
-      margin: 0 0 6px;
-    }
-    .continue-card .progress {
-      font-size: .9rem;
-      color: rgba(238,243,255,.75);
-    }
+    .row > .card .title{ font-weight:800; letter-spacing:.2px }
+    .upsell{ display:flex; align-items:center; justify-content:space-between; gap:16px;
+             padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
+             background:rgba(0,0,0,.45); margin:0 0 16px }
+    .upsell h2{ margin:0 0 4px; font-size:18px }
+    .upsell p{ margin:0; color:rgba(238,243,255,.75) }
+    .upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
   </style>
 </head>
 <body>
 
 <!-- Top nav -->
 <header class="nav">
-  <div class="logo-block"> 
-    <div class="logo">Art Online</div>
+  <div class="logo-block">
+    <div class="logo">Fine Arts Online Academy</div>
     <div class="logo-sub">by Jody Graham</div>
   </div>
   <div class="nav-right">
@@ -63,12 +62,6 @@
 
   <section class="wrap">
 
-    <!-- Continue Carousel -->
-    <section class="section" id="continueSection" hidden>
-      <h2 class="section-title">Continue</h2>
-      <div class="continue-grid" id="continueGrid"></div>
-    </section>
-
     <!-- Upsell for guest/free sessions -->
     <div id="upsell" class="upsell" hidden>
       <div class="upsell-text">
@@ -76,62 +69,60 @@
         <p>You're viewing a guest sample. Unlock the full library, workshops and extras.</p>
       </div>
       <div class="upsell-actions">
-        <a class="btn primary" href="index.html" id="goSubscribe">Join Now</a>
+        <a class="btn primary" href="index.html">Join Now</a>
         <a class="btn ghost" href="learn.html">Learn More</a>
       </div>
     </div>
 
-    <!-- 1) Weekly Updates-->
+    <!-- Featured row (placeholders only) -->
     <section class="section">
-      <h2 class="section-title">Weekly Updates</h2>
+      <h2 class="section-title">Featured Courses</h2>
       <div class="row">
-        <div class="card"><div class="title">The idea</div></div>
-        <div class="card"><div class="title">Advanced Charcoal</div></div>
+        <div class="card"><div class="title">Course 1</div></div>
+        <div class="card"><div class="title">Course 2</div></div>
+        <div class="card"><div class="title">Course 3</div></div>
+        <div class="card"><div class="title">Course 4</div></div>
+        <div class="card"><div class="title">Course 5</div></div>
+        <div class="card"><div class="title">Course 6</div></div>
       </div>
     </section>
 
-    <!-- 2) Fundamentals of Mark Making -->
+    <!-- Fundamentals -->
     <section class="section">
       <h2 class="section-title">Fundamentals</h2>
       <div class="row">
-        <!-- Example: Darcy course live -->
-        <a class="card" href="courses/darcy.html#/?courseId=darcy">
-          <img src="img/darcy-thumb.jpg" alt="Darcy — Fundamentals" />
-          <div class="title">Darcy — Fundamentals</div>
-        </a>
-
-        <!-- Placeholders -->
-        <div class="card is-placeholder"><div class="title">Placeholder 2</div></div>
-        <div class="card is-placeholder"><div class="title">Placeholder 3</div></div>
-        <div class="card is-placeholder"><div class="title">Placeholder 4</div></div>
-        <div class="card is-placeholder"><div class="title">Placeholder 5</div></div>
-        <div class="card is-placeholder"><div class="title">Placeholder 6</div></div>
+        <div class="card"><div class="title">Course 1</div></div>
+        <div class="card"><div class="title">Course 2</div></div>
+        <div class="card"><div class="title">Course 3</div></div>
+        <div class="card"><div class="title">Course 4</div></div>
+        <div class="card"><div class="title">Course 5</div></div>
+        <div class="card"><div class="title">Course 6</div></div>
       </div>
     </section>
 
-    <!-- 3) 3-Day Courses -->
+    <!-- 3-Day Courses -->
     <section class="section">
       <h2 class="section-title">3-Day Courses</h2>
       <div class="row">
-        <div class="card"><div class="title">Placeholder 1</div></div>
-        <div class="card"><div class="title">Placeholder 2</div></div>
-        <div class="card"><div class="title">Placeholder 3</div></div>
-        <div class="card"><div class="title">Placeholder 4</div></div>
-        <div class="card"><div class="title">Placeholder 5</div></div>
-        <div class="card"><div class="title">Placeholder 6</div></div>
+        <div class="card"><div class="title">Course 1</div></div>
+        <div class="card"><div class="title">Course 2</div></div>
+        <div class="card"><div class="title">Course 3</div></div>
+        <div class="card"><div class="title">Course 4</div></div>
+        <div class="card"><div class="title">Course 5</div></div>
+        <div class="card"><div class="title">Course 6</div></div>
       </div>
     </section>
 
-    <!-- 4) 30-Day Courses -->
+    <!-- 30-Day Courses -->
     <section class="section">
       <h2 class="section-title">30-Day Courses</h2>
       <div class="row">
-        <div class="card"><div class="title">Placeholder 1</div></div>
-        <div class="card"><div class="title">Placeholder 2</div></div>
-        <div class="card"><div class="title">Placeholder 3</div></div>
-        <div class="card"><div class="title">Placeholder 4</div></div>
-        <div class="card"><div class="title">Placeholder 5</div></div>
-        <div class="card"><div class="title">Placeholder 6</div></div>
+        <div class="card"><div class="title">Course 1</div></div>
+        <div class="card"><div class="title">Course 2</div></div>
+        <div class="card"><div class="title">Course 3</div></div>
+        <div class="card"><div class="title">Course 4</div></div>
+        <div class="card"><div class="title">Course 5</div></div>
+        <div class="card"><div class="title">Course 6</div></div>
       </div>
     </section>
 
@@ -140,44 +131,28 @@
 
 <script src="assets/app.js"></script>
 <script>
-  // Session + upsell (guest allowed)
+  // Require a session; guests allowed but show upsell
   let session = null;
   try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
   if (!session) { window.location.replace('index.html'); }
 
+  // Welcome label
   const welcome = document.getElementById('welcome');
   if (welcome && session?.user) {
-    const label = session.kind === 'free' ? 'Guest' : session.user.split('@')[0];
+    const label = session.kind === 'free' ? 'Guest' : (session.user.split('@')[0] || 'Member');
     welcome.textContent = `Hi, ${label}`;
   }
-  if (session?.kind === 'free') document.getElementById('upsell').hidden = false;
 
-  // Points pill
+  // Upsell for guest/free
+  if (session?.kind === 'free') {
+    const upsell = document.getElementById('upsell');
+    if (upsell) upsell.hidden = false;
+  }
+
+  // Points pill (optional)
   const profile = JSON.parse(localStorage.getItem('profile') || '{}');
   const pointsPill = document.getElementById('pointsPill');
   if (pointsPill) pointsPill.textContent = 'Points: ' + (profile.points || 0);
-
-  // Continue Carousel
-  const recent = JSON.parse(localStorage.getItem('recentCourses') || '[]');
-  if (recent.length > 0) {
-    const section = document.getElementById('continueSection');
-    const grid = document.getElementById('continueGrid');
-    section.hidden = false;
-
-    recent.forEach(c => {
-      const card = document.createElement('a');
-      card.className = 'continue-card';
-      card.href = `courses/${c.id}.html#/?courseId=${c.id}&m=${c.lastModule}`;
-      card.innerHTML = `
-        <img src="img/${c.thumb}" alt="${c.title}">
-        <div class="meta">
-          <div class="title">${c.title}</div>
-          <div class="progress">Module ${c.lastModule+1} of ${c.totalModules}</div>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
 </script>
 </body>
 </html>
