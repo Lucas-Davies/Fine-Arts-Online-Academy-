@@ -7,17 +7,19 @@
   <title>Darcy — Fundamentals</title>
   <link rel="stylesheet" href="../assets/styles.css" />
 
-  <!-- Page-specific polish (kept minimal so most styling stays in styles.css) -->
+  <!-- Dark theme + iOS blue accents + video-rail -->
   <style>
     :root{
       --ink:#eef3ff; --muted:rgba(238,243,255,.76); --stroke:rgba(255,255,255,.14);
-      --surface:rgba(0,0,0,.46); --blue:#0A84FF; --ok:#32d74b; --warn:#ff9f0a;
+      --surface:rgba(0,0,0,.46); --bg:#000; --blue:#0A84FF; --ok:#32d74b; --warn:#ff9f0a;
       --r:16px; --pad:16px; --max:1080px;
     }
-    body{background:#000;color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);
+         font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
 
     /* Top bar */
-    .nav{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);
+    .nav{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.68);backdrop-filter:blur(10px);
          border-bottom:1px solid var(--stroke)}
     .nav-inner{max-width:var(--max);margin:0 auto;padding:10px var(--pad);display:flex;align-items:center;gap:10px}
     .crumb{border:1px solid var(--stroke);background:var(--surface);border-radius:999px;padding:6px 10px}
@@ -41,36 +43,71 @@
              padding:6px 10px;border-radius:999px;font-size:.85rem;display:none}
     .minimised .minNote{display:block}
 
+    /* iOS-blue progress rail directly under video */
+    .rail-wrap{margin:10px 0 0}
+    .rail{
+      position:relative;height:6px;border-radius:999px;overflow:visible;
+      background:linear-gradient(90deg, rgba(10,132,255,.85), rgba(10,132,255,1));
+    }
+    .rail-track{
+      position:absolute;inset:0;border:1px solid rgba(255,255,255,.22);border-radius:999px;
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)
+    }
+    .rail-segs{
+      position:relative;display:grid;grid-template-columns:repeat(10,1fr) 36px; /* 10 modules + trophy */
+      gap:8px;margin-top:10px
+    }
+    .seg, .trophy{
+      appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,.06);
+      height:28px;border-radius:10px;cursor:pointer;color:var(--ink);font-weight:600
+    }
+    .seg.done{background:rgba(10,132,255,.28);border-color:rgba(10,132,255,.6)}
+    .seg.current{outline:2px solid rgba(10,132,255,.9);outline-offset:2px}
+    .seg.locked{opacity:.55}
+    .trophy{
+      width:36px;display:grid;place-items:center;font-size:16px;
+      border-color:rgba(255,255,255,.22)
+    }
+    .trophy.ready{background:rgba(50,215,75,.2);border-color:rgba(50,215,75,.6)}
+    .seg:focus-visible,.trophy:focus-visible{outline:2px solid #7ab8ff;outline-offset:2px}
+
     /* Content grid */
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:16px}
     @media (max-width:980px){ .grid{grid-template-columns:1fr} }
-
     .card{border:1px solid var(--stroke);border-radius:16px;background:var(--surface);padding:16px}
     .card h3{margin:.2rem 0 8px}
 
-    /* Q&A */
+    /* Q&A (Reveal buttons in iOS blue) */
     .qa{display:flex;flex-direction:column;gap:10px;margin-top:8px}
     .q{border:1px solid var(--stroke);border-radius:12px;background:rgba(255,255,255,.03);padding:10px 12px}
-    .q button{margin-top:8px}
+    .q button{
+      appearance:none;border:none;background:transparent;color:var(--blue);
+      padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600
+    }
+    .q button:hover{filter:brightness(1.1)}
     .a{margin-top:6px;border-left:3px solid var(--blue);padding:8px 12px;border-radius:8px;background:rgba(10,132,255,.08);display:none}
     .q.revealed .a{display:block}
 
-    /* Sidebar */
+    /* Sidebar controls */
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .row.space{justify-content:space-between}
     .progress{display:flex;gap:8px;flex-wrap:wrap}
     .chip{min-width:34px;height:34px;border-radius:999px;border:1px solid var(--stroke);
           background:var(--surface);display:grid;place-items:center;font-weight:600}
     .chip.earned{border-color:rgba(50,215,75,.5);box-shadow:0 0 0 1px rgba(50,215,75,.25) inset}
-
-    /* Buttons */
     .btn{appearance:none;border:1px solid var(--stroke);background:#16181f;color:var(--ink);
          padding:10px 14px;border-radius:12px;cursor:pointer}
     .btn.primary{background:var(--blue);border-color:#0a6fe0;color:#fff}
     .btn[disabled]{opacity:.55;cursor:not-allowed}
 
-    /* Focus-visible for a11y */
-    :focus-visible{outline:2px solid #7ab8ff;outline-offset:2px;border-radius:10px}
+    /* Achievements page (local within this HTML) */
+    #achievementsPage{display:none;margin-top:16px}
+    #achievementsPage.active{display:block}
+    .badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+    .badge-tile{
+      border:1px solid var(--stroke);background:rgba(255,255,255,.05);border-radius:12px;padding:12px;text-align:center
+    }
+    .badge-tile.done{border-color:rgba(50,215,75,.5);background:rgba(50,215,75,.12)}
   </style>
 </head>
 <body>
@@ -96,8 +133,14 @@
       <div class="minNote">Video minimised — scroll for activity</div>
     </section>
 
+    <!-- iOS-blue progress rail (edge-to-edge within content width) -->
+    <div class="rail-wrap" aria-label="Course progress">
+      <div class="rail"><div class="rail-track" aria-hidden="true"></div></div>
+      <div id="railSegs" class="rail-segs" role="tablist" aria-label="Modules 1 to 10 and achievements"></div>
+    </div>
+
     <!-- Content + Progress -->
-    <div class="grid">
+    <div class="grid" id="courseContent">
       <!-- Left: reading/activity -->
       <section class="card" aria-label="Reading and activity">
         <h3>Tips</h3>
@@ -106,7 +149,7 @@
         <hr style="border-color:var(--stroke);opacity:.5;margin:12px 0" />
 
         <h3>Check your understanding</h3>
-        <p class="muted" style="margin-top:0">Tap <b>Reveal</b> on each item. Revealing all answers earns the badge for this exercise.</p>
+        <p class="muted" style="margin-top:0">Tap <b style="color:#0A84FF">Reveal</b> on each item. Revealing all answers earns the badge for this exercise.</p>
         <div id="qaWrap" class="qa" role="list"></div>
       </section>
 
@@ -125,14 +168,181 @@
         </p>
       </aside>
     </div>
+
+    <!-- Local Achievements page (page 11) -->
+    <section id="achievementsPage" aria-label="Achievements">
+      <div class="card">
+        <h2 style="margin-top:0">Achievements</h2>
+        <p class="muted">Here are your 10 exercise badges. When all are complete, your course achievement is unlocked and can be saved to your profile.</p>
+
+        <div id="badgeGrid" class="badge-grid" style="margin:12px 0 18px"></div>
+
+        <div id="courseAchRow" class="row" style="margin-top:8px">
+          <div id="courseAchStatus" class="pill">Course Achievement: Locked</div>
+          <button id="btnSaveCourseAch" class="btn" disabled>Save to Profile</button>
+          <a id="btnCertificate" class="btn primary" href="#" role="button">View Certificate</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script src="../assets/fundamentals-core.js"></script>
   <script>
-    // Initialise the shared core for this course
+    // ---- Initialise the shared core ----
     Fundamentals.init({
       courseId: "darcy",
       dataUrl: "../data/darcy.json"
+    });
+
+    // ---- Edge-to-edge iOS-blue progress rail with 10 segments + trophy ----
+    const TOTAL = 10;
+    const courseId = 'darcy';
+    const railSegs = document.getElementById('railSegs');
+    const courseContent = document.getElementById('courseContent');
+    const pageAchievements = document.getElementById('achievementsPage');
+
+    function getProg(){
+      return JSON.parse(localStorage.getItem('course:'+courseId) || '{}') || {};
+    }
+    function furthestUnlocked(prog){
+      let furthest = 0;
+      const mods = Array.isArray(prog.modules) ? prog.modules : [];
+      for (let i=0;i<mods.length;i++){
+        if (mods[i]?.badge) furthest = i+1; else break;
+      }
+      return Math.min(furthest, TOTAL-1);
+    }
+    function curIdxFromHash(){
+      const n = parseInt((location.hash||'').replace('#/m/',''),10);
+      return Number.isFinite(n) ? Math.max(0, Math.min(TOTAL-1,n)) : 0;
+    }
+
+    function buildRail(){
+      railSegs.innerHTML = '';
+      const prog = getProg();
+      const fur = furthestUnlocked(prog);
+      const cur = curIdxFromHash();
+
+      // 10 module segments
+      for (let i=0;i<TOTAL;i++){
+        const b = document.createElement('button');
+        b.type='button';
+        b.className='seg';
+        if (prog.modules?.[i]?.badge) b.classList.add('done');
+        if (i===cur) b.classList.add('current');
+        if (i>fur) b.classList.add('locked');
+        b.setAttribute('aria-label', `Go to module ${i+1}`);
+        b.textContent = i+1;
+        b.onclick = ()=> location.hash = '#/m/'+i; // core handles gating/preview
+        railSegs.appendChild(b);
+      }
+
+      // trophy segment (achievements page)
+      const t = document.createElement('button');
+      t.type='button';
+      t.className='trophy';
+      t.title='Achievements';
+      t.setAttribute('aria-label','Achievements');
+      t.textContent='🏆';
+      const allDone = (prog.modules||[]).filter(m=>m&&m.badge).length >= TOTAL;
+      if (allDone) t.classList.add('ready');
+      t.onclick = ()=> openAchievements();
+      railSegs.appendChild(t);
+    }
+
+    function openAchievements(){
+      // Switch to local achievements "page"
+      courseContent.style.display='none';
+      pageAchievements.classList.add('active');
+      location.hash = '#/achievements';
+      renderAchievements();
+    }
+
+    function backToCourse(){
+      pageAchievements.classList.remove('active');
+      courseContent.style.display='';
+      // Keep user on their current module (hash already holds it)
+    }
+
+    function tryRoute(){
+      if (location.hash.startsWith('#/achievements')) openAchievements(); else backToCourse();
+      buildRail();
+    }
+
+    window.addEventListener('hashchange', tryRoute);
+
+    // Observe the right-hand chips to refresh the rail when badges change
+    const chips = document.getElementById('progressChips');
+    const mo = new MutationObserver(()=> buildRail());
+    mo.observe(chips, { childList:true, subtree:true });
+
+    // Initial draw
+    buildRail();
+    tryRoute();
+
+    // ---- Achievements page logic ----
+    const badgeGrid = document.getElementById('badgeGrid');
+    const courseAchStatus = document.getElementById('courseAchStatus');
+    const btnSaveCourseAch = document.getElementById('btnSaveCourseAch');
+    const btnCertificate = document.getElementById('btnCertificate');
+
+    function ensureProfile(){
+      try{ return JSON.parse(localStorage.getItem('profile')) || {} }catch{return {}}
+    }
+    function saveProfile(p){ localStorage.setItem('profile', JSON.stringify(p)); }
+
+    function renderAchievements(){
+      const prog = getProg();
+      const p = ensureProfile();
+
+      // badges grid
+      badgeGrid.innerHTML='';
+      for (let i=0;i<TOTAL;i++){
+        const tile = document.createElement('div');
+        const done = !!prog.modules?.[i]?.badge;
+        tile.className = 'badge-tile' + (done?' done':'');
+        tile.innerHTML = `<div style="font-size:1.1rem;font-weight:700">Exercise ${i+1}</div>
+                          <div class="muted">${done?'Badge earned':'Locked'}</div>`;
+        badgeGrid.appendChild(tile);
+      }
+
+      // course achievement status
+      const allDone = (prog.modules||[]).filter(m=>m&&m.badge).length >= TOTAL;
+      if (allDone){
+        courseAchStatus.textContent = 'Course Achievement: Ready';
+        courseAchStatus.style.borderColor = 'rgba(50,215,75,.6)';
+        btnSaveCourseAch.disabled = false;
+      }else{
+        courseAchStatus.textContent = 'Course Achievement: Locked';
+        btnSaveCourseAch.disabled = true;
+      }
+
+      // certificate button
+      const courseTitle = document.getElementById('courseTitle')?.textContent || 'Course';
+      btnCertificate.href = `../certificate.html?courseId=${encodeURIComponent(courseId)}&courseTitle=${encodeURIComponent(courseTitle)}`;
+    }
+
+    btnSaveCourseAch.addEventListener('click', ()=>{
+      const prog = getProg();
+      const allDone = (prog.modules||[]).filter(m=>m&&m.badge).length >= TOTAL;
+      if (!allDone){ alert('Complete all 10 exercise badges to unlock the course achievement.'); return; }
+
+      const p = ensureProfile();
+      p.badges = Array.isArray(p.badges) ? p.badges : [];
+      if (!p.badges.some(b=> b.courseId===courseId && b.type==='course')){
+        p.badges.push({
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          type: 'course',
+          title: 'Darcy — Fundamentals (Course Achievement)',
+          courseId,
+          dateISO: new Date().toISOString()
+        });
+        saveProfile(p);
+        alert('Course achievement saved to your profile.');
+      } else {
+        alert('Already saved to your profile.');
+      }
+      renderAchievements();
     });
   </script>
 </body>
