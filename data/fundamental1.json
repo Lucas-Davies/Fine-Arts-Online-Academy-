@@ -1,0 +1,126 @@
+{
+  "title": "Fundamentals Course 1",
+  "pointsPerModule": 10,
+  "modules": [
+    {
+      "title": "Introduction",
+      "video": "../videos/fundamental1/intro.mp4",
+      "summary": "Welcome to Fundamentals Course 1. In this module we’ll outline learning outcomes and explain the structure.",
+      "tips": "Watch the video in full, then review the notes below.",
+      "exercise": "Think about what you hope to learn in this course. Write down three personal goals.",
+      "questions": [
+        { "q": "What is the goal of this course?", "a": "To provide core fundamentals and set learning outcomes." },
+        { "q": "How many modules are in this course?", "a": "10 modules in total." },
+        { "q": "What should you do before moving on?", "a": "Set personal goals and understand the course structure." }
+      ]
+    },
+    {
+      "title": "Exercise 2",
+      "video": "../videos/fundamental1/ex2.mp4",
+      "summary": "Module 2 summary goes here.",
+      "tips": "Remember to prepare your materials before starting.",
+      "exercise": "Try a 5-minute sketch of a simple object.",
+      "questions": [
+        { "q": "What material do you need?", "a": "Basic drawing paper and pencil." },
+        { "q": "How long should you sketch?", "a": "About 5 minutes." },
+        { "q": "Why short sketches?", "a": "They help build speed and confidence." }
+      ]
+    },
+    {
+      "title": "Exercise 3",
+      "video": "../videos/fundamental1/ex3.mp4",
+      "summary": "Module 3 summary.",
+      "tips": "Focus on line control.",
+      "exercise": "Draw 10 straight lines across your page.",
+      "questions": [
+        { "q": "What are you practicing?", "a": "Line control." },
+        { "q": "How many lines?", "a": "Ten." },
+        { "q": "Why practice lines?", "a": "It builds control and consistency." }
+      ]
+    },
+    {
+      "title": "Exercise 4",
+      "video": "../videos/fundamental1/ex4.mp4",
+      "summary": "Module 4 summary.",
+      "tips": "Use varied pressure.",
+      "exercise": "Shade a square with light to dark tones.",
+      "questions": [
+        { "q": "What are you shading?", "a": "A square." },
+        { "q": "What’s the goal?", "a": "Smooth gradient from light to dark." },
+        { "q": "What to vary?", "a": "Pencil pressure." }
+      ]
+    },
+    {
+      "title": "Exercise 5",
+      "video": "../videos/fundamental1/ex5.mp4",
+      "summary": "Module 5 summary.",
+      "tips": "Observe proportions.",
+      "exercise": "Sketch a cup paying attention to proportions.",
+      "questions": [
+        { "q": "What object?", "a": "A cup." },
+        { "q": "What’s the focus?", "a": "Proportions." },
+        { "q": "Why proportions?", "a": "To capture realism." }
+      ]
+    },
+    {
+      "title": "Exercise 6",
+      "video": "../videos/fundamental1/ex6.mp4",
+      "summary": "Module 6 summary.",
+      "tips": "Work quickly.",
+      "exercise": "Gesture draw a person in under 2 minutes.",
+      "questions": [
+        { "q": "What subject?", "a": "A person." },
+        { "q": "How long?", "a": "Under 2 minutes." },
+        { "q": "Why gesture drawing?", "a": "To capture movement and flow." }
+      ]
+    },
+    {
+      "title": "Exercise 7",
+      "video": "../videos/fundamental1/ex7.mp4",
+      "summary": "Module 7 summary.",
+      "tips": "Think about negative space.",
+      "exercise": "Draw the space around a chair, not the chair itself.",
+      "questions": [
+        { "q": "What are you drawing?", "a": "The negative space." },
+        { "q": "Object focus?", "a": "Chair." },
+        { "q": "Why negative space?", "a": "It improves observation." }
+      ]
+    },
+    {
+      "title": "Exercise 8",
+      "video": "../videos/fundamental1/ex8.mp4",
+      "summary": "Module 8 summary.",
+      "tips": "Use hatching.",
+      "exercise": "Shade a sphere using cross-hatching.",
+      "questions": [
+        { "q": "What object?", "a": "Sphere." },
+        { "q": "Technique?", "a": "Cross-hatching." },
+        { "q": "Goal?", "a": "Even shading." }
+      ]
+    },
+    {
+      "title": "Exercise 9",
+      "video": "../videos/fundamental1/ex9.mp4",
+      "summary": "Module 9 summary.",
+      "tips": "Focus on composition.",
+      "exercise": "Arrange 3 objects and sketch them together.",
+      "questions": [
+        { "q": "How many objects?", "a": "Three." },
+        { "q": "What’s the focus?", "a": "Composition." },
+        { "q": "Why composition?", "a": "It makes drawings more balanced." }
+      ]
+    },
+    {
+      "title": "Exercise 10",
+      "video": "../videos/fundamental1/ex10.mp4",
+      "summary": "Final module summary.",
+      "tips": "Review all techniques learned.",
+      "exercise": "Combine skills into one finished drawing.",
+      "questions": [
+        { "q": "What should you combine?", "a": "All skills from the course." },
+        { "q": "What’s the output?", "a": "One finished drawing." },
+        { "q": "Why combine skills?", "a": "It demonstrates mastery." }
+      ]
+    }
+  ]
+}
