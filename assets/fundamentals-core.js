@@ -1,12 +1,13 @@
 /* Fundamentals Core — shared by all CourseX.html
  * Features:
  * - Loads course JSON (title, modules[10], questions, tips)
- * - Hash routing: #/m/0 ... #/m/9
+ * - Hash routing: #/m/0 ... #/m/9 (+ optional m query param for deep link)
  * - Read-only preview for future modules
  * - Badge per module: reveal all answers -> badge true
  * - Points per module (course.default or module override)
  * - Updates profile.points and header pill
  * - Persists state in localStorage
+ * - Records recent courses (max 3) for Home "Continue" row
  */
 
 (function (global) {
@@ -86,6 +87,18 @@
     // header points pill
     updatePointsPill();
 
+    // Optional deep-link module via ?m=N (clamped), still subject to gating
+    const sp = new URLSearchParams(location.hash.split('?')[1] || location.search);
+    const mParam = parseInt(sp.get('m') || '', 10);
+    if (Number.isFinite(mParam)) {
+      const wanted = Math.max(0, Math.min(S.data.modules.length - 1, mParam));
+      // if the hash doesn't already point there, set it
+      const currentHashIdx = parseInt((location.hash || "").replace("#/m/",""), 10);
+      if (!Number.isFinite(currentHashIdx) || currentHashIdx !== wanted) {
+        location.hash = "#/m/" + wanted;
+      }
+    }
+
     // first render
     window.addEventListener("hashchange", render);
     window.addEventListener("beforeunload", () => persist());
@@ -94,7 +107,7 @@
 
   /* ---------- Render ---------- */
   function render() {
-    const { title, modules, pointsPerModule } = S.data;
+    const { title, modules } = S.data;
     q(SEL.courseTitle).textContent = title || "Course";
 
     // which module?
@@ -153,8 +166,8 @@
     const chips = q(SEL.chips);
     chips.innerHTML = "";
     modules.forEach((m, i) => {
-      const chip = document.createElement("div");
       const earned = !!S.progress.modules[i]?.badge;
+      const chip = document.createElement("div");
       chip.className = "chip" + (earned ? " earned" : "");
       chip.textContent = i + 1;
       chip.title = earned ? "Badge earned" : (i <= furthestUnlocked ? "Go to module" : "Locked (preview only)");
@@ -189,11 +202,15 @@
         location.hash = "#/m/" + (S.currentIdx + 1);
       }
     };
-    // Style next button enabled/disabled visually
     next.disabled = !S.progress.modules[S.currentIdx]?.badge;
 
     // ensure UI reflects current points
     updatePointsPill();
+
+    // 🔁 Update "recentCourses" based on furthest unlocked (the best resume point)
+    const lastPlayable = Math.max(0, furthestUnlocked); // resume here next time
+    const thumb = (S.data.thumb && String(S.data.thumb)) || `${S.courseId}-thumb.jpg`;
+    updateRecentCourses(S.courseId, title || "Course", thumb, S.data.modules.length, lastPlayable);
   }
 
   /* ---------- Logic ---------- */
@@ -219,7 +236,6 @@
 
       S.progress.modules[S.currentIdx] = modState;
       persist();
-      // re-render chips & next button
       render();
       toast(`Badge earned! +${modulePoints(S.currentIdx)} pts`);
     }
@@ -253,6 +269,19 @@
     pill.textContent = `Points: ${p.points || 0}`;
   }
 
+  /* ---------- Continue Watching (Home) ---------- */
+  function updateRecentCourses(courseId, title, thumb, totalModules, lastModule){
+    // shape: [{ id, title, thumb, totalModules, lastModule }]
+    let recent = LS.get('recentCourses', []);
+    // remove same course if exists
+    recent = recent.filter(c => c.id !== courseId);
+    // add new at front
+    recent.unshift({ id: courseId, title, thumb, totalModules, lastModule });
+    // keep max 3 distinct courses
+    if (recent.length > 3) recent = recent.slice(0,3);
+    LS.set('recentCourses', recent);
+  }
+
   /* ---------- Utils ---------- */
   function q(sel) { return document.querySelector(sel); }
 
@@ -263,11 +292,7 @@
       .replace(/>/g, "&gt;");
   }
 
-  function toast(msg) {
-    // very lightweight toast using alert for now (no external CSS dependency)
-    // replace with custom UI toast if you like
-    console.log("[toast]", msg);
-  }
+  function toast(msg) { console.log("[toast]", msg); }
 
   // expose
   global.Fundamentals = Fundamentals;
