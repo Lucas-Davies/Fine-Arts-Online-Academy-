@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Fundamentals Course 1</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+
+  <!-- Top nav with Home -->
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="../home.html" class="crumb" aria-label="Back to Home">← Home</a>
+      <div id="courseTitle" class="crumb" aria-live="polite">Fundamentals 1</div>
+      <div class="spacer"></div>
+      <div id="pointsPill" class="pill" aria-live="polite">Points: 0</div>
+    </div>
+  </header>
+
+  <main class="wrap" role="main">
+    <h1 id="moduleTitle">Loading…</h1>
+    <p id="summary" class="muted"></p>
+    <div id="lockedBanner" class="banner" role="status" aria-live="polite"></div>
+
+    <!-- Video -->
+    <section id="playerWrap" class="player" aria-label="Lesson video">
+      <video id="video" playsinline controls preload="metadata"></video>
+      <div class="minNote">Video minimised — scroll for activity</div>
+    </section>
+
+    <!-- Progress rail -->
+    <section class="rail-wrap" aria-label="Course progress">
+      <div class="rail-line"><div id="railFill" class="rail-fill"></div></div>
+      <div id="railDots" class="milestones"></div>
+    </section>
+
+    <!-- Exercise text -->
+    <section class="card">
+      <h3>Exercise</h3>
+      <div id="exercise" class="exercise muted"></div>
+    </section>
+
+    <!-- Knowledge check -->
+    <section class="card" style="margin-top:16px">
+      <h3>Test your knowledge</h3>
+      <p class="muted" style="margin-top:0">Tap <b style="color:#0A84FF">Reveal</b> on each item. Revealing all answers earns the badge for this exercise.</p>
+      <div id="qaWrap" class="qa" role="list"></div>
+
+      <div class="row" style="margin-top:16px">
+        <button id="btnPrev" class="btn" aria-label="Previous exercise">← Prev</button>
+        <button id="btnNext" class="btn primary" aria-label="Next exercise">Next →</button>
+      </div>
+    </section>
+
+    <!-- Hidden element so fundamentals-core updates work -->
+    <div id="progressChips" aria-hidden="true"></div>
+  </main>
+
+  <script src="../assets/fundamentals-core.js"></script>
+  <script>
+    Fundamentals.init({
+      courseId: "fundamental1",
+      dataUrl: "../data/fundamental1.json"
+    });
+
+    // Simple rail builder (same as Darcy page)
+    const TOTAL = 10;
+    const courseId = "fundamental1";
+    const railFill = document.getElementById("railFill");
+    const railDots = document.getElementById("railDots");
+
+    function getProg(){
+      return JSON.parse(localStorage.getItem("course:"+courseId) || "{}") || {};
+    }
+    function curIdx(){
+      const n = parseInt((location.hash||"").replace("#/m/",""),10);
+      return Number.isFinite(n) ? Math.max(0, Math.min(TOTAL-1,n)) : 0;
+    }
+    function furthestUnlocked(prog){
+      let furthest = 0;
+      const mods = Array.isArray(prog.modules) ? prog.modules : [];
+      for (let i=0;i<mods.length;i++){
+        if (mods[i]?.badge) furthest = i+1; else break;
+      }
+      return Math.min(furthest, TOTAL-1);
+    }
+    function doneCount(prog){
+      return Math.min((prog.modules||[]).filter(m=>m&&m.badge).length, TOTAL);
+    }
+
+    function buildDots(){
+      const prog = getProg();
+      const fur = furthestUnlocked(prog);
+      const cur = curIdx();
+
+      railFill.style.width = (doneCount(prog) / TOTAL) * 100 + "%";
+
+      railDots.innerHTML = "";
+      for (let i=0;i<TOTAL;i++){
+        const b = document.createElement("button");
+        b.type="button";
+        b.className="dot";
+        if (prog.modules?.[i]?.badge) b.classList.add("done");
+        if (i===cur) b.classList.add("current");
+        if (i>fur) b.classList.add("locked");
+        b.textContent = i+1;
+        b.onclick = ()=> location.hash = "#/m/"+i;
+        railDots.appendChild(b);
+      }
+    }
+
+    const chips = document.getElementById("progressChips");
+    const mo = new MutationObserver(()=> buildDots());
+    mo.observe(chips, { childList:true, subtree:true });
+    window.addEventListener("hashchange", buildDots);
+    buildDots();
+  </script>
+</body>
+</html>
