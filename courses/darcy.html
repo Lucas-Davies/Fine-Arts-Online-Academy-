@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Darcy — Fundamentals</title>
+  <link rel="stylesheet" href="../assets/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <div id="crumb" class="pill">Course</div>
+      <div class="spacer"></div>
+      <div id="pointsPill" class="pill">Points: 0</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1 id="courseTitle"></h1>
+    <div id="lockedBanner" class="banner"></div>
+
+    <!-- Player -->
+    <section id="playerWrap" class="player">
+      <video id="video" playsinline controls preload="metadata"></video>
+      <div class="minNote">Minimised — scroll to activity</div>
+    </section>
+
+    <!-- Content + Progress -->
+    <div class="grid">
+      <section class="card">
+        <h3 id="moduleTitle"></h3>
+        <p id="summary" class="muted"></p>
+        <div id="tipsWrap" class="muted"></div>
+        <h3>Check your understanding</h3>
+        <div id="qaWrap" class="qa"></div>
+      </section>
+
+      <aside class="card">
+        <h3>Progress</h3>
+        <div id="progressChips" class="progress"></div>
+        <div class="row space" style="margin-top:16px">
+          <button id="btnPrev" class="btn">← Prev</button>
+          <button id="btnNext" class="btn primary">Next →</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../assets/fundamentals-core.js"></script>
+  <script>
+    Fundamentals.init({
+      courseId: "darcy",
+      dataUrl: "../data/darcy.json"
+    });
+  </script>
+</body>
+</html>
