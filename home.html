@@ -6,6 +6,70 @@
 <meta name="color-scheme" content="dark" />
 <title>Home</title>
 
+<!-- ===== Header avatar-as-tab: fit & scale patch ===== -->
+<style>
+/* Keep header content on one line without horizontal scroll */
+html,body{overflow-x:hidden}
+
+/* Header container */
+.nav{
+  display:flex; align-items:center; justify-content:space-between;
+  overflow:hidden;
+}
+
+/* Tabs strip: shrinks first, keeps avatar visible */
+.nav .tabs{
+  flex:1 1 auto; display:flex; gap:8px; justify-content:flex-start; min-width:0;
+}
+
+/* Each tab is allowed to shrink and never exceed a compact width */
+.nav .tab{
+  flex:1 1 0;            /* shrinkable */
+  min-width:0;           /* allow shrink below content’s intrinsic width */
+  max-width:110px;       /* make them narrower so all fit on iPhone */
+  padding:10px 12px;     /* slightly tighter padding */
+  white-space:nowrap; text-overflow:ellipsis; overflow:hidden;
+  text-align:center;
+}
+
+/* === Avatar as a right-snapping “special tab” === */
+.nav .avatar-pill{
+  flex:0 0 auto; margin-left:auto; display:flex; align-items:center;
+  height:44px;                       /* match tab height */
+}
+
+/* Left side (matches tab shape), right side circular for initials/photo */
+.avatar-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:0 10px 0 12px;
+  border-radius:12px 0 0 12px;       /* squared-left like tabs */
+  background:var(--gold,#ffd700); color:#0f1116; font-weight:800;
+  line-height:1; max-width:140px; min-width:92px;
+  overflow:hidden;
+}
+.avatar-pill.silver{ background:var(--silver,#c0c7d1); color:#0f1116 }
+
+/* Points figure (left text) auto-truncates if space tight */
+.avatar-pill .points{
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Circular right cap for initials / future photo */
+.avatar-pill .cap{
+  width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center; font-weight:900;
+  background:#ffffff22; border:1px solid var(--stroke,rgba(255,255,255,.18));
+  margin-left:6px; flex:0 0 auto;
+}
+
+/* Make sure header never introduces horizontal scroll on tiny screens */
+@media (max-width:390px){
+  .nav .tab{ max-width:100px; padding:9px 10px }
+  .avatar-pill{ max-width:128px; padding:0 10px 0 10px }
+}
+</style>
+
 <style>
 /* =========================
    DESIGN TOKENS
