@@ -4,168 +4,142 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <title>Home — Art Online</title>
-
-  <!-- ================================
-       DESIGN TOKENS
-       ================================ -->
+  <title>Home</title>
   <style>
     :root{
-      /* palette */
-      --ink:#eef3ff; --ink-dim:#cfd3e1; --muted:rgba(238,243,255,.78);
-      --bg:#000; --panel:#0b0f14; --glass:rgba(255,255,255,.08);
-      --stroke:rgba(255,255,255,.18);
-      --blue:#0A84FF; --green:#32d74b; --gold:#ffd700; --silver:#c0c7d1; --red:#ff453a; --pink:#ff2d55;
-
-      /* layout */
-      --maxw:1240px; --gap:12px; --r:14px; --nav-h:72px;
+      --bg:#000; --ink:#eef3ff; --ink-dim:#cfd3e1; --muted:rgba(238,243,255,.78); --stroke:rgba(255,255,255,.16);
+      --blue:#0A84FF; --green:#32d74b; --gold:#ffd700; --silver:#c0c7d1; --red:#ff453a;
+      --r:12px; --gap:12px; --maxw:1240px; --nav-h:64px;
     }
-    *{ box-sizing:border-box } html,body{ height:100% }
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font:15.5px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
-    }
-    a{ color:inherit; text-decoration:none } img{ pointer-events:none; -webkit-user-drag:none }
-    .bg{ position:fixed; inset:0; z-index:-1; background:#000 url("./assets/home-bg.jpg") center/cover no-repeat }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+    a{color:inherit;text-decoration:none}
 
-    /* ================================
-       HEADER (single, unified)
-       ================================ */
+    .bg{position:fixed;inset:0;z-index:-1;background:#000 url("./assets/home-bg.jpg") center/cover no-repeat}
+
+    /* Unified header */
     .nav{
-      position:sticky; top:0; z-index:50; height:var(--nav-h);
-      display:flex; align-items:center; gap:12px; padding:8px 12px;
-      background:linear-gradient(180deg, rgba(0,0,0,.85), rgba(0,0,0,.35) 60%, transparent);
-      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(255,255,255,.06);
+      position:fixed;inset:0 0 auto; height:var(--nav-h); display:flex; align-items:center; gap:10px; padding:10px 12px;
+      background:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,.25) 70%,transparent);
+      -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); z-index:30;
     }
-    .brand{ font-weight:900; color:var(--blue); white-space:nowrap }
-    .nav-center{ display:flex; align-items:center; gap:10px; flex:1; justify-content:center; min-width:0 }
-    .tabs{ display:flex; gap:10px; align-items:center; flex-wrap:nowrap }
-    .tab{
-      padding:10px 14px; border-radius:12px; background:rgba(0,0,0,.55); border:1px solid var(--stroke);
-      color:var(--ink); font-weight:800; white-space:nowrap; cursor:pointer;
-    }
-    .tab[aria-selected="true"]{ background:var(--blue); color:#fff; border-color:transparent }
-    .more{ position:relative }
-    .more>button{ padding:10px 14px; border-radius:12px; border:1px solid var(--stroke); background:rgba(0,0,0,.55); font-weight:800 }
-    .more-list{
-      position:absolute; right:0; top:calc(100% + 6px); min-width:200px; display:none; flex-direction:column; gap:6px;
-      background:var(--panel); border:1px solid var(--stroke); border-radius:12px; padding:8px; box-shadow:0 14px 36px rgba(0,0,0,.55);
-    }
-    .more.open .more-list{ display:flex }
-    .more-item{ padding:10px 12px; border-radius:10px; border:1px solid var(--stroke); background:rgba(0,0,0,.55); font-weight:800; text-align:left }
+    /* Squarish controls */
+    .ctl{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 14px; border-radius:12px; border:1px solid var(--stroke); background:rgba(0,0,0,.55);
+      font-weight:800; cursor:pointer; white-space:nowrap; user-select:none}
+    .ctl.blue{background:var(--blue); color:#fff; border-color:transparent}
+    .ctl.green{background:var(--green); color:#000; border-color:transparent}
+    .ctl.gold{background:var(--gold); color:#0f1116; border-color:transparent}
+    .ctl.ghost{background:rgba(0,0,0,.45); color:var(--ink)}
 
-    /* Right cluster */
-    .avatar-wrap{ position:relative; margin-left:auto }
-    .pill{
-      display:flex; align-items:center; gap:10px; padding:6px 8px 6px 10px; border-radius:999px;
-      background:var(--gold); color:#0f1116; border:0; box-shadow:0 8px 22px rgba(255,215,0,.3)
+    /* Tabs in header */
+    .tabs{display:flex; gap:10px; align-items:center; flex:1 1 auto; overflow:hidden}
+    .tab{ composes: ctl; } /* (conceptual) */
+    .tab{padding:10px 14px; border-radius:12px; border:1px solid var(--stroke); background:rgba(0,0,0,.55); font-weight:800}
+    .tab.is-active{background:var(--blue); color:#fff; border-color:transparent}
+    /* “More” – full-screen sheet on narrow screens */
+    .more{position:relative}
+    .more-sheet{
+      position:fixed; inset:0; display:none; background:rgba(0,0,0,.85); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+      padding:16px; z-index:60
     }
-    .points{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; font-weight:900; background:rgba(0,0,0,.15) }
-    .avatar{ width:34px; height:34px; border-radius:50%; display:grid; place-items:center; font-weight:900; background:#111; border:1px solid var(--stroke); color:#fff }
-    .avatar-menu{
-      position:absolute; right:0; top:calc(100% + 8px); width:min(86vw, 320px); display:none;
-      background:var(--panel); border:1px solid var(--stroke); border-radius:14px; padding:10px; box-shadow:0 18px 46px rgba(0,0,0,.55);
-    }
-    .avatar-wrap.open .avatar-menu{ display:block }
-    .menu-note{ margin:6px 0 2px; color:var(--ink-dim); font-size:.86rem }
-    .menu-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px; border-radius:10px; border:1px solid var(--stroke); background:#0b0f14 }
-    .toggle{ appearance:none; padding:10px 14px; border-radius:12px; border:1px solid var(--stroke); background:rgba(0,0,0,.5); color:var(--ink); font-weight:800; cursor:pointer }
+    .more.open .more-sheet{display:block}
+    .more-grid{display:grid; grid-template-columns:1fr; gap:10px; max-width:540px; margin:64px auto 0}
+    .more-grid .tab{display:flex; justify-content:center; font-size:18px}
 
-    /* content */
-    .wrap{ max-width:var(--maxw); margin:0 auto; padding:18px 16px 80px }
-    .section-title{ margin:12px 2px 6px; font-size:18px; font-weight:900; letter-spacing:.2px }
+    /* Avatar trigger with round cap on right */
+    .avatar-wrap{position:relative; margin-left:auto}
+    .avatar-btn{display:inline-flex; align-items:center; gap:10px}
+    .avatar-btn .label{composes: ctl;} /* conceptual */
+    .avatar-btn .label{padding:10px 14px; border-radius:12px 0 0 12px; border:1px solid var(--stroke); background:rgba(0,0,0,.55); font-weight:800}
+    .avatar-btn .cap{width:36px;height:36px;border-radius:50%;border:1px solid var(--stroke); background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04)); display:grid; place-items:center; font-weight:900}
 
-    /* grid & hero */
-    .grid{ display:grid; gap:var(--gap) }
-    .grid-3{ grid-template-columns:repeat(3,minmax(0,1fr)) } @media (max-width:900px){ .grid-3{ grid-template-columns:1fr } }
+    /* Avatar dropdown */
+    .menu{position:absolute; right:0; top:calc(100% + 8px); width:min(92vw, 320px); display:none;
+      background:#0f1116; border:1px solid var(--stroke); border-radius:14px; padding:10px; z-index:70;
+      box-shadow:0 18px 48px rgba(0,0,0,.55)}
+    .avatar-wrap.open .menu{display:block}
+    .menu-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px; border-radius:10px; border:1px solid var(--stroke); background:#0b0f14}
+    .menu-note{margin:6px 0 2px; color:var(--ink-dim); font-size:.86rem}
+
+    /* Page wrapper */
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:calc(var(--nav-h) + 12px) 12px 72px}
+
+    /* Heroes */
     .hero{
-      position:relative; overflow:hidden; background:#000; border:1px solid var(--stroke); border-radius:var(--r);
-      padding:16px 16px 78px;
+      position:relative; overflow:hidden; background:#000; border:1px solid var(--stroke); border-radius:16px; padding:16px; margin:12px 0; min-height:220px
     }
-    .title{ margin:0; font-weight:900; font-size:18px; display:flex; align-items:center; gap:8px }
-    .meta{ margin:4px 0 0; color:var(--ink-dim); font-size:.92rem } .desc{ margin:8px 0 0; color:var(--muted) }
-    .hero.complete{ box-shadow:0 0 0 3px var(--green) inset }
-    .hero.complete .title::after{ content:" ✓"; color:var(--green); font-weight:900; margin-left:6px }
+    .hero .title{margin:0; font-weight:900; font-size:18px; display:flex; align-items:center; gap:8px}
+    .hero .meta{margin:4px 0 0; color:var(--ink-dim); font-size:.92rem}
+    .hero .desc{margin:8px 0 0; color:var(--muted)}
+    .cta-left{position:absolute; left:16px; bottom:16px}
+    .price{position:absolute; right:12px; bottom:12px; padding:6px 10px; border-radius:10px; font-weight:900; background:rgba(0,0,0,.55); border:1px solid var(--stroke)}
+    .points-bubble{position:absolute; right:12px; top:12px; padding:6px 10px; border-radius:999px; font-weight:900; background:#ffd700; color:#0f1116}
+    .points-bubble[hidden]{display:none}
+    .complete .title::after{content:" ✓"; color:var(--green); font-weight:900}
 
-    /* premium padlock (SILVER with cutout & keyhole) */
-    .lock{ width:22px; height:22px; display:inline-block; vertical-align:-3px }
+    /* Silver padlock (use external file added by you) */
+    .padlock{width:20px;height:20px;flex:0 0 auto;vertical-align:-3px;filter:none}
+    /* Weekly row / stack */
+    .weekly{display:grid; gap:var(--gap)}
+    @media (orientation:landscape){ .weekly{grid-template-columns:repeat(3, minmax(0,1fr))} }
+    @media (max-width:680px){ .hero.course{ min-height: 264px } } /* ~20% taller on iPhone */
 
-    /* price & points bubbles */
-    .price,.bubble{ position:absolute; right:12px; padding:6px 10px; border-radius:999px; font-weight:900 }
-    .price{ bottom:12px; min-width:54px; text-align:center; background:rgba(0,0,0,.55); border:1px solid var(--stroke) }
-    .bubble{ top:12px; transform:translate(8px,-8px); background:var(--gold); color:#0f1116; border:0; box-shadow:0 6px 18px rgba(255,215,0,.28) }
+    /* Courses grids */
+    .grid{display:grid; gap:var(--gap); margin:12px 0}
+    .grid-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .tall{min-height:260px}
+    @media (orientation:portrait){ .grid-3{grid-template-columns:1fr} }
 
-    /* buttons */
-    .btn{ padding:12px 16px; border-radius:12px; border:0; cursor:pointer; font-weight:800 }
-    .blue{ background:var(--blue); color:#fff } .green{ background:var(--green); color:#000 } .gold{ background:var(--gold); color:#0f1116 } .grey{ background:#3a3a3a; color:#fff }
-    .row{ display:flex; gap:10px; align-items:center }
+    /* Buttons */
+    .btn{composes: ctl;} /* conceptual */
+    .btn{padding:12px 16px; border-radius:12px; font-weight:800; border:0}
+    .btn.blue{background:var(--blue); color:#fff}
+    .btn.green{background:var(--green); color:#000}
+    .btn.gold{background:var(--gold); color:#0f1116}
+    .btn.ghost{background:rgba(0,0,0,.45); color:var(--ink); border:1px solid var(--stroke)}
+    .btn[disabled]{opacity:.6; cursor:not-allowed}
 
-    /* calendar (kept, accessed from avatar only) */
-    .calendar{ background:#000; border:1px solid var(--stroke); border-radius:14px; padding:12px }
-    .cal-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin-bottom:8px }
-    .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px }
-    .cell{ background:#0a0a0a; border:1px solid rgba(255,255,255,.1); border-radius:10px; min-height:92px; padding:4px; position:relative; cursor:pointer; overflow:hidden }
-    .date{ font-size:.82rem; color:var(--ink-dim) }
-    .ev{ margin-top:6px; width:100%; border-radius:6px; padding:4px 6px; font-weight:800; font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
-    .ev.blue{ background:var(--blue); color:#fff } .ev.green{ background:#00c853; color:#0b1b12 } .ev.pink{ background:var(--pink); color:#18060a } .ev.red{ background:var(--red); color:#1b0504 } .ev.gold{ background:var(--gold); color:#1a1400 }
+    .section-title{margin:12px 2px 6px; font-size:18px; font-weight:900}
 
-    /* modals */
-    .modal{ position:fixed; inset:0; display:none; place-items:center; z-index:60; background:rgba(0,0,0,.6); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px) }
-    .modal.open{ display:grid }
-    .card{ width:min(92vw,560px); background:#0f1116; border:1px solid var(--stroke); border-radius:16px; padding:18px; box-shadow:0 18px 48px rgba(0,0,0,.55) }
+    /* Hide the legacy brand block entirely */
+    .brand,.logo{display:none!important}
   </style>
-
-  <!-- SVG defs (padlock) -->
-  <svg aria-hidden="true" style="position:absolute; width:0; height:0">
-    <defs>
-      <filter id="fNoise" x="0" y="0" width="1" height="1">
-        <feTurbulence baseFrequency="0.9" numOctaves="2" type="fractalNoise" stitchTiles="stitch" />
-        <feColorMatrix type="saturate" values="0" />
-        <feComponentTransfer><feFuncA type="table" tableValues="0 0 .25 0"/></feComponentTransfer>
-      </filter>
-      <linearGradient id="gSilver" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#e3e8ef"/><stop offset=".5" stop-color="#c0c7d1"/><stop offset="1" stop-color="#9aa3ad"/>
-      </linearGradient>
-      <symbol id="ic-lock-silver" viewBox="0 0 24 24">
-        <path d="M7 11V8.5a5 5 0 0 1 10 0V11" fill="none" stroke="url(#gSilver)" stroke-width="2.4"/>
-        <rect x="3" y="11" width="18" height="10" rx="2" fill="url(#gSilver)" filter="url(#fNoise)"/>
-        <circle cx="12" cy="16" r="1.3" fill="#0f1116"/>
-        <rect x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6" fill="#0f1116"/>
-      </symbol>
-    </defs>
-  </svg>
 </head>
-<body oncontextmenu="return false">
+<body>
   <div class="bg" aria-hidden="true"></div>
 
   <!-- HEADER -->
   <header class="nav" role="banner">
-    <div class="brand">Art Online</div>
-
-    <!-- tabs (Calendar removed from header; lives in avatar menu) -->
-    <div class="nav-center">
-      <nav class="tabs" role="tablist" aria-label="Primary" id="tabbar"></nav>
-      <div class="more" id="moreWrap" hidden>
-        <button id="btnMore" aria-haspopup="true" aria-expanded="false">More ▾</button>
-        <div class="more-list" id="moreList"></div>
+    <!-- Tabs in header -->
+    <nav class="tabs" role="tablist" aria-label="Primary">
+      <button class="tab is-active" role="tab" aria-selected="true" aria-controls="p-challenges" id="t-challenges">Challenges</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p-courses" id="t-courses">Courses</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="p-live" id="t-live">Live</button>
+      <div class="more" id="more">
+        <button class="tab" id="btnMore" aria-haspopup="true" aria-expanded="false">More ▾</button>
+        <div class="more-sheet" id="moreSheet">
+          <div class="more-grid" id="moreGrid"></div>
+          <div style="text-align:center; margin-top:14px">
+            <button class="ctl ghost" id="closeMore">Close</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </nav>
 
-    <!-- avatar right -->
+    <!-- Avatar (right) -->
     <div class="avatar-wrap" id="avatarWrap">
-      <div class="pill" id="pillUser">
-        <div class="points"><span id="pointsValue">0</span></div>
-        <a class="avatar" id="avatarBtn" href="#profile" title="Account">JG</a>
-      </div>
-      <div class="avatar-menu" id="avatarMenu" role="menu">
+      <a href="#" class="avatar-btn" id="avatarBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="label">Account</span>
+        <span class="cap" id="avatarCap">JG</span>
+      </a>
+      <div class="menu" id="avatarMenu" role="menu">
         <div class="menu-note"><strong>Account</strong></div>
         <div class="menu-row">
           <span>Subscription</span>
-          <button class="toggle" id="toggleSub" aria-pressed="false">Off</button>
+          <button class="ctl ghost" id="subToggle" aria-pressed="false">Off</button>
         </div>
-        <div class="menu-row"><a href="#calendar" data-nav="calendar">My Calendar</a><span>›</span></div>
+        <div class="menu-row"><a href="#p-calendar" id="goCalendar">My Calendar</a><span>›</span></div>
         <div class="menu-row"><a href="profile.html#achievements">Achievements</a><span>›</span></div>
         <div class="menu-note"><strong>Shortcuts</strong></div>
         <div class="menu-row"><a href="profile.html#slot1">Placeholder 1</a><span>›</span></div>
@@ -176,443 +150,520 @@
   </header>
 
   <main class="wrap" role="main">
-    <!-- panels -->
-    <section id="panel-challenges" role="tabpanel" hidden></section>
-    <section id="panel-courses" role="tabpanel" hidden></section>
-    <section id="panel-live" role="tabpanel" hidden></section>
-    <section id="panel-calendar" role="tabpanel" hidden></section>
+    <!-- PANELS -->
+    <section class="panel" id="p-challenges" role="tabpanel" aria-labelledby="t-challenges">
+      <!-- Daily -->
+      <article class="hero" id="dailyHero">
+        <h2 class="title">Today’s Daily Challenge</h2>
+        <p class="meta"><span id="dailyDate">—</span></p>
+        <p class="desc" id="dailyDesc">A fast 15–20 minute warm-up. Keep it loose, focus on big decisions.</p>
+        <div class="cta-left">
+          <button class="btn blue" id="btnDaily">Complete</button>
+        </div>
+      </article>
+
+      <!-- Weekly (subscriber-only) -->
+      <h3 class="section-title">Weekly Challenges (Subscribers)</h3>
+      <div class="weekly" id="weekly"></div>
+    </section>
+
+    <section class="panel" id="p-courses" role="tabpanel" aria-labelledby="t-courses" hidden>
+      <h2 class="section-title">Courses</h2>
+
+      <h3 class="section-title">Foundations (Subscribers)</h3>
+      <div class="grid grid-3">
+        <article class="hero tall course" data-kind="foundation" data-id="found-setup" data-link="course-found-setup.html">
+          <h3 class="title"><img class="padlock" src="padlock-premium.svg" alt="" /> Materials &amp; Setup</h3>
+          <p class="meta">Prepare your space: paper, charcoal, inks, brushes, safe layout.</p>
+          <p class="desc">Step-by-step setup to start drawing/painting with confidence.</p>
+          <div class="cta-left"><button class="btn blue act-found">Start Course</button></div>
+        </article>
+
+        <article class="hero tall course" data-kind="foundation" data-id="found-drawing" data-link="course-found-drawing.html">
+          <h3 class="title"><img class="padlock" src="padlock-premium.svg" alt="" /> Drawing</h3>
+          <p class="meta">Line, tone, proportion, gesture, observation.</p>
+          <p class="desc">Foundational drills to build accuracy and flow.</p>
+          <div class="cta-left"><button class="btn blue act-found">Start Course</button></div>
+        </article>
+
+        <article class="hero tall course" data-kind="foundation" data-id="found-painting" data-link="course-found-painting.html">
+          <h3 class="title"><img class="padlock" src="padlock-premium.svg" alt="" /> Painting</h3>
+          <p class="meta">Surface prep, colour mixing, value structure, brushwork.</p>
+          <p class="desc">Learn stable processes that free you to be expressive.</p>
+          <div class="cta-left"><button class="btn blue act-found">Start Course</button></div>
+        </article>
+      </div>
+
+      <h3 class="section-title">1-Day Intensives</h3>
+      <div class="grid grid-3">
+        <article class="hero tall course" data-kind="paid" data-id="1d-gesture" data-link="course-1d-gesture.html" data-redeem="0">
+          <h3 class="title">Gesture Drawing</h3>
+          <p class="meta">Fast, confident gesture studies.</p>
+          <p class="desc">Build energy and decision-making in minutes.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+
+        <article class="hero tall course" data-kind="paid" data-id="1d-ink" data-link="course-1d-ink.html" data-redeem="0">
+          <h3 class="title">Ink Essentials</h3>
+          <p class="meta">Brush, pen, splash control.</p>
+          <p class="desc">Harness accidents while keeping structure.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+
+        <article class="hero tall course" data-kind="paid" data-id="1d-charcoal" data-link="course-1d-charcoal.html" data-redeem="0">
+          <h3 class="title">Charcoal Tonals</h3>
+          <p class="meta">Structure with light/dark.</p>
+          <p class="desc">Design clear value statements with charcoal.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+      </div>
+
+      <h3 class="section-title">3-Day Courses</h3>
+      <div class="grid grid-3">
+        <article class="hero tall course" data-kind="paid" data-id="3d-portrait" data-link="course-3d-portrait.html" data-redeem="500">
+          <h3 class="title">Portrait Sprint</h3>
+          <p class="meta">Planes, proportions, expression.</p>
+          <p class="desc">A concentrated 3-day block to level-up portraits.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="500"><span class="bp">500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall course" data-kind="paid" data-id="3d-urban" data-link="course-3d-urban.html" data-redeem="500">
+          <h3 class="title">Urban Sketching</h3>
+          <p class="meta">Perspective on location.</p>
+          <p class="desc">Speed, accuracy, and atmosphere outdoors.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="500"><span class="bp">500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall course" data-kind="paid" data-id="3d-experimental" data-link="course-3d-experimental.html" data-redeem="500">
+          <h3 class="title">Experimental Media</h3>
+          <p class="meta">Combine mediums without fear.</p>
+          <p class="desc">Push materials while keeping control.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="500"><span class="bp">500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+      </div>
+
+      <h3 class="section-title">30-Day Courses</h3>
+      <div class="grid grid-3">
+        <article class="hero tall course" data-kind="paid" data-id="30d-draw" data-link="course-30d-draw.html" data-redeem="1500">
+          <h3 class="title">Drawing Foundations</h3>
+          <p class="meta">Daily habit and core skills.</p>
+          <p class="desc">A month of guided practice to lock in fundamentals.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="1500"><span class="bp">1500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall course" data-kind="paid" data-id="30d-paint" data-link="course-30d-paint.html" data-redeem="1500">
+          <h3 class="title">Paint with Confidence</h3>
+          <p class="meta">Colour, value, edges.</p>
+          <p class="desc">Disciplined routines to paint with clarity.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="1500"><span class="bp">1500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall course" data-kind="paid" data-id="30d-portrait" data-link="course-30d-portrait.html" data-redeem="1500">
+          <h3 class="title">Expressive Portraits</h3>
+          <p class="meta">Structure plus spontaneity.</p>
+          <p class="desc">From armature to edge design to decisive accents.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="1500"><span class="bp">1500</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="p-live" role="tabpanel" aria-labelledby="t-live" hidden>
+      <h2 class="section-title">Live Demonstrations</h2>
+      <div class="grid grid-3">
+        <article class="hero tall live" data-id="live-1" data-link="live-1.html">
+          <h3 class="title">Upcoming Demo #1</h3>
+          <p class="meta">Bookings add gold calendar entries; completion adds ✓.</p>
+          <p class="desc">Streaming link sent after purchase.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall live" data-id="live-2" data-link="live-2.html">
+          <h3 class="title">Upcoming Demo #2</h3>
+          <p class="meta">Details to be announced.</p>
+          <p class="desc">Bookings create gold entries; completion ✓.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+        <article class="hero tall live" data-id="live-3" data-link="live-3.html">
+          <h3 class="title">Upcoming Demo #3</h3>
+          <p class="meta">Details to be announced.</p>
+          <p class="desc">Bookings create gold entries; completion ✓.</p>
+          <div class="cta-left"><button class="btn green act-buy">Buy</button></div>
+          <div class="points-bubble" data-points="?"><span class="bp">?</span></div>
+          <div class="price" data-price="$?"><span class="pr">$?</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Calendar lives ONLY in avatar menu context (no header tab) -->
+    <section class="panel" id="p-calendar" hidden>
+      <h2 class="section-title">My Calendar</h2>
+      <p class="meta">Calendar UI kept lightweight here — entries are still recorded for purchases, redemptions, and completions.</p>
+      <div id="calList"></div>
+    </section>
   </main>
 
-  <!-- purchase / redeem -->
-  <div class="modal" id="purchaseModal" role="dialog" aria-modal="true">
-    <div class="card">
-      <h3 id="purchaseTitle">Unlock</h3>
-      <p id="purchaseDesc">Buy to unlock forever, or redeem with points.</p>
-      <p class="meta" id="redeemInfo"></p>
-      <div class="row" style="margin-top:8px">
-        <button class="btn green" id="btnBuy">Buy</button>
-        <button class="btn gold" id="btnRedeem">Redeem with Points</button>
-        <button class="btn grey" data-close="purchaseModal">Cancel</button>
-      </div>
+  <!-- PURCHASE / REDEEM MODAL -->
+  <div class="menu" id="buyModal" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);display:none;max-width:520px;width:92vw;z-index:90">
+    <h3 id="buyTitle" style="margin-top:0">Unlock</h3>
+    <p id="buyDesc">Purchase to unlock forever. You can redeem with points if available.</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap">
+      <button class="btn green" id="btnPay">Pay Now</button>
+      <button class="btn gold" id="btnRedeem" hidden>Redeem with Points</button>
+      <button class="btn ghost" id="btnCancelBuy">Cancel</button>
     </div>
-  </div>
-  <div class="modal" id="notEnoughModal" role="dialog" aria-modal="true">
-    <div class="card">
-      <h3>Not enough points</h3>
-      <p>You don’t have enough points to redeem this item.</p>
-      <div class="row"><button class="btn blue" data-close="notEnoughModal">Okay</button></div>
-    </div>
+    <p class="meta" id="redeemInfo" style="margin-top:8px"></p>
   </div>
 
-  <!-- ================================
-       APP (compact, data-driven)
-       ================================ -->
   <script>
-  (()=>{'use strict';
-
-    /* ---------- Helpers ---------- */
+  (function(){
+    'use strict';
     const $ = (s, r=document)=>r.querySelector(s);
-    const $$= (s, r=document)=>Array.from(r.querySelectorAll(s));
-    const el = (t,atts={},...kids)=>{const n=document.createElement(t); Object.entries(atts).forEach(([k,v])=> (v==null?0:n.setAttribute(k,v))); kids.flat().forEach(k=>n.append(k)); return n;};
-    const txt= s=>document.createTextNode(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
     const pad = n=>String(n).padStart(2,'0');
-    const today = new Date(); const toISO = d=>d.toISOString().slice(0,10);
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const fmtD_M = d=>`${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
-    const compact = n=> (n>=1000? (Math.round(n/100)/10)+'k' : String(n|0));
+    const toISO = d=>d.toISOString().slice(0,10);
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const fmtD_M = d=>`${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
 
-    /* ---------- State (localStorage) ---------- */
-    const K = {sub:'ao_sub', pts:'ao_pts', hist:'ao_hist', bought:'ao_bought', d:'ao_daily', w:'ao_weekly', price:'ao_pricing'};
-    const LS = {get:(k,f)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
-
-    let isSub = !!LS.get(K.sub,false);
-    let points = +LS.get(K.pts,0);
-    let history = LS.get(K.hist,[]);
-    let bought  = LS.get(K.bought,[]);
-    let dailyDone = LS.get(K.d,[]);
-    let weeklyDone= LS.get(K.w,[]);
-    let pricing = LS.get(K.price,{
-      "1d-gesture": {price:"$39", points:200},
-      "1d-ink":     {price:"$39", points:200},
-      "1d-charcoal":{price:"$39", points:200},
-      "3d-portrait":{price:"$129",points:500},
-      "3d-urban":   {price:"$129",points:500},
-      "3d-experimental":{price:"$129",points:500},
-      "30d-draw":   {price:"$299",points:1500},
-      "30d-paint":  {price:"$299",points:1500},
-      "30d-portrait":{price:"$299",points:1500},
-      "live-1":     {price:"$29", points:150},
-      "live-2":     {price:"$29", points:150},
-      "live-3":     {price:"$29", points:150}
-    });
-
-    /* ---------- Data ---------- */
-    const TABS = [
-      {id:'challenges', label:'Challenges', essential:true},
-      {id:'courses',    label:'Courses',    essential:true},
-      {id:'live',       label:'Live',       essential:true},
-      // calendar intentionally not in header; accessible via avatar
-    ];
-
-    const WEEKLY = [
-      'Gesture Lines','Negative Space','Value Ladder','Edges—Hard/Soft','Ink + Wash','Contour & Blind',
-      'Planes of the Head','Texture Hunt','Silhouette Power','Warm/Cool Contrast','Mark Variety','Compositional Threes',
-      'Speed Studies','Cross-hatching','Ink Splashes','Charcoal Tonals','Lost & Found Edges','Gesture Portrait',
-      'Light Direction','Abstracted Forms','Perspective Basics','Figure Rhythm','Limited Palette','Big Brushes',
-      'Smudge & Lift','Line Hierarchy','Edges with Water','Thumbnails','Pattern & Repetition','Proportion Check',
-      'Expressive Tools','Colour Notes','Focal Point','Edges & Atmosphere','Ink Portrait','Value Composition',
-      'Contour + Tone','Gesture Landscapes','Reflected Light','Textural Contrast','Edges—Lost Foreground',
-      'Colour Harmony','Ink & Charcoal Mix','Expressive Hands','Skies & Weather','Back-lighting','Fabric & Folds',
-      'Architecture Lines','Edge Priorities','Colour Accents','Gesture Animals','Best-of Remix'
-    ].map((title,i)=>({id:'W'+String(i+1).padStart(2,'0'), title, desc:'Weekly practice block.'}));
-
-    const FOUNDATIONS = [
-      {id:'found-setup', title:'Materials & Setup', desc:'Prepare space & tools.', link:'course-found-setup.html'},
-      {id:'found-drawing', title:'Drawing', desc:'Line, tone, proportion.', link:'course-found-drawing.html'},
-      {id:'found-painting', title:'Painting', desc:'Surface, colour, edges.', link:'course-found-painting.html'},
-    ];
-
-    const PAID = {
-      oneDay: [
-        {id:'1d-gesture',  title:'Gesture Drawing',  desc:'Fast, confident studies.', link:'course-1d-gesture.html'},
-        {id:'1d-ink',      title:'Ink Essentials',   desc:'Brush, pen, splash.', link:'course-1d-ink.html'},
-        {id:'1d-charcoal', title:'Charcoal Tonals',  desc:'Structure via value.', link:'course-1d-charcoal.html'},
-      ],
-      threeDay: [
-        {id:'3d-portrait',     title:'Portrait Sprint',      desc:'Planes, proportion, expression.', link:'course-3d-portrait.html'},
-        {id:'3d-urban',        title:'Urban Sketching',      desc:'Perspective on location.', link:'course-3d-urban.html'},
-        {id:'3d-experimental', title:'Experimental Media',   desc:'Mix mediums with control.', link:'course-3d-experimental.html'},
-      ],
-      thirtyDay: [
-        {id:'30d-draw',     title:'Drawing Foundations',  desc:'Daily habit & core skills.', link:'course-30d-draw.html'},
-        {id:'30d-paint',    title:'Paint with Confidence',desc:'Colour, value, edges.', link:'course-30d-paint.html'},
-        {id:'30d-portrait', title:'Expressive Portraits', desc:'Structure + spontaneity.', link:'course-30d-portrait.html'},
-      ],
+    /* Storage keys */
+    const K = {
+      sub:'ao_isSubscriber', points:'ao_points', purchased:'ao_purchased',
+      daily:'ao_completedDailies', weekly:'ao_completedWeeklies', hist:'ao_history',
+      pricing:'ao_pricing_cache'
+    };
+    const store = {
+      get(k,f){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):f}catch{return f} },
+      set(k,v){ localStorage.setItem(k, JSON.stringify(v)); },
+      del(k){ localStorage.removeItem(k); }
     };
 
-    const LIVE = [
-      {id:'live-1', title:'Upcoming Demo #1', desc:'Streaming link after purchase.', link:'live-1.html'},
-      {id:'live-2', title:'Upcoming Demo #2', desc:'Details TBA.', link:'live-2.html'},
-      {id:'live-3', title:'Upcoming Demo #3', desc:'Details TBA.', link:'live-3.html'},
-    ];
+    /* State */
+    let isSub = !!store.get(K.sub,false);
+    let points = +store.get(K.points,0);
+    let purchased = store.get(K.purchased,[]);
+    let dailyDone = store.get(K.daily,[]);
+    let weeklyDone = store.get(K.weekly,[]); // [{id,dateISO}]
+    let pricing = store.get(K.pricing,{});
 
-    /* ---------- Header: tabs + overflow ---------- */
-    const tabbar = $('#tabbar'), moreWrap = $('#moreWrap'), moreBtn = $('#btnMore'), moreList = $('#moreList');
-    function buildTabs(){
-      TABS.forEach((t,i)=>{
-        const b = el('button', {'class':'tab', role:'tab', 'aria-selected': i? 'false':'true', 'data-tab':t.id}, t.label);
-        b.addEventListener('click', ()=>setActive(t.id));
-        tabbar.append(b);
-      });
-      layoutTabs(); window.addEventListener('resize', ()=>requestAnimationFrame(layoutTabs));
-      moreBtn?.addEventListener('click', ()=> moreWrap.classList.toggle('open'));
-      document.addEventListener('click', e=>{ if(!moreWrap.contains(e.target)) moreWrap.classList.remove('open'); });
+    /* Header: tabs switching + “More” sheet behavior */
+    const panels = { challenges:$('#p-challenges'), courses:$('#p-courses'), live:$('#p-live'), calendar:$('#p-calendar') };
+    const tabBtns = [$('#t-challenges'), $('#t-courses'), $('#t-live')].filter(Boolean);
+    function showPanel(id){
+      Object.values(panels).forEach(p=>p && (p.hidden=true));
+      (panels[id]||panels.challenges).hidden=false;
+      tabBtns.forEach(b=>b.classList.toggle('is-active', ('p-'+b.id.slice(2))=== (panels[id]||{}).id ));
+      window.scrollTo({top:0,behavior:'instant'});
     }
+    tabBtns.forEach(b=> b.addEventListener('click', ()=> showPanel(b.id.slice(2))));
+    showPanel('challenges');
+
+    /* More overflow → full-screen on iPhone */
+    const more = $('#more'), btnMore = $('#btnMore'), moreSheet = $('#moreSheet'), moreGrid = $('#moreGrid'), closeMore=$('#closeMore');
     function layoutTabs(){
-      moreList.innerHTML=''; moreWrap.hidden = true;
-      const avail = tabbar.parentElement.clientWidth - 40; // guard for avatar/brand gaps
-      let used = 0; const tabs = $$('.tab', tabbar); const overflow=[];
-      tabs.forEach(t=>{ t.style.display='inline-flex'; used += (t.offsetWidth+10); if(used>avail && !t.dataset.essential) overflow.push(t); });
-      // Always keep essential tabs visible; if overflow exists, move the non-essential ones to More
-      if(overflow.length){
-        moreWrap.hidden = false; moreList.innerHTML='';
-        overflow.forEach(t=>{
-          t.style.display='none';
-          const mi = el('button', {'class':'more-item'}, t.textContent.trim());
-          mi.addEventListener('click', ()=>{ t.click(); moreWrap.classList.remove('open'); });
-          moreList.append(mi);
-        });
-      }
-    }
-
-    /* ---------- Avatar dropdown ---------- */
-    const avatarWrap = $('#avatarWrap'), avatarBtn = $('#avatarBtn'), avatarMenu = $('#avatarMenu'), toggleSub = $('#toggleSub');
-    avatarBtn.addEventListener('click', e=>{ e.preventDefault(); avatarWrap.classList.toggle('open'); });
-    document.addEventListener('click', e=>{ if(!avatarWrap.contains(e.target)) avatarWrap.classList.remove('open'); });
-    toggleSub.addEventListener('click', ()=>{
-      isSub=!isSub; toggleSub.textContent = isSub?'On':'Off'; toggleSub.setAttribute('aria-pressed', isSub?'true':'false');
-      LS.set(K.sub,isSub); paintFoundations(); paintWeekly(); // locks reflect here
-    });
-    $$('[data-nav="calendar"]', avatarMenu).forEach(a=> a.addEventListener('click', e=>{ e.preventDefault(); setActive('calendar'); avatarWrap.classList.remove('open'); }));
-
-    /* ---------- Panels ---------- */
-    const panels = {
-      challenges: $('#panel-challenges'),
-      courses: $('#panel-courses'),
-      live: $('#panel-live'),
-      calendar: $('#panel-calendar')
-    };
-    function setActive(id){
-      Object.entries(panels).forEach(([k,el])=> el.hidden = k!==id);
-      $$('.tab', tabbar).forEach(b=> b.setAttribute('aria-selected', b.dataset.tab===id ? 'true':'false'));
-      if(id==='calendar') renderCalendar();
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    /* ---------- Paint chrome ---------- */
-    const pointsValue = $('#pointsValue');
-    function paintChrome(){ pointsValue.textContent = compact(points); }
-    paintChrome();
-
-    /* ---------- CHALLENGES (Daily + Weekly) ---------- */
-    function renderChallenges(){
-      const wrap = panels.challenges; wrap.innerHTML='';
-      // Daily
-      const dTitle = 'Today’s Daily Challenge';
-      const dd = el('article', {class:'hero', id:'dailyHero'},
-        el('h2',{class:'title'}, dTitle),
-        el('p',{class:'meta'}, `${dayNames[today.getDay()]} ${fmtD_M(today)}`),
-        el('p',{class:'desc'}, 'A fast 15–20 minute warm-up. Keep it loose, focus on big decisions.'),
-        el('div',{class:'row', style:'position:absolute;left:16px;bottom:16px'},
-          el('button',{class:'btn blue', id:'btnDaily'}, 'Complete')
-        )
-      );
-      wrap.append(el('h3',{class:'section-title'},'Daily'), dd);
-
-      // Weekly (current + 2 previous) — no expiry text, padlock when locked
-      const row = el('div',{class:'grid', style:'grid-template-columns:repeat(3,1fr); gap:12px'});
-      const startOfSunday = d=>{ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate()-x.getDay()); x.setHours(0,0,0,0); return x; };
-      const weekIndex = d=>{ const y=d.getFullYear(); const jan1=new Date(y,0,1); const dow=jan1.getDay(); const fs=new Date(y,0,1+((7-dow)%7)); return Math.floor((startOfSunday(d)-fs)/(7*24*3600*1000))%52; };
-      const base = startOfSunday(new Date());
-      [0,-1,-2].map(w=>{ const day=new Date(base); day.setDate(day.getDate()+w*7); return day; })
-        .forEach(d=>{
-          const wi = weekIndex(d); const def = WEEKLY[wi];
-          const done = weeklyDone.some(x=>x.id===def.id);
-          const card = el('article',{class:'hero', 'data-week':def.id},
-            el('h3',{class:'title'},
-              !isSub ? el('span',{class:'lock'}, el('svg',{'aria-hidden':'true'}, el('use',{'href':'#ic-lock-silver'}))) : '',
-              txt(' ' + def.title)
-            ),
-            el('p',{class:'meta'}, `${dayNames[d.getDay()]} ${fmtD_M(d)}`),
-            el('p',{class:'desc'}, def.desc),
-            el('div',{class:'row', style:'position:absolute;left:16px;bottom:16px'},
-              el('button',{class:'btn blue btnStartWeekly', disabled: !isSub ? '':null}, 'Start Challenge')
-            )
-          );
-          if(done) card.classList.add('complete');
-          row.append(card);
-        });
-      wrap.append(el('h3',{class:'section-title'},'Weekly (Subscribers)'), row);
-
-      // wire daily
-      const btnDaily = $('#btnDaily'), hero = $('#dailyHero'); const iso = toISO(today);
-      function paintDailyBtn(){ const done=dailyDone.includes(iso); hero.classList.toggle('complete',done); btnDaily.textContent = done?'Undo':'Complete'; btnDaily.className = 'btn ' + (done?'grey':'blue'); }
-      paintDailyBtn();
-      btnDaily.addEventListener('click', ()=>{
-        const i = dailyDone.indexOf(iso);
-        if(i===-1){ dailyDone.push(iso); points+=1; history.unshift({ts:Date.now(), type:'daily', title:'Daily Challenge'}) }
-        else{ dailyDone.splice(i,1); points=Math.max(0,points-1); history.unshift({ts:Date.now(), type:'daily-undo', title:'Daily Challenge'}) }
-        LS.set(K.d,dailyDone); LS.set(K.pts,points); LS.set(K.hist,history); paintDailyBtn(); paintChrome(); renderCalendar();
+      // On narrow screens, always show the “More” button; copy hidden tabs inside sheet
+      const allTabs = tabBtns;
+      // We try to fit: Challenges, Courses, Live; if overflow, those will be visible in sheet as well.
+      // For iPhone we simply replicate all tabs in the sheet to make it easy to hit.
+      moreGrid.innerHTML='';
+      allTabs.forEach(tb=>{
+        const clone = tb.cloneNode(true);
+        clone.classList.remove('is-active');
+        clone.addEventListener('click', ()=>{ showPanel(tb.id.slice(2)); toggleMore(false); });
+        moreGrid.appendChild(clone);
       });
+    }
+    function toggleMore(open){
+      more.classList.toggle('open', open);
+      btnMore.setAttribute('aria-expanded', open?'true':'false');
+    }
+    btnMore.addEventListener('click', ()=> toggleMore(!more.classList.contains('open')));
+    closeMore.addEventListener('click', ()=> toggleMore(false));
+    window.addEventListener('resize', layoutTabs);
+    layoutTabs();
 
-      // wire weekly
-      $$('.btnStartWeekly', wrap).forEach(b=>{
+    /* Avatar dropdown */
+    const avatarWrap = $('#avatarWrap'), avatarBtn = $('#avatarBtn'), avatarMenu = $('#avatarMenu'), subToggle = $('#subToggle');
+    function openAvatar(open){
+      avatarWrap.classList.toggle('open', open);
+      avatarBtn.setAttribute('aria-expanded', open?'true':'false');
+    }
+    avatarBtn.addEventListener('click', (e)=>{ e.preventDefault(); openAvatar(!avatarWrap.classList.contains('open')); });
+    document.addEventListener('click', (e)=>{ if(!avatarWrap.contains(e.target)) openAvatar(false); });
+
+    function paintSubToggle(){
+      subToggle.setAttribute('aria-pressed', isSub?'true':'false');
+      subToggle.textContent = isSub ? 'On' : 'Off';
+    }
+    subToggle.addEventListener('click', ()=>{
+      isSub = !isSub; store.set(K.sub,isSub); paintSubToggle(); paintFoundations(); paintWeekly();
+    });
+    paintSubToggle();
+
+    $('#goCalendar').addEventListener('click', (e)=>{ e.preventDefault(); openAvatar(false); showPanel('calendar'); renderCalendarList(); });
+
+    /* Set daily */
+    const today = new Date(); $('#dailyDate').textContent = `${dayNames[today.getDay()]} ${fmtD_M(today)}`;
+    function paintDaily(){
+      const done = dailyDone.includes(toISO(new Date()));
+      const btn = $('#btnDaily'); const hero = $('#dailyHero');
+      btn.textContent = done ? 'Undo' : 'Complete';
+      btn.className = 'btn ' + (done ? 'ghost' : 'blue');
+      hero.classList.toggle('complete', done);
+    }
+    $('#btnDaily').addEventListener('click', ()=>{
+      const iso = toISO(new Date());
+      const i = dailyDone.indexOf(iso);
+      if(i>-1){ dailyDone.splice(i,1); }
+      else { dailyDone.push(iso); points+=1; }
+      store.set(K.points, points); store.set(K.daily, dailyDone);
+      pushHist({type:'daily', title:'Daily Challenge'});
+      paintDaily(); renderCalendarList();
+    });
+    paintDaily();
+
+    /* WEEKLY set */
+    const WEEKLY=[
+      {id:'W01',title:'Gesture Lines',desc:'Loose lines, large arm movement.'},
+      {id:'W02',title:'Negative Space',desc:'See shapes around the subject.'},
+      {id:'W03',title:'Value Ladder',desc:'Five-step tonal control.'},
+      {id:'W04',title:'Edges—Hard/Soft',desc:'Control transitions.'},
+      {id:'W05',title:'Ink + Wash',desc:'Line then dilute wash.'},
+      {id:'W06',title:'Contour & Blind',desc:'Trust the line, look more.'},
+      {id:'W07',title:'Planes of the Head',desc:'Break forms into planes.'},
+      {id:'W08',title:'Texture Hunt',desc:'Rubbings + drawn textures.'},
+      {id:'W09',title:'Silhouette Power',desc:'Readability in outline.'},
+      {id:'W10',title:'Warm/Cool Contrast',desc:'Temperature decisions.'},
+      {id:'W11',title:'Mark Variety',desc:'Thick, thin, broken, dragged.'},
+      {id:'W12',title:'Compositional Threes',desc:'Foreground/mid/background.'},
+      {id:'W13',title:'Speed Studies',desc:'1–5 minute bursts.'},
+      {id:'W14',title:'Cross-hatching',desc:'Controlled texture build.'},
+      {id:'W15',title:'Ink Splashes',desc:'Directed spontaneity.'},
+      {id:'W16',title:'Charcoal Tonals',desc:'Mass the shadows.'},
+      {id:'W17',title:'Lost & Found Edges',desc:'Melt and sharpen selectively.'},
+      {id:'W18',title:'Gesture Portrait',desc:'Energy over detail.'},
+      {id:'W19',title:'Light Direction',desc:'Single source studies.'},
+      {id:'W20',title:'Abstracted Forms',desc:'Simplify to shapes.'},
+      {id:'W21',title:'Perspective Basics',desc:'1-point & 2-point.'},
+      {id:'W22',title:'Figure Rhythm',desc:'S-curve, C-curve flow.'},
+      {id:'W23',title:'Limited Palette',desc:'3 colours max.'},
+      {id:'W24',title:'Big Brushes',desc:'Commit to bold passes.'},
+      {id:'W25',title:'Smudge & Lift',desc:'Subtractive drawing.'},
+      {id:'W26',title:'Line Hierarchy',desc:'Weight guides the eye.'},
+      {id:'W27',title:'Edges with Water',desc:'Feathered dissolves.'},
+      {id:'W28',title:'Thumbnails',desc:'Plan before render.'},
+      {id:'W29',title:'Pattern & Repetition',desc:'Motifs unify.'},
+      {id:'W30',title:'Proportion Check',desc:'Sight-size habits.'},
+      {id:'W31',title:'Expressive Tools',desc:'Sticks, cards, rags.'},
+      {id:'W32',title:'Colour Notes',desc:'Small patches first.'},
+      {id:'W33',title:'Focal Point',desc:'Contrast and detail.'},
+      {id:'W34',title:'Edges & Atmosphere',desc:'Depth via softness.'},
+      {id:'W35',title:'Ink Portrait',desc:'Brush + splash accents.'},
+      {id:'W36',title:'Value Composition',desc:'3-value design.'},
+      {id:'W37',title:'Contour + Tone',desc:'Line then mass.'},
+      {id:'W38',title:'Gesture Landscapes',desc:'Broad shapes quickly.'},
+      {id:'W39',title:'Reflected Light',desc:'Turn the form.'},
+      {id:'W40',title:'Textural Contrast',desc:'Smooth vs rough.'},
+      {id:'W41',title:'Edges—Lost Foreground',desc:'Merge into background.'},
+      {id:'W42',title:'Colour Harmony',desc:'Analogous harmony.'},
+      {id:'W43',title:'Ink & Charcoal Mix',desc:'Wet over dry.'},
+      {id:'W44',title:'Expressive Hands',desc:'Structure + gesture.'},
+      {id:'W45',title:'Skies & Weather',desc:'Mood studies.'},
+      {id:'W46',title:'Back-lighting',desc:'Rims and silhouettes.'},
+      {id:'W47',title:'Fabric & Folds',desc:'Light logic.'},
+      {id:'W48',title:'Architecture Lines',desc:'Plumb & level.'},
+      {id:'W49',title:'Edge Priorities',desc:'Where to sharpen.'},
+      {id:'W50',title:'Colour Accents',desc:'Small high-chroma hits.'},
+      {id:'W51',title:'Gesture Animals',desc:'Capture movement.'},
+      {id:'W52',title:'Best-of Remix',desc:'Combine 3 skills.'}
+    ];
+    function firstSunday(y){ const d=new Date(y,0,1); const off=(7-d.getDay())%7; const s=new Date(y,0,1+off); s.setHours(0,0,0,0); return s;}
+    function weekIdx(d){ const y=d.getFullYear(), s=firstSunday(y); const diff=d-s; if(diff<0) return weekIdx(new Date(y-1,11,31)); return Math.floor(diff/(7*24*3600*1000))%52;}
+    function startSunday(d){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); x.setDate(x.getDate()-x.getDay()); x.setHours(0,0,0,0); return x;}
+    function addWeeks(d,w){ const x=new Date(d); x.setDate(x.getDate()+w*7); return x;}
+
+    function weeklyData(){
+      const base=startSunday(new Date());
+      // current + previous 2
+      const blocks=[0,-1,-2].map(w=>{
+        const s=addWeeks(base,w); const i=weekIdx(s); const def=WEEKLY[i];
+        const end=addWeeks(s,4); end.setDate(end.getDate()-1); // 4-week window, hidden from UI
+        return {id:def.id, title:def.title, desc:def.desc, start:s, end, done: !!weeklyDone.find(x=>x.id===def.id)};
+      });
+      // sort: outstanding first by earliest end; completed last (same order rule)
+      const outs = blocks.filter(b=>!b.done).sort((a,b)=>a.end-b.end);
+      const done = blocks.filter(b=>b.done).sort((a,b)=>a.end-b.end);
+      return outs.concat(done);
+    }
+
+    function paintWeekly(){
+      const wrap=$('#weekly'); wrap.innerHTML='';
+      const locked = !isSub;
+      weeklyData().forEach(w=>{
+        const card=document.createElement('article'); card.className='hero'; if(w.done) card.classList.add('complete');
+        card.dataset.weekId=w.id;
+        card.innerHTML=`
+          <h3 class="title">${locked?`<img class="padlock" src="padlock-premium.svg" alt=""> `:''}${w.title}</h3>
+          <p class="meta">${dayNames[w.start.getDay()]} ${fmtD_M(w.start)} → ${dayNames[w.end.getDay()]} ${fmtD_M(w.end)}</p>
+          <p class="desc">${w.desc}</p>
+          <div class="cta-left">
+            <button class="btn ${locked?'ghost':'blue'} act-week" ${locked?'disabled':''} data-week="${w.id}">${w.done?'Restart':'Start Challenge'}</button>
+          </div>`;
+        wrap.appendChild(card);
+      });
+      $$('.act-week', wrap).forEach(b=>{
         b.addEventListener('click', ()=>{
-          if(!isSub) return;
-          const card = b.closest('.hero'); const id = card.dataset.week;
-          if(!weeklyDone.some(w=>w.id===id)){ weeklyDone.push({id, dateISO: toISO(new Date())}); points+=10; history.unshift({ts:Date.now(), type:'weekly', title:id}); LS.set(K.w,weeklyDone); LS.set(K.pts,points); LS.set(K.hist,history); }
-          card.classList.add('complete'); paintChrome(); renderCalendar();
+          const id=b.dataset.week;
+          if(!weeklyDone.find(x=>x.id===id)){
+            weeklyDone.push({id, dateISO:toISO(new Date())}); store.set(K.weekly,weeklyDone);
+            points+=10; store.set(K.points,points); pushHist({type:'weekly', title:id});
+          }else{
+            weeklyDone=weeklyDone.filter(x=>x.id!==id); store.set(K.weekly,weeklyDone);
+          }
+          paintWeekly(); renderCalendarList();
         });
       });
-      // public API for weekly pages
-      window.AO_markWeeklyComplete = function(weekId, title){
-        if(!weeklyDone.some(w=>w.id===weekId)){ weeklyDone.push({id:weekId, dateISO: toISO(new Date())}); points+=10; history.unshift({ts:Date.now(), type:'weekly', title:title||weekId}); LS.set(K.w,weeklyDone); LS.set(K.pts,points); LS.set(K.hist,history); paintChrome(); renderCalendar(); }
-        const card = document.querySelector(`[data-week="${weekId}"]`); if(card) card.classList.add('complete');
-      };
     }
+    paintWeekly();
 
-    /* ---------- COURSES ---------- */
-    function courseCard({id,title,desc,link}, kind, pointsPrice, cashPrice){
-      const purchased = bought.includes(id);
-      const locked = (kind==='foundation' && !isSub) || (kind==='paid' && !purchased);
-      const card = el('article',{class:'hero', 'data-id':id, 'data-kind':kind},
-        el('h3',{class:'title'},
-          (locked ? el('span',{class:'lock'}, el('svg',{'aria-hidden':'true'}, el('use',{'href':'#ic-lock-silver'}))) : ''),
-          txt(' ' + title)
-        ),
-        el('p',{class:'meta'}, kind==='foundation' ? 'Foundations (Subscribers)' : (kind==='paid' ? (pointsPrice?`${pointsPrice} pts available`:'') : '')),
-        el('p',{class:'desc'}, desc),
-        el('div',{class:'row', style:'position:absolute;left:16px;bottom:16px'},
-          purchased ? el('button',{class:'btn green btnEnter', 'data-link':link}, 'Enter Course')
-          : (kind==='foundation'
-              ? el('button',{class:'btn blue btnStartFoundation', disabled: !isSub ? '' : null, 'data-link':link}, 'Start Course')
-              : el('div',{},
-                  el('button',{class:'btn green btnBuy', 'data-price':cashPrice||'$?', 'data-link':link}, 'Buy'),
-                  pointsPrice ? el('button',{class:'btn gold btnRedeem', 'data-points':pointsPrice, 'data-link':link}, 'Redeem with Points') : ''
-                )
-            )
-        ),
-        (!purchased && kind==='paid') ? el('div',{class:'bubble'}, String(pointsPrice??'?')) : '',
-        (!purchased && kind==='paid') ? el('div',{class:'price'}, cashPrice||'$?') : ''
-      );
-      if(purchased) card.classList.add('complete'); // show green tick on unlocked too
-      return card;
-    }
-
-    function renderCourses(){
-      const wrap = panels.courses; wrap.innerHTML='';
-      wrap.append(el('h2',{class:'section-title'},'Courses'));
-
-      // Foundations
-      const gF = el('div',{class:'grid grid-3'});
-      FOUNDATIONS.forEach(c=> gF.append( courseCard(c,'foundation',null,null) ));
-      wrap.append(el('h3',{class:'section-title'},'Foundations (Subscribers)'), gF);
-
-      // Paid: 1-Day
-      const g1 = el('div',{class:'grid grid-3'});
-      PAID.oneDay.forEach(c=> { const P = pricing[c.id]||{}; g1.append(courseCard(c,'paid',P.points,P.price)); });
-      wrap.append(el('h3',{class:'section-title'},'1-Day Intensives'), g1);
-
-      // Paid: 3-Day
-      const g3 = el('div',{class:'grid grid-3'});
-      PAID.threeDay.forEach(c=> { const P = pricing[c.id]||{}; g3.append(courseCard(c,'paid',P.points,P.price)); });
-      wrap.append(el('h3',{class:'section-title'},'3-Day Courses'), g3);
-
-      // Paid: 30-Day
-      const g30 = el('div',{class:'grid grid-3'});
-      PAID.thirtyDay.forEach(c=> { const P = pricing[c.id]||{}; g30.append(courseCard(c,'paid',P.points,P.price)); });
-      wrap.append(el('h3',{class:'section-title'},'30-Day Courses'), g30);
-
-      wireCourseButtons(wrap);
-    }
-
-    function paintFoundations(){ // lock/unlock visuals only
-      $$('#panel-courses [data-kind="foundation"]').forEach(card=>{
-        const btn = card.querySelector('.btnStartFoundation');
-        const lock = card.querySelector('.lock');
-        if(!btn) return;
-        if(isSub){ btn.removeAttribute('disabled'); lock && (lock.style.display='none'); }
-        else { btn.setAttribute('disabled',''); lock && (lock.style.display='inline-block'); }
+    /* FOUNDATIONS gate by subscription; same silver padlock as weekly */
+    function paintFoundations(){
+      $$('#p-courses [data-kind="foundation"]').forEach(card=>{
+        const locked = !isSub;
+        const lockEl = card.querySelector('.padlock');
+        if(lockEl) lockEl.style.display = locked? 'inline':'none';
+        const btn = card.querySelector('.act-found');
+        if(locked){ btn.setAttribute('disabled',''); } else { btn.removeAttribute('disabled'); }
       });
     }
+    paintFoundations();
 
-    /* ---------- LIVE ---------- */
-    function renderLive(){
-      const wrap = panels.live; wrap.innerHTML='';
-      const grid = el('div',{class:'grid grid-3'});
-      LIVE.forEach(c=>{
-        const P = pricing[c.id]||{};
-        const purchased = bought.includes(c.id);
-        const card = el('article',{class:'hero', 'data-id':c.id},
-          el('h3',{class:'title'}, (!purchased ? el('span',{class:'lock'}, el('svg',{'aria-hidden':'true'}, el('use',{'href':'#ic-lock-silver'}))) : ''), txt(' '+c.title)),
-          el('p',{class:'meta'}, 'Live Demonstration'),
-          el('p',{class:'desc'}, c.desc),
-          el('div',{class:'row', style:'position:absolute;left:16px;bottom:16px'},
-            purchased ? el('button',{class:'btn green btnEnter', 'data-link':c.link}, 'Enter')
-                      : el('div',{}, el('button',{class:'btn green btnBuy', 'data-price':P.price||'$?', 'data-link':c.link}, 'Buy'),
-                                  P.points ? el('button',{class:'btn gold btnRedeem', 'data-points':P.points, 'data-link':c.link}, 'Redeem with Points') : '')
-          ),
-          !purchased ? el('div',{class:'bubble'}, String(P.points??'?')) : '',
-          !purchased ? el('div',{class:'price'}, P.price||'$?') : ''
-        );
-        if(purchased) card.classList.add('complete');
-        grid.append(card);
+    $$('.act-found').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const card=e.currentTarget.closest('.course'); if(!isSub) return;
+        const link=card.dataset.link; pushHist({type:'1day-span', title:card.querySelector('.title').textContent.trim()}); window.location.href=link;
       });
-      wrap.append(el('h2',{class:'section-title'},'Live Demonstrations'), grid);
-      wireCourseButtons(wrap);
-    }
-
-    /* ---------- BUY / REDEEM ---------- */
-    let pending = null;
-    function wireCourseButtons(scope=document){
-      // foundations start
-      $$('.btnStartFoundation', scope).forEach(b=> b.addEventListener('click', ()=>{
-        if(!isSub) return;
-        const link = b.getAttribute('data-link'); history.unshift({ts:Date.now(), type:'foundation', title:b.closest('.hero')?.querySelector('.title')?.textContent.trim()||'Foundation'}); LS.set(K.hist,history); window.location.href = link;
-      }));
-      // enter
-      $$('.btnEnter', scope).forEach(b=> b.addEventListener('click', ()=> window.location.href = b.getAttribute('data-link') || '#'));
-      // buy
-      $$('.btnBuy', scope).forEach(b=> b.addEventListener('click', ()=>{
-        const card = b.closest('.hero'); const id = card.dataset.id; const title = card.querySelector('.title')?.textContent.trim()||'Course';
-        const price = b.getAttribute('data-price')||'$?'; const link = b.getAttribute('data-link')||'#';
-        pending = {id,title,price,points: (pricing[id]?.points||0), link};
-        $('#purchaseTitle').textContent = `Unlock “${title}”`;
-        $('#redeemInfo').textContent = pending.points ? `Redeem for ${pending.points} points.` : 'This item is not redeemable.';
-        $('#btnRedeem').disabled = !pending.points;
-        openModal('purchaseModal');
-      }));
-      // redeem
-      $$('.btnRedeem', scope).forEach(b=> b.addEventListener('click', ()=>{
-        const card = b.closest('.hero'); const id = card.dataset.id; const pts = +(b.getAttribute('data-points')||0); const link = b.getAttribute('data-link')||'#';
-        if(points < pts) return openModal('notEnoughModal');
-        points -= pts; LS.set(K.pts,points); bought.push(id); bought=[...new Set(bought)]; LS.set(K.bought,bought);
-        history.unshift({ts:Date.now(), type:'redeem', title:id, pointsDelta:-pts}); LS.set(K.hist,history);
-        upgradePurchasedCard(card, link); paintChrome(); renderCalendar();
-      }));
-    }
-    $('#btnBuy').addEventListener('click', ()=>{
-      if(!pending) return;
-      closeModal('purchaseModal');
-      // simulate purchase success instantly (integrate your gateway as needed)
-      bought.push(pending.id); bought=[...new Set(bought)]; LS.set(K.bought,bought);
-      history.unshift({ts:Date.now(), type:'purchase', title:pending.id}); LS.set(K.hist,history);
-      const card = document.querySelector(`.hero[data-id="${pending.id}"]`);
-      upgradePurchasedCard(card, pending.link); paintChrome(); renderCalendar();
-    });
-    $('#btnRedeem').addEventListener('click', ()=>{
-      if(!pending?.points) return;
-      if(points < pending.points){ closeModal('purchaseModal'); return openModal('notEnoughModal'); }
-      points -= pending.points; LS.set(K.pts,points);
-      bought.push(pending.id); bought=[...new Set(bought)]; LS.set(K.bought,bought);
-      history.unshift({ts:Date.now(), type:'redeem', title:pending.id, pointsDelta:-pending.points}); LS.set(K.hist,history);
-      closeModal('purchaseModal');
-      const card = document.querySelector(`.hero[data-id="${pending.id}"]`);
-      upgradePurchasedCard(card, pending.link); paintChrome(); renderCalendar();
     });
 
-    function upgradePurchasedCard(card, link){
-      if(!card) return;
-      card.classList.add('complete');
-      card.querySelectorAll('.bubble,.price').forEach(e=> e.remove());
-      const btnRow = card.querySelector('.row'); btnRow.innerHTML='';
-      btnRow.append(el('button',{class:'btn green btnEnter', 'data-link':link}, 'Enter Course'));
-      const lock = card.querySelector('.lock'); if(lock) lock.remove();
+    /* Pricing (optional hook). If you have a pricing script, set window.PRICE_LIST = {id:{price:'$99',points:500}} */
+    function loadPricing(){
+      try{
+        if(window.PRICE_LIST){ pricing=window.PRICE_LIST; store.set(K.pricing,pricing); }
+      }catch{}
+      applyPricing();
     }
+    function applyPricing(){
+      $$('.course, .live').forEach(card=>{
+        const id=card.dataset.id; const p=pricing[id]||{};
+        const priceEl=card.querySelector('.pr'); const bubble=card.querySelector('.bp'); const bubbleWrap=card.querySelector('.points-bubble');
+        if(priceEl) priceEl.textContent = p.price || card.querySelector('.price')?.dataset.price || '$?';
+        if(bubble){ const pts = p.points ?? +card.getAttribute('data-redeem') || '?'; bubble.textContent = pts; bubbleWrap.dataset.points=pts; }
+        if(purchased.includes(id)){ unlockCard(card); }
+      });
+    }
+    function unlockCard(card){
+      // Purchased → remove price + points bubble; green “Open”
+      card.querySelector('.price')?.setAttribute('hidden','');
+      card.querySelector('.points-bubble')?.setAttribute('hidden','');
+      const btn=card.querySelector('.act-buy'); if(btn){ btn.textContent='Open'; btn.className='btn green act-open'; }
+    }
+    loadPricing();
 
-    function openModal(id){ const m=document.getElementById(id); m.classList.add('open'); m.setAttribute('aria-hidden','false'); }
-    function closeModal(id){ const m=document.getElementById(id); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
-    $$('[data-close]').forEach(b=> b.addEventListener('click', e=> closeModal(e.target.getAttribute('data-close'))));
-    ['purchaseModal','notEnoughModal'].forEach(id=>{ const m=document.getElementById(id); m.addEventListener('click', e=>{ if(e.target===m) closeModal(id); }); });
+    /* Buy flow (modal with Pay or Redeem) */
+    let pending=null;
+    const buyModal = $('#buyModal'), btnPay=$('#btnPay'), btnRedeem=$('#btnRedeem'), btnCancelBuy=$('#btnCancelBuy'), buyTitle=$('#buyTitle'), redeemInfo=$('#redeemInfo');
+    function openBuy(card){
+      const id=card.dataset.id, title=card.querySelector('.title').textContent.trim(), link=card.dataset.link||'#';
+      const pts = card.querySelector('.points-bubble')?.dataset.points;
+      const price = card.querySelector('.pr')?.textContent||'$?';
+      pending={card,id,title,link,pts,price};
+      buyTitle.textContent = `Unlock “${title}”`;
+      const redeemable = pts && pts!=='?' && +pts>0;
+      btnRedeem.hidden = !redeemable;
+      redeemInfo.textContent = redeemable ? `You can redeem for ${pts} points.` : 'This item is not redeemable with points.';
+      buyModal.style.display='block';
+    }
+    function closeBuy(){ buyModal.style.display='none'; pending=null; }
+    btnCancelBuy.addEventListener('click', closeBuy);
 
-    /* ---------- CALENDAR (month-only, compact) ---------- */
-    function renderCalendar(){
-      const wrap = panels.calendar; wrap.innerHTML='';
-      const top = el('div',{class:'cal-top'},
-        el('div',{}, el('button',{class:'btn ghost', id:'calPrev'},'◀'), el('span',{id:'calTitle'},'—'), el('button',{class:'btn ghost', id:'calNext'},'▶')),
-        el('div',{}, el('button',{class:'btn ghost', id:'viewMonth','aria-pressed':'true'},'Month'))
-      );
-      const grid = el('div',{class:'cal-grid', id:'calGrid'});
-      const shell = el('div',{class:'calendar'}, top, grid);
-      wrap.append(el('h2',{class:'section-title'},'My Calendar'), shell);
-
-      const state = {cursor: new Date(today.getFullYear(), today.getMonth(), 1)};
-      function paint(){
-        $('#calTitle').textContent = `${state.cursor.toLocaleString(undefined,{month:'long'})} ${state.cursor.getFullYear()}`;
-        grid.innerHTML='';
-        const y=state.cursor.getFullYear(), m=state.cursor.getMonth();
-        const first = new Date(y,m,1), start = new Date(first); start.setDate(1-first.getDay());
-        for(let i=0;i<42;i++){
-          const d = new Date(start); d.setDate(start.getDate()+i);
-          const cell = el('div',{class:'cell'}, el('div',{class:'date'}, String(d.getDate())));
-          // events (very compact: daily/weekly/purchases)
-          history.filter(h=> new Date(h.ts).toDateString()===d.toDateString()).slice(0,3).forEach(h=>{
-            const color = h.type.startsWith('daily')?'blue' : h.type.startsWith('weekly')?'green' : h.type.startsWith('redeem')||h.type.startsWith('purchase')?'gold' : 'blue';
-            cell.append(el('div',{class:'ev '+color}, (h.title||h.type)));
-          });
-          grid.append(cell);
-        }
+    // Buy buttons
+    $$('.act-buy').forEach(b=> b.addEventListener('click', e=> openBuy(e.currentTarget.closest('.hero'))));
+    // Open if already purchased
+    document.addEventListener('click', e=>{
+      if(e.target.classList.contains('act-open')){
+        const card=e.target.closest('.hero'); const link=card.dataset.link||'#'; window.location.href=link;
       }
-      paint();
-      $('#calPrev').addEventListener('click', ()=>{ state.cursor.setMonth(state.cursor.getMonth()-1); paint(); });
-      $('#calNext').addEventListener('click', ()=>{ state.cursor.setMonth(state.cursor.getMonth()+1); paint(); });
+    });
+
+    btnPay.addEventListener('click', ()=>{
+      if(!pending) return;
+      // Simulate purchase success; in your app, redirect to payment.html and return with success flag.
+      if(!purchased.includes(pending.id)){ purchased.push(pending.id); store.set(K.purchased,purchased); }
+      pushHist({type:'purchase', title:pending.title});
+      unlockCard(pending.card);
+      closeBuy();
+      renderCalendarList();
+    });
+
+    btnRedeem.addEventListener('click', ()=>{
+      if(!pending) return;
+      const need = +pending.pts || 0;
+      if(points < need){ alert(`You need ${need - points} more points to redeem.`); return; }
+      points -= need; store.set(K.points,points);
+      if(!purchased.includes(pending.id)){ purchased.push(pending.id); store.set(K.purchased,purchased); }
+      pushHist({type:'redeem', title:pending.title});
+      unlockCard(pending.card);
+      closeBuy();
+      renderCalendarList();
+    });
+
+    /* Points bubble tap → show delta */
+    $$('.points-bubble').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const need = b.dataset.points==='?'? NaN : +b.dataset.points;
+        if(isNaN(need)){ alert('Points price: unknown yet.'); return; }
+        const diff = points - need;
+        alert(diff>=0 ? `You have enough points. After redeeming you would have ${diff} left.` : `You need ${Math.abs(diff)} more points to redeem.`);
+      });
+    });
+
+    /* History + calendar mini list */
+    let history = store.get(K.hist,[]);
+    function pushHist(e){
+      history.unshift({ts:Date.now(), ...e});
+      store.set(K.hist, history);
+    }
+    function renderCalendarList(){
+      const list=$('#calList'); if(!list) return;
+      list.innerHTML='';
+      history.slice(0,80).forEach(h=>{
+        const d=new Date(h.ts);
+        const row=document.createElement('div');
+        row.style.cssText='padding:8px 10px;border:1px solid var(--stroke);border-radius:8px;background:#0b0f14;margin:6px 0';
+        row.textContent=`${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())} • ${h.type.toUpperCase()} — ${h.title||''}`;
+        list.appendChild(row);
+      });
     }
 
-    /* ---------- Boot ---------- */
-    function renderAll(){
-      renderChallenges(); renderCourses(); renderLive(); renderCalendar(); paintFoundations();
-      setActive('challenges'); // default
-    }
-    buildTabs(); renderAll();
+    /* Keyboard/escape for modals */
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ if(more.classList.contains('open')) toggleMore(false); if(buyModal.style.display==='block') closeBuy(); openAvatar(false); }
+    });
 
   })();
   </script>
