@@ -6,22 +6,16 @@
   <meta name="color-scheme" content="dark" />
   <title>Home — Art Online by Jody Graham</title>
 
-  <!-- ===== Inlined Styles (scoped for HOME only) ===== -->
+  <!-- ===== HOME-ONLY STYLES (scoped) ===== -->
   <style>
-    /* ===========================
-       Tokens & Base
-       =========================== */
     :root{
       --ink:#eef3ff; --muted:rgba(238,243,255,.75);
       --stroke:rgba(255,255,255,.18); --surface:rgba(0,0,0,.40);
       --danger:#ff5b62; --blue:#0A84FF; --greyText:#cfd3e1;
+      --green:#32d74b; --yellow:#ffd60a; --red:#ff453a; --gold:#ffd700;
       --r-lg:16px; --r-md:12px;
-      --nav-h:64px; --tabs-h:56px;
-      --wrap-pad:64px;
-      --chrome-h: calc(var(--nav-h) + var(--tabs-h) + 24px);
-      --card-min-h: 220px;
-      --deck-gap: 12px;
-      --maxw: 1200px;
+      --nav-h:64px; --tabs-h:56px; --chrome-h: calc(var(--nav-h) + var(--tabs-h) + 24px);
+      --maxw:1200px; --gap:12px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -30,197 +24,113 @@
       font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
       background:#000;
     }
-    .wrap{
-      position:relative; z-index:1;
-      padding:96px 20px 64px;
-      max-width:var(--maxw); margin:0 auto;
-    }
+    a{color:inherit; text-decoration:none}
+    .wrap{position:relative; z-index:1; padding:96px 20px 64px; max-width:var(--maxw); margin:0 auto}
+    .bg{position:fixed; inset:0; z-index:-1; background:url("./assets/home-bg.jpg") center/cover no-repeat, #0b0d12}
 
-    /* ===========================
-       Background (use repo image)
-       =========================== */
-    .bg{
-      position:fixed; inset:0; z-index:-1;
-      background: url("./assets/home-bg.jpg") center / cover no-repeat, #0b0d12;
-      filter:saturate(1.05) contrast(1.05);
+    /* Top Nav */
+    .nav{position:fixed; top:0; left:0; right:0; height:var(--nav-h);
+      display:flex; align-items:flex-start; justify-content:space-between; padding:8px 20px; z-index:10;
+      background:linear-gradient(180deg, rgba(0,0,0,.6), transparent);
+      -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
     }
-
-    /* ===========================
-       Top Nav (shared feel)
-       =========================== */
-    .nav{
-      position:fixed; top:0; left:0; right:0; height:var(--nav-h);
-      display:flex; align-items:flex-start; justify-content:space-between;
-      padding:8px 20px; z-index:10;
-      background:linear-gradient(180deg, rgba(0,0,0,.6), rgba(0,0,0,0));
-      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    }
-    .logo-block{ line-height:1.1 }
-    .logo-title{ font-weight:800; letter-spacing:.2px }
-    .logo-sub{ color:var(--muted); font-size:.9rem }
-    .nav-actions{ display:flex; align-items:center; gap:10px }
-    .avatar{
-      width:34px; height:34px; border-radius:50%;
+    .logo-block{line-height:1.1}
+    .logo-title{font-weight:900; letter-spacing:.2px; color:var(--blue)}
+    .logo-sub{font-weight:700; color:#fff}
+    .nav-actions{display:flex; align-items:center; gap:10px}
+    .points-display{font-weight:800; background:rgba(0,0,0,.45); border:1px solid var(--stroke);
+      border-radius:999px; padding:6px 10px}
+    .avatar{width:34px; height:34px; border-radius:50%; border:1px solid var(--stroke);
       background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
-      border:1px solid var(--stroke); display:grid; place-items:center; font-weight:800;
-    }
-    .points-display{ font-weight:800; background:rgba(0,0,0,.45); border:1px solid var(--stroke);
-      border-radius:999px; padding:6px 10px }
+      display:grid; place-items:center; font-weight:900}
+    .btn{padding:10px 14px; border-radius:12px; font-weight:700; border:0; cursor:pointer}
+    .btn.primary{background:var(--blue); color:#fff}
+    .btn.ghost{background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink)}
+    .btn[disabled]{opacity:.55; cursor:not-allowed}
 
-    /* ===========================
-       Buttons
-       =========================== */
-    .btn{
-      appearance:none; border:0; cursor:pointer;
-      padding:10px 14px; border-radius:12px; font-weight:700; letter-spacing:.2px;
-      transition: transform .06s ease, filter .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
-    }
-    .btn.primary{ background:var(--blue); color:#fff }
-    .btn.ghost{ background:rgba(0,0,0,.45); border:1px solid var(--stroke); color:var(--ink) }
-    .btn[disabled]{ opacity:.55; cursor:not-allowed }
-    .btn:hover{ filter:brightness(1.08) }
-    .btn:active{ transform:scale(.98) }
+    /* Tabs (centered; portrait under logo) */
+    .tabs{display:flex; gap:8px; padding:6px; margin:-8px 0 12px; position:sticky; top:var(--nav-h); z-index:5;
+      justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.35) 60%, transparent); border-radius:14px;
+      -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px)}
+    .tab{padding:10px 14px; border-radius:999px; border:1px solid var(--stroke); background:rgba(0,0,0,.45); color:var(--ink); font-weight:700; cursor:pointer}
+    .tab.is-active{background:var(--blue); color:#fff; border-color:transparent}
+    .tab-panel{display:none; animation:fade .2s ease} .tab-panel.is-active{display:block}
+    @keyframes fade{from{opacity:.6; transform:translateY(4px)} to{opacity:1; transform:none}}
 
-    .btn-square{
-      display:grid; place-items:center; text-align:center;
-      min-width:86px; min-height:86px; border-radius:12px;
-      font-weight:900; text-transform:uppercase; letter-spacing:.2px; line-height:1.05;
-      background:var(--blue); color:#fff; border:0; cursor:pointer;
-      box-shadow:0 10px 28px rgba(10,132,255,.28);
-    }
+    /* Hero Cards */
+    .hero{position:relative; overflow:hidden; border-radius:var(--r-lg); border:1px solid var(--stroke); background:rgba(0,0,0,.40); min-height:220px; margin:12px 0}
+    .hero.decal::before{content:""; position:absolute; inset:0; z-index:0;
+      background: radial-gradient(60% 60% at 90% 10%, rgba(10,132,255,.22), transparent 60%), linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02))}
+    .hero-body{position:relative; z-index:1; padding:16px; display:flex; flex-direction:column; gap:8px; height:100%}
+    .hero-title{margin:0; font-size:18px; font-weight:900}
+    .hero-meta{margin:0; color:var(--greyText); font-size:.92rem}
+    .hero-desc{margin:0; color:var(--muted)}
+    .padlock-wrap{display:flex; align-items:center; gap:8px}
+    .padlock{color:var(--greyText); width:28px; height:28px}
+    .locked{opacity:.82}
 
-    /* ===========================
-       Tabs (centered; portrait under logo)
-       =========================== */
-    .tabs{
-      display:flex; gap:8px; padding:6px; margin:-8px 0 12px;
-      position:sticky; top:var(--nav-h); z-index:5;
-      justify-content:center;
-      background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.35) 60%, rgba(0,0,0,0));
-      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-      border-radius:14px;
-    }
-    .tab{
-      appearance:none; border:1px solid var(--stroke); background:rgba(0,0,0,.45);
-      color:var(--ink); padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:700;
-    }
-    .tab.is-active{ background:var(--blue); color:#fff; border-color:transparent }
-    .tab:focus-visible{ outline:2px solid var(--blue); outline-offset:2px }
+    /* Daily banner + “Complete” button FAR RIGHT of page */
+    .hero-banner{height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.52), 420px); display:flex; align-items:flex-end}
+    .complete-rail{display:flex; justify-content:flex-end; align-items:center; margin:10px 0}
+    .btn-complete{display:grid; place-items:center; min-width:120px; min-height:60px; border-radius:12px; background:var(--blue); color:#fff; font-weight:900}
+    .hero.complete{box-shadow:0 0 0 3px var(--green) inset}
+    .hero.complete .hero-title::after{content:"  ✓ Complete"; color:var(--green); font-weight:900; margin-left:6px}
 
-    /* ===========================
-       Cards / Heroes
-       =========================== */
-    .hero{
-      position:relative; overflow:hidden; border-radius:var(--r-lg);
-      border:1px solid var(--stroke); background:rgba(0,0,0,.40);
-      display:flex; flex-direction:column; min-height:var(--card-min-h);
-      margin:12px 0;
-      backdrop-filter: saturate(1.1);
-    }
-    /* Artistic decal layer */
-    .hero.decal::before,
-    .hero-banner::before{
-      content:""; position:absolute; inset:0; z-index:0;
-      background:
-        radial-gradient(60% 60% at 90% 10%, rgba(10,132,255,.25), transparent 60%),
-        linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      pointer-events:none;
-    }
-    .hero-body{ padding:16px; position:relative; z-index:1; display:flex; flex-direction:column; gap:8px; height:100% }
-    .hero-title{ margin:0 0 4px; font-size:18px; font-weight:900 }
-    .hero-meta{ margin:0; color:var(--greyText); font-size:.92rem }
-    .hero-desc{ margin:0; color:var(--muted) }
+    /* Weekly row (exactly 3 across in landscape; stack in portrait) */
+    .weekly-row{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap); margin-top:12px; height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.40), 340px)}
+    .weekly .hero-body{display:flex; flex-direction:column; gap:6px}
+    .weekly .hero-expiry{position:absolute; right:16px; top:16px; font-size:.85rem; padding:6px 10px; border-radius:12px; background:rgba(0,0,0,.55); border:1px solid var(--stroke)}
+    .weekly.is-expired{opacity:.65}
 
-    /* Start buttons pinned to LEFT (per request) */
-    .hero-cta{ position:absolute; left:16px; bottom:16px; z-index:2 }
+    /* Courses */
+    .grid{display:grid; gap:var(--gap); margin:12px 0}
+    .grid-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .tall-hero{min-height: clamp(220px, 26vh, 320px)}
+    .course.locked .padlock{display:block} .course:not(.locked) .padlock{display:none}
+    .course.complete{box-shadow:0 0 0 3px var(--green) inset}
+    .course.complete .hero-title::after{content:"  ✓ Complete"; color:var(--green); font-weight:900; margin-left:6px}
 
-    /* Daily banner: full-width, edge-aligned with weekly grid; landscape fits 1 screen with weekly row */
-    .hero-banner{
-      height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.52), 420px);
-      display:flex; align-items:flex-end;
-      background:linear-gradient(135deg, rgba(10,132,255,.22), rgba(255,255,255,.02));
-    }
-
-    /* Weekly row: exactly 3 in landscape */
-    .weekly-row{
-      display:grid; grid-template-columns: repeat(3, 1fr); gap:var(--deck-gap);
-      margin-top:12px;
-      height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.40), 340px);
-    }
-    .weekly .hero-body{ display:flex; flex-direction:column; gap:6px }
-    .weekly .hero-expiry{
-      position:absolute; right:14px; top:14px; z-index:2;
-      padding:6px 10px; border-radius:12px;
-      background:rgba(0,0,0,.55); border:1px solid var(--stroke); font-size:.85rem;
-    }
-    .weekly.is-expired{ opacity:.65 }
-    .hero.locked{ opacity:.8 }
-
-    /* Padlock adornment next to text */
-    .padlock-wrap{ display:flex; align-items:center; gap:8px }
-    .padlock{
-      color:var(--greyText); flex-shrink:0;
-      width:28px; height:28px;
-    }
-
-    /* Lock overlay for weekly section */
-    .lock-overlay{ position:relative; display:none; place-items:center; margin-top:8px }
-    .lock-card{
-      border-radius:var(--r-lg); padding:16px; max-width:720px; width:100%;
-      background:rgba(0,0,0,.45); border:1px solid var(--stroke); box-shadow:0 8px 24px rgba(0,0,0,.25);
-    }
-
-    /* Courses grid (edge-to-edge 3x, large rectangles) */
-    .grid{ display:grid; gap:var(--deck-gap); margin:12px 0 }
-    .grid-3{ grid-template-columns: repeat(3, 1fr) }
-    .tall-hero{ min-height: clamp(220px, 26vh, 320px) }
+    /* Modals */
+    .modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); backdrop-filter:blur(6px); z-index:20}
+    .modal.open{display:grid}
+    .modal-content{background:#0f1116; border:1px solid var(--stroke); border-radius:12px; padding:18px; width:min(92vw, 520px); box-shadow:0 16px 42px rgba(0,0,0,.5)}
+    .modal-actions{display:flex; gap:8px; margin-top:10px}
 
     /* Achievements */
-    .achievements-summary{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:10px 0 }
-    .badge{
-      display:inline-grid; place-items:center; width:56px; height:56px; border-radius:50%;
-      background:linear-gradient(135deg, rgba(10,132,255,.22), rgba(255,255,255,.04));
-      border:1px solid var(--stroke); font-weight:900;
-    }
-    .tick{ color:#32d74b; margin-left:6px; font-weight:900 }
-    .history-list{ list-style:none; padding:0; margin:8px 0 }
-    .history-item{ padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; gap:10px; align-items:center }
-    .pager{ display:flex; gap:8px; margin-top:8px }
+    .achievements-summary{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:10px 0}
+    .badge{display:inline-grid; place-items:center; width:56px; height:56px; border-radius:50%;
+      background:linear-gradient(135deg, rgba(10,132,255,.22), rgba(255,255,255,.04)); border:1px solid var(--stroke); font-weight:900}
+    .tick{color:var(--green); margin-left:6px; font-weight:900}
+    .history-list{list-style:none; padding:0; margin:8px 0}
+    .history-item{padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; gap:10px; align-items:center}
+    .pager{display:flex; gap:8px; margin-top:8px}
 
-    /* Calendar */
-    .calendar{ border:1px solid var(--stroke); border-radius:12px; background:rgba(0,0,0,.25); padding:10px; }
-    .cal-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px }
-    .cal-grid{ display:grid; grid-template-columns: repeat(7, 1fr); gap:6px }
-    .cal-cell{
-      min-height:64px; border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:4px; position:relative;
-      background:rgba(0,0,0,.2)
-    }
-    .cal-date{ font-size:.82rem; color:var(--greyText) }
-    .cal-dot{ width:6px; height:6px; border-radius:50%; background:var(--blue); display:inline-block; margin-right:4px }
-    .cal-course-span{ position:absolute; left:4px; right:4px; bottom:3px; height:3px; background:#ff453a; border-radius:4px }
-    .cal-exp-label{ position:absolute; right:6px; bottom:6px; font-size:.72rem; color:#ff453a }
+    /* My Calendar (BLACK background) */
+    #tab-calendar .calendar-wrap{background:#000; border:1px solid var(--stroke); border-radius:12px; padding:10px}
+    .cal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
+    .tallies{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px}
+    .tally{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--stroke); border-radius:999px; padding:6px 10px; cursor:pointer; background:#0a0a0a}
+    .chip{width:10px; height:10px; border-radius:50%}
+    .chip.blue{background:var(--blue)} .chip.green{background:#00c853} .chip.yellow{background:var(--yellow)} .chip.red{background:var(--red)} .chip.gold{background:var(--gold)}
+    .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+    .cal-cell{min-height:70px; border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:4px; position:relative; background:#0a0a0a}
+    .cal-date{font-size:.82rem; color:var(--greyText)}
+    .cal-dot{width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:4px}
+    .dot-blue{background:var(--blue)} .dot-green{background:#00c853} .dot-yellow{background:var(--yellow)} .dot-red{background:var(--red)} .dot-gold{background:var(--gold)}
+    .span-bar{position:absolute; left:4px; right:4px; bottom:3px; height:3px; border-radius:4px}
+    .span-green{background:#00c853} .span-yellow{background:var(--yellow)} .span-red{background:var(--red)}
+    .exp-label{position:absolute; right:6px; bottom:6px; font-size:.72rem}
 
-    /* Modal */
-    .modal{ position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); backdrop-filter: blur(6px); z-index:20 }
-    .modal.open{ display:grid }
-    .modal-content{
-      background:#0f1116; border:1px solid var(--stroke); border-radius:12px; padding:18px; width:min(92vw, 520px);
-      box-shadow:0 16px 42px rgba(0,0,0,.5)
-    }
-    .modal-actions{ display:flex; gap:8px; margin-top:10px }
-
-    /* Portrait stacking rules */
-    @media (orientation: portrait){
-      .hero-banner{ height: clamp(220px, 36vh, 420px) }
-      .weekly-row{ grid-template-columns: 1fr; height:auto }
-      .grid-3{ grid-template-columns: 1fr }
-      .tabs{ top:calc(var(--nav-h) - 4px) }
+    /* Portrait stacking */
+    @media (orientation:portrait){
+      .tabs{top:62px}
+      .weekly-row{grid-template-columns:1fr; height:auto}
+      .grid-3{grid-template-columns:1fr}
     }
   </style>
 </head>
 
 <body class="home-bg">
-  <!-- Background -->
   <div class="bg" aria-hidden="true"></div>
 
   <!-- ===== Top Nav ===== -->
@@ -230,9 +140,9 @@
       <div class="logo-sub">by Jody Graham</div>
     </div>
     <div class="nav-actions">
-      <div id="pointsDisplay" class="points-display" title="Art $ balance">Art $: <span id="pointsValue">0</span></div>
+      <div id="pointsDisplay" class="points-display">Points: <span id="pointsValue">0</span></div>
       <button class="btn ghost" id="toggleSub" aria-pressed="false">Subscriber: <span id="subState">Off</span></button>
-      <div class="avatar" title="Account">JG</div>
+      <a class="avatar" href="profile.html" title="Profile (click to view)">JG</a>
     </div>
   </header>
 
@@ -240,197 +150,210 @@
     <!-- ===== Tabs ===== -->
     <nav class="tabs" role="tablist" aria-label="Primary">
       <button class="tab is-active" role="tab" aria-selected="true" aria-controls="tab-challenges" id="tabbtn-challenges">Challenges</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-foundations" id="tabbtn-foundations">Foundations</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-courses" id="tabbtn-courses">Courses</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-live" id="tabbtn-live">Live</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-achievements" id="tabbtn-achievements">Achievements</button>
+      <button class="tab" role="tab" aria-controls="tab-foundations" id="tabbtn-foundations">Foundations</button>
+      <button class="tab" role="tab" aria-controls="tab-courses" id="tabbtn-courses">Courses</button>
+      <button class="tab" role="tab" aria-controls="tab-live" id="tabbtn-live">Live</button>
+      <button class="tab" role="tab" aria-controls="tab-achievements" id="tabbtn-achievements">Achievements</button>
+      <button class="tab" role="tab" aria-controls="tab-calendar" id="tabbtn-calendar">My Calendar</button>
     </nav>
 
-    <!-- ===== CHALLENGES ===== -->
+    <!-- ===== CHALLENGES (Daily + Weekly) ===== -->
     <section class="tab-panel is-active" id="tab-challenges" role="tabpanel" aria-labelledby="tabbtn-challenges">
       <!-- Daily (always free) -->
       <article class="hero hero-banner decal" id="dailyHero">
         <div class="hero-body">
-          <div class="hero-text">
+          <div>
             <h2 class="hero-title" id="dailyTitle">Today’s Daily Challenge</h2>
             <p class="hero-meta" id="dailyDate"></p>
-            <p class="hero-desc" id="dailyDesc">A 15–20 minute warm-up. Add a splash of ink or paint to energise your marks.</p>
-          </div>
-          <div class="hero-cta">
-            <button class="btn-square start" id="btnStartDaily">Start<br/>Challenge</button>
+            <p class="hero-desc" id="dailyDesc">A fast 15–20 minute warm-up. All instructions appear here — no separate page required.</p>
           </div>
         </div>
       </article>
+      <!-- Complete button on FAR RIGHT of page -->
+      <div class="complete-rail">
+        <button class="btn btn-complete" id="btnCompleteDaily">Complete Challenge</button>
+      </div>
 
       <!-- Weekly (3 tiles, subscriber-only) -->
       <div class="weekly-row" id="weeklyRow" aria-label="Weekly Challenges"></div>
 
-      <!-- Section lock overlay (appears when unsubscribed) -->
+      <!-- Weekly Lock overlay -->
       <div class="lock-overlay" id="weeklyLock" aria-hidden="true">
-        <div class="lock-card">
-          <div class="lock-title"><strong>Subscribers only</strong></div>
-          <p class="lock-text">Weekly challenges are exclusive to subscribers. Unlock and earn 10 Art $ per weekly completion.</p>
-          <div class="lock-actions">
+        <div class="modal-content">
+          <h3>Subscribers only</h3>
+          <p>Weekly challenges are exclusive. Subscribe to unlock and earn +10 points per weekly completion.</p>
+          <div class="modal-actions">
             <button class="btn primary" id="openSubscribeFromOverlay">Subscribe</button>
             <button class="btn ghost" id="tryWeekly">Preview</button>
           </div>
         </div>
       </div>
+
+      <!-- Hidden: full index of 52 weekly challenge pages (placeholders) -->
+      <ul id="weeklyIndex" hidden>
+        <!-- weekly-W01.html … weekly-W52.html -->
+      </ul>
     </section>
 
-    <!-- ===== FOUNDATIONS (courses – locked until purchased) ===== -->
+    <!-- ===== FOUNDATIONS (course heroes, locked until purchased) ===== -->
     <section class="tab-panel" id="tab-foundations" role="tabpanel" aria-labelledby="tabbtn-foundations">
       <h2 class="section-title">Foundations</h2>
       <div class="grid grid-3">
-        <article class="hero decal tall-hero course locked" data-course-id="found-setup" data-course-type="foundations" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="found-setup" data-course-type="1day" data-course-days="1" data-link="course-found-setup.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <!-- Padlock SVG -->
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Materials & Setup</h3>
             </div>
-            <p class="hero-desc">Essentials to prepare your space: paper, charcoal, inks, brushes, easel.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <p class="hero-desc">Prepare space: paper, charcoal, inks, brushes, easel, safe layout.</p>
+            <div>
+              <button class="btn ghost btnStartCourse">Start Course</button>
+            </div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="found-drawing" data-course-type="foundations" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="found-drawing" data-course-type="1day" data-course-days="1" data-link="course-found-drawing.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Drawing</h3>
             </div>
-            <p class="hero-desc">Line, tone, proportion, gesture and observation — build confident habits.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <p class="hero-desc">Line, tone, proportion, gesture, observation — confident habits.</p>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="found-painting" data-course-type="foundations" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="found-painting" data-course-type="1day" data-course-days="1" data-link="course-found-painting.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Painting</h3>
             </div>
-            <p class="hero-desc">Surface prep, colour mixing, value structure, and brushwork.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <p class="hero-desc">Surface prep, colour mixing, value structure, brushwork.</p>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- ===== COURSES (all locked until purchased; redeem rules apply) ===== -->
+    <!-- ===== COURSES (purchase/redeem; 3-day = 500 pts, 30-day = 1500 pts) ===== -->
     <section class="tab-panel" id="tab-courses" role="tabpanel" aria-labelledby="tabbtn-courses">
       <h2 class="section-title">Online Courses</h2>
 
-      <h3 class="section-title small">1-Day Intensives</h3>
+      <h3 class="section-title">1-Day Intensives</h3>
       <div class="grid grid-3">
-        <article class="hero decal tall-hero course locked" data-course-id="1d-gesture" data-course-type="1day" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="1d-gesture" data-course-type="1day" data-course-days="1" data-link="course-1d-gesture.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Gesture Drawing</h3>
             </div>
             <p class="hero-desc">Fast, confident gestures to capture life.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="1d-ink" data-course-type="1day" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="1d-ink" data-course-type="1day" data-course-days="1" data-link="course-1d-ink.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Ink Essentials</h3>
             </div>
             <p class="hero-desc">Brush, pen, and splash control.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="1d-charcoal" data-course-type="1day" data-course-days="1">
+        <article class="hero decal tall-hero course locked" data-course-id="1d-charcoal" data-course-type="1day" data-course-days="1" data-link="course-1d-charcoal.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Charcoal Tonals</h3>
             </div>
             <p class="hero-desc">Structure with light and dark.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
       </div>
 
-      <h3 class="section-title small">3-Day Courses (Redeem: 500 Art $)</h3>
+      <h3 class="section-title">3-Day Courses <span class="hero-meta">Redeem: 500 points</span></h3>
       <div class="grid grid-3">
-        <article class="hero decal tall-hero course locked" data-course-id="3d-portrait" data-course-type="3day" data-course-days="3" data-redeem="500">
+        <article class="hero decal tall-hero course locked" data-course-id="3d-portrait" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-portrait.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Portrait Sprint</h3>
             </div>
             <p class="hero-desc">Planes, proportions, expression.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="3d-urban" data-course-type="3day" data-course-days="3" data-redeem="500">
+        <article class="hero decal tall-hero course locked" data-course-id="3d-urban" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-urban.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Urban Sketching</h3>
             </div>
-            <p class="hero-desc">Perspective and texture in the wild.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <p class="hero-desc">Perspective on location.</p>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="3d-experimental" data-course-type="3day" data-course-days="3" data-redeem="500">
+        <article class="hero decal tall-hero course locked" data-course-id="3d-experimental" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-experimental.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Experimental Media</h3>
             </div>
             <p class="hero-desc">Combine mediums without fear.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
       </div>
 
-      <h3 class="section-title small">30-Day Courses (Redeem: 1500 Art $)</h3>
+      <h3 class="section-title">30-Day Courses <span class="hero-meta">Redeem: 1500 points</span></h3>
       <div class="grid grid-3">
-        <article class="hero decal tall-hero course locked" data-course-id="30d-draw" data-course-type="30day" data-course-days="30" data-redeem="1500">
+        <article class="hero decal tall-hero course locked" data-course-id="30d-draw" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-draw.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Drawing Foundations</h3>
             </div>
             <p class="hero-desc">Daily habit and core skills.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="30d-paint" data-course-type="30day" data-course-days="30" data-redeem="1500">
+        <article class="hero decal tall-hero course locked" data-course-id="30d-paint" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-paint.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Paint with Confidence</h3>
             </div>
             <p class="hero-desc">Colour, value, edges.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
-        <article class="hero decal tall-hero course locked" data-course-id="30d-portrait" data-course-type="30day" data-course-days="30" data-redeem="1500">
+        <article class="hero decal tall-hero course locked" data-course-id="30d-portrait" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-portrait.html">
           <div class="hero-body">
             <div class="padlock-wrap">
-              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               <h3 class="hero-title">Expressive Portraits</h3>
             </div>
             <p class="hero-desc">Structure plus spontaneity.</p>
-            <div class="hero-cta"><button class="btn-square start btnStartCourse">Start<br/>Course</button></div>
+            <div><button class="btn ghost btnStartCourse">Start Course</button></div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- ===== LIVE (placeholder) ===== -->
+    <!-- ===== LIVE (placeholder; bookings also appear in Calendar as gold) ===== -->
     <section class="tab-panel" id="tab-live" role="tabpanel" aria-labelledby="tabbtn-live">
       <h2 class="section-title">Live Demonstrations</h2>
-      <p class="hero-desc">We’ll configure bookings shortly. Any booked demo will appear in your calendar.</p>
       <div class="grid grid-3">
-        <article class="hero decal tall-hero"><div class="hero-body"><h3 class="hero-title">Upcoming Demo</h3><p class="hero-desc">TBA</p></div></article>
-        <article class="hero decal tall-hero"><div class="hero-body"><h3 class="hero-title">Replay Demo</h3><p class="hero-desc">TBA</p></div></article>
-        <article class="hero decal tall-hero"><div class="hero-body"><h3 class="hero-title">Workshop</h3><p class="hero-desc">TBA</p></div></article>
+        <article class="hero decal tall-hero">
+          <div class="hero-body">
+            <h3 class="hero-title">Upcoming Demo</h3>
+            <p class="hero-desc">Bookings here will add a gold entry in My Calendar.</p>
+            <div><button class="btn primary" id="btnBookLive">Book Demo</button></div>
+          </div>
+        </article>
+        <article class="hero decal tall-hero"><div class="hero-body"><h3 class="hero-title">Replay #1</h3><p class="hero-desc">Placeholder</p></div></article>
+        <article class="hero decal tall-hero"><div class="hero-body"><h3 class="hero-title">Replay #2</h3><p class="hero-desc">Placeholder</p></div></article>
       </div>
     </section>
 
@@ -438,25 +361,41 @@
     <section class="tab-panel" id="tab-achievements" role="tabpanel" aria-labelledby="tabbtn-achievements">
       <h2 class="section-title">Achievements</h2>
       <div class="achievements-summary">
-        <div class="points-display">Art $: <span id="achPoints">0</span></div>
-        <div id="streakDisplay"></div>
+        <div class="points-display">Points: <span id="achPoints">0</span></div>
+        <div id="streakDisplay" class="hero-meta"></div>
       </div>
 
-      <h3 class="section-title small">Weekly Badges</h3>
+      <h3 class="section-title">Weekly Badges</h3>
       <div id="badgesGrid"></div>
 
-      <h3 class="section-title small">Daily Completions</h3>
+      <h3 class="section-title">Daily Completions</h3>
       <div id="dailyTicks"></div>
 
-      <h3 class="section-title small">History</h3>
+      <h3 class="section-title">History</h3>
       <ul id="historyList" class="history-list"></ul>
       <div class="pager">
         <button class="btn ghost" id="prevPage">Prev</button>
         <button class="btn ghost" id="nextPage">Next</button>
       </div>
+    </section>
 
-      <h3 class="section-title small">Calendar</h3>
-      <div class="calendar">
+    <!-- ===== MY CALENDAR (built-in, black) ===== -->
+    <section class="tab-panel" id="tab-calendar" role="tabpanel" aria-labelledby="tabbtn-calendar">
+      <h2 class="section-title">My Calendar</h2>
+
+      <!-- Tallies + click to open lists -->
+      <div class="tallies">
+        <div class="tally" data-tally="daily"><span class="chip blue"></span> Daily (<span id="tallyDaily">0</span>)</div>
+        <div class="tally" data-tally="weekly"><span class="chip green"></span> Weekly (<span id="tallyWeekly">0</span>)</div>
+        <div class="tally" data-tally="3day"><span class="chip yellow"></span> 3-Day (<span id="tally3d">0</span>)</div>
+        <div class="tally" data-tally="30day"><span class="chip red"></span> 30-Day (<span id="tally30d">0</span>)</div>
+        <div class="tally" data-tally="live"><span class="chip gold"></span> Live (<span id="tallyLive">0</span>)</div>
+      </div>
+
+      <!-- Scroll lists (hidden until tally click) -->
+      <div id="tallyLists" class="history-list" style="max-height:180px; overflow:auto; display:none"></div>
+
+      <div class="calendar-wrap">
         <div class="cal-head">
           <button class="btn ghost" id="calPrev">◀</button>
           <div id="calTitle"></div>
@@ -472,7 +411,7 @@
   <div class="modal" id="subscribeModal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-content">
       <h3>Subscribe to Weekly Challenges</h3>
-      <p>Access all weekly challenges and earn 10 Art $ per completion.</p>
+      <p>Unlock weekly challenges and earn +10 points per completion.</p>
       <div class="modal-actions">
         <button class="btn primary" id="confirmSubscribe">Subscribe Now</button>
         <button class="btn ghost" data-close="subscribeModal">Cancel</button>
@@ -484,102 +423,83 @@
   <div class="modal" id="purchaseModal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal-content">
       <h3 id="purchaseTitle">Purchase Course</h3>
-      <p id="purchaseDesc">This course is locked. Purchase to unlock, or redeem Art $ if eligible.</p>
+      <p id="purchaseDesc">This course is locked. Purchase to unlock, or redeem points if eligible.</p>
       <div id="redeemInfo" class="hero-meta"></div>
       <div class="modal-actions">
         <button class="btn primary" id="btnPayNow">Pay Now</button>
-        <button class="btn ghost" id="btnRedeem">Redeem with Art $</button>
+        <button class="btn ghost" id="btnRedeem">Redeem with Points</button>
         <button class="btn ghost" data-close="purchaseModal">Cancel</button>
       </div>
     </div>
   </div>
 
-  <!-- ===== Inlined Script (all logic for HOME) ===== -->
+  <!-- ===== HOME LOGIC (inlined) ===== -->
   <script>
   (function(){
-    /* ===========================
-       Utilities & Storage
-       =========================== */
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => Array.from(document.querySelectorAll(sel));
-    const storage = {
-      get(k, fallback){
-        try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch{ return fallback; }
-      },
-      set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const store = {
+      get(k, f){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):f;}catch{return f} },
+      set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
     };
-
     const KEYS = {
-      sub: 'ao_isSubscriber',
-      points: 'ao_points',
-      history: 'ao_history',
-      purchased: 'ao_purchasedCourses',
-      dailyDone: 'ao_completedDailies',     // ISO date strings
-      weeklyDone: 'ao_completedWeeklies'    // [{id, dateISO}]
+      sub:'ao_isSubscriber',
+      points:'ao_points',
+      hist:'ao_history',            // [{ts,type,id,title,pointsDelta,extra}]
+      purchased:'ao_purchasedCourses', // [courseId]
+      daily:'ao_completedDailies',  // ["YYYY-MM-DD"]
+      weekly:'ao_completedWeeklies' // [{id:"W07", dateISO:"YYYY-MM-DD"}]
     };
+    let isSubscriber = !!store.get(KEYS.sub, false);
+    let points = +store.get(KEYS.points, 0);
+    let history = store.get(KEYS.hist, []);
+    let purchased = store.get(KEYS.purchased, []);
+    let dailyDone = store.get(KEYS.daily, []);
+    let weeklyDone = store.get(KEYS.weekly, []);
 
-    // Init storage defaults
-    let isSubscriber = !!storage.get(KEYS.sub, false);
-    let points = +storage.get(KEYS.points, 0);
-    let history = storage.get(KEYS.history, []); // {ts,type,id,title,pointsDelta,info}
-    let purchased = storage.get(KEYS.purchased, []); // [courseId...]
-    let dailyDone = storage.get(KEYS.dailyDone, []);  // ["2025-09-10", ...]
-    let weeklyDone = storage.get(KEYS.weeklyDone, []); // [{id:"W07", dateISO:"2025-09-07"}]
-
+    const today = new Date();
     const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const pad = n => String(n).padStart(2,'0');
     const fmtDate = d => `${dayNames[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
-    const today = new Date();
 
-    // Paint nav points and sub chip
-    function paintTopBar(){
-      $('#pointsValue').textContent = points;
-      $('#subState').textContent = isSubscriber ? 'On' : 'Off';
-      $('#toggleSub').setAttribute('aria-pressed', isSubscriber ? 'true' : 'false');
-    }
-    paintTopBar();
+    function paintTop(){ $('#pointsValue').textContent = points; $('#subState').textContent = isSubscriber?'On':'Off'; $('#toggleSub').setAttribute('aria-pressed', isSubscriber?'true':'false'); }
+    paintTop();
 
-    /* ===========================
-       Tabs
-       =========================== */
-    const tabButtons = $$('.tab');
-    const panels = $$('.tab-panel');
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => {
-          const sel = b === btn;
-          b.classList.toggle('is-active', sel);
-          b.setAttribute('aria-selected', sel ? 'true' : 'false');
-        });
-        panels.forEach(p => p.classList.remove('is-active'));
-        const panel = document.getElementById(btn.getAttribute('aria-controls'));
-        if(panel) panel.classList.add('is-active');
-        window.scrollTo({top:0, behavior:'smooth'});
-        if(panel && panel.id === 'tab-achievements'){ renderAchievements(); renderCalendar(); }
-      });
-    });
+    /* ===== Tabs ===== */
+    const tabBtns = $$('.tab'); const panels = $$('.tab-panel');
+    tabBtns.forEach(btn=>btn.addEventListener('click',()=>{
+      tabBtns.forEach(b=>{const sel=b===btn; b.classList.toggle('is-active',sel); b.setAttribute('aria-selected', sel?'true':'false');});
+      panels.forEach(p=>p.classList.remove('is-active'));
+      const panel = $('#'+btn.getAttribute('aria-controls')); if(panel) panel.classList.add('is-active');
+      window.scrollTo({top:0, behavior:'smooth'});
+      if(btn.id==='tabbtn-achievements'){ renderAchievements(); }
+      if(btn.id==='tabbtn-calendar'){ renderCalendar(); paintTallies(); }
+    }));
 
-    /* ===========================
-       Daily Challenge (always free)
-       =========================== */
+    /* ===== Daily (Complete button on FAR RIGHT) ===== */
     $('#dailyDate').textContent = fmtDate(today);
-    $('#btnStartDaily').addEventListener('click', () => {
+    function markDailyCompleteUI(){
+      const hero = $('#dailyHero');
+      hero.classList.add('complete');
+    }
+    // If daily already completed today, mark it
+    const isoToday = (new Date()).toISOString().slice(0,10);
+    if(dailyDone.includes(isoToday)){ markDailyCompleteUI(); }
+
+    $('#btnCompleteDaily').addEventListener('click', ()=>{
       const iso = (new Date()).toISOString().slice(0,10);
       if(!dailyDone.includes(iso)){
-        dailyDone.push(iso); storage.set(KEYS.dailyDone, dailyDone);
-        addHistory({type:'daily', id:iso, title:'Daily Challenge', pointsDelta:+1, info:'Completed daily challenge'});
-        points += 1; storage.set(KEYS.points, points);
-        paintTopBar();
+        dailyDone.push(iso); store.set(KEYS.daily, dailyDone);
+        points += 1; store.set(KEYS.points, points);
+        addHistory({type:'daily', id:iso, title:'Daily Challenge', pointsDelta:+1});
+        markDailyCompleteUI(); paintTop();
       }
-      // Calendar entry
-      addCalendarEvent({title:'Daily Challenge', date: new Date(), type:'daily'});
-      alert('Daily Challenge started! (+1 Art $ on completion)');
+      addCalEvent({type:'daily', title:'Daily Challenge', date:new Date()});
+      alert('Daily marked complete (+1 point).');
     });
 
-    /* ===========================
-       Weekly Challenges — 52 items cycling yearly
-       =========================== */
-    const WEEKLY_DEFS = [
+    /* ===== 52 Weekly Challenges (definitions & cycling) ===== */
+    const WEEKLY = [
       {id:'W01', title:'Gesture Lines', desc:'Loose lines, large arm movement.'},
       {id:'W02', title:'Negative Space', desc:'See shapes around the subject.'},
       {id:'W03', title:'Value Ladder', desc:'Five-step tonal control.'},
@@ -633,356 +553,282 @@
       {id:'W51', title:'Gesture Animals', desc:'Capture movement.'},
       {id:'W52', title:'Best-of Remix', desc:'Combine 3 skills.'}
     ];
+    // Fill hidden weekly index list
+    const idxUl = $('#weeklyIndex');
+    WEEKLY.forEach(w=>{
+      const li = document.createElement('li'); const a=document.createElement('a');
+      a.href = `weekly-${w.id}.html`; a.textContent = `${w.id} — ${w.title}`;
+      li.appendChild(a); idxUl.appendChild(li);
+    });
 
-    // Compute current Sunday (00:00 local), previous Sundays, and week-of-year index (0..51)
-    function startOfSunday(d){
-      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const day = x.getDay(); // 0=Sun
-      x.setDate(x.getDate() - day);
-      x.setHours(0,0,0,0);
-      return x;
-    }
-    function addWeeks(d,w){ const x = new Date(d); x.setDate(x.getDate()+w*7); return x; }
-    function firstSundayOfYear(year){
-      const jan1 = new Date(year,0,1); const dow = jan1.getDay(); // 0..6
-      const firstSun = new Date(year,0,1 + ((7 - dow) % 7));
-      firstSun.setHours(0,0,0,0); return firstSun;
-    }
-    function weekIndexForDate(d){
-      const y = d.getFullYear();
-      const fs = firstSundayOfYear(y);
-      const ms = d - fs;
-      if(ms < 0){ // before first Sunday, use last year's last weeks
-        return weekIndexForDate(new Date(y-1,11,31));
-      }
-      const week = Math.floor(ms / (7*24*3600*1000));
-      return week % 52;
-    }
+    function startOfSunday(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const dow=x.getDay(); x.setDate(x.getDate()-dow); x.setHours(0,0,0,0); return x; }
+    function addWeeks(d,w){ const x=new Date(d); x.setDate(x.getDate()+w*7); return x; }
+    function firstSundayOfYear(y){ const jan1=new Date(y,0,1); const dow=jan1.getDay(); const fs=new Date(y,0,1+((7-dow)%7)); fs.setHours(0,0,0,0); return fs; }
+    function weekIndex(d){ const y=d.getFullYear(); const fs=firstSundayOfYear(y); const delta=d - fs; if(delta<0) return weekIndex(new Date(y-1,11,31)); const w=Math.floor(delta/(7*24*3600*1000)); return w % 52; }
+    function fmtRange(s,e){ return `Starts ${pad(s.getDate())}/${pad(s.getMonth()+1)} • Expires ${pad(e.getDate())}/${pad(e.getMonth()+1)}`; }
 
-    function fmtRange(start, end){
-      return `Starts ${pad(start.getDate())}/${pad(start.getMonth()+1)} • Expires ${pad(end.getDate())}/${pad(end.getMonth()+1)}`;
-    }
-
-    // Render the 3 weekly cards (current + previous two Sundays)
-    function renderWeekly(){
-      const weeklyRow = $('#weeklyRow');
-      weeklyRow.innerHTML = '';
-      const baseSun = startOfSunday(today);
-      const sundays = [0,-1,-2].map(w => addWeeks(baseSun, w));
-      const lockOverlay = $('#weeklyLock');
-      lockOverlay.style.display = isSubscriber ? 'none' : 'grid';
-      sundays.forEach((sun, idx) => {
-        const expiry = addWeeks(sun, 4);
-        const expired = today >= expiry;
-        const wIndex = weekIndexForDate(sun);         // 0..51
-        const def = WEEKLY_DEFS[wIndex];
-        const isDone = weeklyDone.some(w => w.id === def.id);
+    function paintWeekly(){
+      const row = $('#weeklyRow'); row.innerHTML='';
+      const base = startOfSunday(new Date());
+      const sundays = [0,-1,-2].map(w=>addWeeks(base,w));
+      $('#weeklyLock').style.display = isSubscriber ? 'none' : 'grid';
+      sundays.forEach(s=>{
+        const expiry = addWeeks(s,4); const expired = (new Date()) >= expiry;
+        const idx = weekIndex(s); const def = WEEKLY[idx];
+        const done = weeklyDone.some(x=>x.id===def.id);
         const locked = !isSubscriber;
-        const idAttr = def.id;
         const card = document.createElement('article');
-        card.className = `hero weekly decal ${expired ? 'is-expired' : ''} ${locked ? 'locked' : ''}`;
-        card.dataset.weekId = idAttr;
-        card.dataset.startIso = sun.toISOString();
-        card.dataset.expiryIso = expiry.toISOString();
+        card.className = `hero weekly decal ${expired?'is-expired':''} ${locked?'locked':''}`;
+        card.dataset.weekId = def.id; card.dataset.startIso = s.toISOString(); card.dataset.expiryIso = expiry.toISOString();
         card.innerHTML = `
           <div class="hero-body">
             <div class="padlock-wrap">
-              ${locked ? `<svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>` : ''}
-              <h3 class="hero-title">${def.title} ${isDone ? '<span class="tick">✓</span>' : ''}</h3>
+              ${locked?'<svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>':''}
+              <h3 class="hero-title">${def.title} ${done?'<span class="tick">✓</span>':''}</h3>
             </div>
-            <p class="hero-meta">${fmtRange(sun, expiry)}</p>
+            <p class="hero-meta">${fmtRange(s,expiry)}</p>
             <p class="hero-desc">${def.desc}</p>
-            <div class="hero-cta">
-              <button class="btn-square start btnStartWeekly" ${locked || expired ? 'disabled' : ''}>Start<br/>Challenge</button>
+            <div>
+              <a class="btn primary btnStartWeekly" ${locked||expired?'aria-disabled="true" tabindex="-1"':''}
+                 href="${locked||expired?'#':`weekly-${def.id}.html`}" data-week="${def.id}">Start Challenge</a>
             </div>
-            <div class="hero-expiry">${expired ? 'Expired' : 'Active'}</div>
+            <div class="hero-expiry">${expired?'Expired':'Active'}</div>
           </div>`;
-        weeklyRow.appendChild(card);
+        row.appendChild(card);
       });
-
-      // Wire weekly buttons
-      $$('.btnStartWeekly').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const card = e.target.closest('.hero.weekly');
-          const weekId = card.dataset.weekId;
-          if(!isSubscriber){
-            openModal('subscribeModal');
-            return;
+      // Wire protection if locked
+      $$('.btnStartWeekly').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          if(a.getAttribute('aria-disabled')==='true'){
+            e.preventDefault();
+            if(!isSubscriber){ openModal('subscribeModal'); }
           }
-          // Complete weekly
-          completeWeekly(weekId, WEEKLY_DEFS.find(w=>w.id===weekId).title);
         });
       });
     }
+    paintWeekly();
 
-    function completeWeekly(id, title){
-      const iso = (new Date()).toISOString().slice(0,10);
-      if(!weeklyDone.some(w=>w.id===id)){
-        weeklyDone.push({id, dateISO: iso}); storage.set(KEYS.weeklyDone, weeklyDone);
-        points += 10; storage.set(KEYS.points, points);
-        addHistory({type:'weekly', id, title, pointsDelta:+10, info:'Completed weekly challenge'});
-        addCalendarEvent({title:`Weekly: ${title}`, date: new Date(), type:'weekly'});
-        paintTopBar(); renderWeekly(); // refresh ticks & locks
+    // Weekly completion API (for weekly-WNN.html pages to call)
+    window.AO_markWeeklyComplete = function(weekId, title){
+      const iso=(new Date()).toISOString().slice(0,10);
+      if(!weeklyDone.some(w=>w.id===weekId)){
+        weeklyDone.push({id:weekId, dateISO:iso}); store.set(KEYS.weekly, weeklyDone);
+        points += 10; store.set(KEYS.points, points);
+        addHistory({type:'weekly', id:weekId, title, pointsDelta:+10});
+        addSpan({type:'weekly', title:`Weekly: ${title}`, start:new Date(), days:7, color:'green'});
+        paintTop(); paintWeekly();
       }
-      alert('Weekly Challenge started! (+10 Art $ on completion)');
-    }
+    };
 
-    /* ===========================
-       Subscribe toggle + Overlay
-       =========================== */
-    $('#toggleSub').addEventListener('click', ()=>{
-      isSubscriber = !isSubscriber;
-      storage.set(KEYS.sub, isSubscriber);
-      paintTopBar(); renderWeekly();
-    });
+    /* ===== Subscribe toggle ===== */
+    $('#toggleSub').addEventListener('click', ()=>{ isSubscriber=!isSubscriber; store.set(KEYS.sub,isSubscriber); paintTop(); paintWeekly(); });
     $('#openSubscribeFromOverlay').addEventListener('click', ()=> openModal('subscribeModal'));
-    $('#tryWeekly').addEventListener('click', ()=>{
-      alert('Preview: explore the weekly challenges layout. Subscribe to unlock.');
-    });
-    $('#confirmSubscribe').addEventListener('click', ()=>{
-      isSubscriber = true; storage.set(KEYS.sub, true);
-      closeModal('subscribeModal'); paintTopBar(); renderWeekly();
-    });
+    $('#confirmSubscribe').addEventListener('click', ()=>{ isSubscriber=true; store.set(KEYS.sub,true); closeModal('subscribeModal'); paintTop(); paintWeekly(); });
+    $('#tryWeekly').addEventListener('click', ()=> alert('Preview only — subscribe to unlock.'));
 
-    /* ===========================
-       Courses: lock until purchased; redeem rules
-       =========================== */
-    function isPurchased(id){ return purchased.includes(id); }
-    function lockPaint(){
+    /* ===== Courses: purchase/redeem, open course page ===== */
+    function purchasedQ(id){ return purchased.includes(id); }
+    function repaintCourseLocks(){
       $$('.course').forEach(card=>{
-        const id = card.dataset.courseId;
-        const locked = !isPurchased(id);
+        const id=card.dataset.courseId; const locked=!purchasedQ(id);
         card.classList.toggle('locked', locked);
-        const btn = card.querySelector('.btnStartCourse');
-        if(btn){ btn.disabled = locked ? false : false; } // button always enabled; modal will handle lock
-        // Ensure padlock present when locked
-        const hasPad = !!card.querySelector('.padlock');
-        if(locked && !hasPad){
-          const wrap = card.querySelector('.padlock-wrap');
-          wrap && (wrap.insertAdjacentHTML('afterbegin',
-            '<svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'));
-        }
-        if(!locked){
-          const pad = card.querySelector('.padlock');
-          pad && pad.remove();
-        }
+        // padlock visibility handled by CSS
       });
     }
-    lockPaint();
+    repaintCourseLocks();
 
-    let pendingCourse = null; // {id,title,type,days,redeem}
+    let pending = null; // {id,title,type,days,redeem,link}
     $$('.btnStartCourse').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         const card = e.target.closest('.course');
-        const id = card.dataset.courseId;
-        const type = card.dataset.courseType;       // 'foundations'|'1day'|'3day'|'30day'
-        const days = parseInt(card.dataset.courseDays||'1',10);
-        const redeem = parseInt(card.dataset.redeem||'0',10);
+        const id = card.dataset.courseId, type=card.dataset.courseType, days=+card.dataset.courseDays||1, redeem=+(card.dataset.redeem||0), link=card.dataset.link;
         const title = card.querySelector('.hero-title')?.textContent || 'Course';
-
-        if(isPurchased(id)){
-          // Simulate opening course (don’t navigate other HTMLs per your request)
-          addHistory({type:'open-course', id, title, pointsDelta:0, info:'Opened purchased course'});
-          addCalendarSpan({title:`${title}`, startDate:new Date(), days});
-          alert('Course opened (already purchased).');
+        if(purchasedQ(id)){
+          addHistory({type:'open-course', id, title, pointsDelta:0});
+          addSpan({type: type==='3day' ? '3day' : (type==='30day'?'30day':'1day'), title, start:new Date(), days, color:(type==='3day'?'yellow':type==='30day'?'red':undefined)});
+          window.location.href = link;
           return;
         }
-
-        // Not purchased: open Purchase modal
-        pendingCourse = {id, title, type, days, redeem};
+        pending = {id,title,type,days,redeem,link};
         $('#purchaseTitle').textContent = `Unlock “${title}”`;
-        $('#redeemInfo').textContent = redeem ? `You can redeem this course for ${redeem} Art $.` : 'This course cannot be redeemed with points.';
-        // Redeem available only for 3-day (500) and 30-day (1500)
-        const redeemBtn = $('#btnRedeem');
-        if(redeem && points >= redeem){ redeemBtn.disabled = false; }
-        else if(redeem){ redeemBtn.disabled = true; }
-        else { redeemBtn.disabled = true; }
+        $('#redeemInfo').textContent = redeem ? `You can redeem this course for ${redeem} points.` : 'This course cannot be redeemed with points.';
+        const rb = $('#btnRedeem');
+        rb.disabled = !redeem || points < redeem;
         openModal('purchaseModal');
       });
     });
 
-    // Pay Now (simulate)
     $('#btnPayNow').addEventListener('click', ()=>{
-      if(!pendingCourse) return;
-      purchased.push(pendingCourse.id); storage.set(KEYS.purchased, purchased);
-      addHistory({type:'purchase', id:pendingCourse.id, title:pendingCourse.title, pointsDelta:0, info:'Purchased course'});
-      addCalendarSpan({title: pendingCourse.title, startDate:new Date(), days: pendingCourse.days});
-      closeModal('purchaseModal'); lockPaint();
-      alert('Purchase successful. Course unlocked.');
+      if(!pending) return;
+      purchased.push(pending.id); store.set(KEYS.purchased, purchased);
+      addHistory({type:'purchase', id:pending.id, title:pending.title, pointsDelta:0});
+      addSpan({type: pending.type==='3day'?'3day': (pending.type==='30day'?'30day':'1day'),
+               title: pending.title, start:new Date(), days: pending.days,
+               color: pending.type==='3day'?'yellow': pending.type==='30day'?'red':undefined});
+      closeModal('purchaseModal'); repaintCourseLocks();
+      window.location.href = pending.link;
     });
 
-    // Redeem with Art $
     $('#btnRedeem').addEventListener('click', ()=>{
-      if(!pendingCourse) return;
-      const cost = pendingCourse.redeem || 0;
-      if(!cost || points < cost){ alert('Not enough Art $ to redeem.'); return; }
-      points -= cost; storage.set(KEYS.points, points); paintTopBar();
-      purchased.push(pendingCourse.id); storage.set(KEYS.purchased, purchased);
-      addHistory({type:'redeem', id:pendingCourse.id, title:pendingCourse.title, pointsDelta:-cost, info:`Redeemed ${cost} Art $`});
-      addCalendarSpan({title: pendingCourse.title, startDate:new Date(), days: pendingCourse.days});
-      closeModal('purchaseModal'); lockPaint();
-      alert('Redeemed Art $. Course unlocked.');
+      if(!pending) return;
+      const cost = pending.redeem||0; if(points < cost){ alert('Not enough points.'); return; }
+      points -= cost; store.set(KEYS.points, points); paintTop();
+      purchased.push(pending.id); store.set(KEYS.purchased, purchased);
+      addHistory({type:'redeem', id:pending.id, title:pending.title, pointsDelta:-cost, extra:`redeemed ${cost} points`});
+      addSpan({type: pending.type==='3day'?'3day': (pending.type==='30day'?'30day':'1day'),
+               title: pending.title, start:new Date(), days: pending.days,
+               color: pending.type==='3day'?'yellow': pending.type==='30day'?'red':undefined});
+      closeModal('purchaseModal'); repaintCourseLocks();
+      window.location.href = pending.link;
     });
 
-    /* ===========================
-       History & Points helpers
-       =========================== */
-    function addHistory(entry){
-      history.unshift({ts:Date.now(), ...entry}); // newest first
-      storage.set(KEYS.history, history);
-    }
+    // Course completion API (course pages can call this on finish)
+    window.AO_markCourseComplete = function(courseId, title){
+      const card = document.querySelector(`[data-course-id="${courseId}"]`);
+      if(card){ card.classList.add('complete'); }
+      addHistory({type:'course-complete', id:courseId, title, pointsDelta:0});
+    };
 
-    /* ===========================
-       Calendar (built-in, no external sync)
-       =========================== */
-    // For simplicity, calendar rebuilds from history & purchased courses spans initiated when opened.
+    /* ===== Achievements ===== */
+    const PAGE=20; let page=0;
+    function renderAchievements(){
+      $('#achPoints').textContent = points;
+      // Badges
+      const b = $('#badgesGrid'); b.innerHTML='';
+      weeklyDone.forEach(w=>{
+        const def = WEEKLY.find(d=>d.id===w.id);
+        const el=document.createElement('span'); el.className='badge'; el.title=def?def.title:w.id; el.textContent=w.id; b.appendChild(el);
+      });
+      // Daily ticks (this month)
+      const now=new Date(); const monthDailies=dailyDone.filter(iso=>{const d=new Date(iso); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();});
+      $('#streakDisplay').textContent = `Daily completions this month: ${monthDailies.length}`;
+      const ticks=$('#dailyTicks'); ticks.innerHTML=''; if(monthDailies.length){ const s=document.createElement('div'); s.textContent='✓ '.repeat(Math.min(monthDailies.length,100)); ticks.appendChild(s);}
+      // History
+      paintHistory();
+    }
+    function paintHistory(){
+      const ul=$('#historyList'); ul.innerHTML='';
+      const start=page*PAGE, end=start+PAGE;
+      history.slice(start,end).forEach(h=>{
+        const d=new Date(h.ts), when=`${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        const delta=h.pointsDelta>0?`(+${h.pointsDelta})`:(h.pointsDelta<0?`(${h.pointsDelta})`:'');
+        const li=document.createElement('li'); li.className='history-item';
+        li.innerHTML = `<strong>${h.type.toUpperCase()}</strong> — ${h.title||h.id} ${delta} <span class="hero-meta">• ${when}</span>`;
+        ul.appendChild(li);
+      });
+    }
+    $('#prevPage').addEventListener('click', ()=>{ if(page>0){ page--; paintHistory(); }});
+    $('#nextPage').addEventListener('click', ()=>{ if((page+1)*PAGE<history.length){ page++; paintHistory(); }});
+
+    /* ===== Calendar ===== */
+    // Event adders — stored only via history (we re-derive dots/spans from it)
+    function addHistory(entry){ history.unshift({ts:Date.now(), ...entry}); store.set(KEYS.hist, history); }
+    function addCalEvent({type,title,date}){ addHistory({type, id: (title||type), title, pointsDelta:0, extra:'calendar'}); }
+    function addSpan({type,title,start,days,color}){ addHistory({type:type+'-span', id:title, title, pointsDelta:0, extra:{days,color,ts:start.getTime()}}); }
+
     let calMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-    function addCalendarEvent({title, date, type}){
-      // We don’t store separate calendar JSON: it’s derived from history/purchases.
-      // This function exists for symmetry; data already captured in history/saved state.
-      // Re-render if on Achievements tab
-    }
-
-    function addCalendarSpan({title, startDate, days}){
-      // Spans appear as red line across days; we infer spans from purchase events + data attr.
-      // Here we just add a history marker (helps reconstruct spans on render).
-      addHistory({type:'course-span', id:title, title, pointsDelta:0, info:`${days}-day course span`});
-    }
-
     function renderCalendar(){
-      // Build date matrix for calMonth
-      const y = calMonth.getFullYear(), m = calMonth.getMonth();
-      const title = `${calMonth.toLocaleString(undefined, {month:'long'})} ${y}`;
-      $('#calTitle').textContent = title;
+      const y=calMonth.getFullYear(), m=calMonth.getMonth();
+      $('#calTitle').textContent = `${calMonth.toLocaleString(undefined,{month:'long'})} ${y}`;
+      const first = new Date(y,m,1);
+      const start = new Date(first); start.setDate(1-first.getDay());
+      const grid=$('#calGrid'); grid.innerHTML='';
 
-      const first = new Date(y, m, 1);
-      const start = new Date(first);
-      start.setDate(1 - first.getDay()); // back to Sunday start
+      // Tallies per month
+      const counts = {daily:0, weekly:0, '3day':0, '30day':0, live:0};
 
-      const grid = $('#calGrid');
-      grid.innerHTML = '';
       for(let i=0;i<42;i++){
-        const d = new Date(start); d.setDate(start.getDate()+i);
-        const cell = document.createElement('div');
-        cell.className = 'cal-cell';
-        cell.innerHTML = `<div class="cal-date">${d.getDate()}</div>`;
-        // Events derived from history
-        const iso = d.toISOString().slice(0,10);
-        const dayEvents = history.filter(h => {
-          const ht = new Date(h.ts);
-          const sameDay = ht.getFullYear()===d.getFullYear() && ht.getMonth()===d.getMonth() && ht.getDate()===d.getDate();
-          return sameDay && (h.type==='daily' || h.type==='weekly' || h.type==='purchase' || h.type==='redeem');
+        const d=new Date(start); d.setDate(start.getDate()+i);
+        const cell=document.createElement('div'); cell.className='cal-cell';
+        cell.innerHTML=`<div class="cal-date">${d.getDate()}</div>`;
+        // Per-day simple events
+        const dayEvents = history.filter(h=>{
+          const ht=new Date(h.ts);
+          return ht.getFullYear()===d.getFullYear() && ht.getMonth()===d.getMonth() && ht.getDate()===d.getDate() &&
+           (h.type==='daily' || h.type==='weekly' || h.type==='purchase' || h.type==='redeem' || h.type==='live');
         });
-        if(dayEvents.length){
-          const dots = document.createElement('div');
-          dayEvents.forEach(ev=>{
-            const dot = document.createElement('span');
-            dot.className = 'cal-dot';
-            dots.appendChild(dot);
-          });
-          cell.appendChild(dots);
-        }
-        // Course spans: infer from last 120 history entries (cheap)
-        const spanHints = history.filter(h => h.type==='course-span');
-        // naive: if span created on some day, draw line for N days from that day
-        spanHints.forEach(h=>{
-          // Try to find metadata by matching title -> locate course card for days
-          const card = [...document.querySelectorAll('[data-course-id]')].find(c => (c.querySelector('.hero-title')?.textContent||'') === h.title);
-          const days = card ? parseInt(card.dataset.courseDays||'1',10) : 1;
-          const startTs = h.ts; const startD = new Date(startTs);
-          const spanStart = new Date(startD.getFullYear(), startD.getMonth(), startD.getDate()); // strip time
-          const spanEnd = new Date(spanStart); spanEnd.setDate(spanEnd.getDate() + (days-1));
-          // if d within [spanStart..spanEnd], paint red line
-          if(d >= spanStart && d <= spanEnd){
-            const line = document.createElement('div'); line.className = 'cal-course-span';
-            cell.appendChild(line);
+        dayEvents.forEach(ev=>{
+          const dot=document.createElement('span'); dot.className='cal-dot '+(
+            ev.type==='daily'?'dot-blue' :
+            ev.type==='weekly'?'dot-green' :
+            ev.type==='live'?'dot-gold' :
+            'dot-blue'
+          );
+          cell.appendChild(dot);
+          if(ev.type==='daily') counts.daily++;
+          if(ev.type==='weekly') counts.weekly++;
+          if(ev.type==='live') counts.live++;
+        });
+
+        // Spans (weekly/3day/30day)
+        history.filter(h=>h.type.endsWith('-span')).forEach(h=>{
+          const meta=h.extra||{}; const startTs=meta.ts||h.ts; const sD=new Date(startTs);
+          const days=meta.days|| (h.type.startsWith('3day')?3 : h.type.startsWith('30day')?30 : 7);
+          const spanStart=new Date(sD.getFullYear(), sD.getMonth(), sD.getDate());
+          const spanEnd=new Date(spanStart); spanEnd.setDate(spanEnd.getDate()+days-1);
+          if(d>=spanStart && d<=spanEnd){
+            const bar=document.createElement('div'); bar.className='span-bar ' + (
+              h.type.startsWith('weekly')?'span-green' : h.type.startsWith('3day')?'span-yellow' : 'span-red'
+            );
+            cell.appendChild(bar);
             if(d.getTime()===spanEnd.getTime()){
-              const label = document.createElement('div'); label.className = 'cal-exp-label'; label.textContent='Expires';
-              cell.appendChild(label);
+              const lbl=document.createElement('div'); lbl.className='exp-label'; lbl.textContent='Expires'; cell.appendChild(lbl);
             }
+            if(h.type.startsWith('3day')) counts['3day']++;
+            if(h.type.startsWith('30day')) counts['30day']++;
+            if(h.type.startsWith('weekly')) counts['weekly']++; // weekly spans also increment
           }
         });
 
         grid.appendChild(cell);
       }
+      // Paint tallies
+      $('#tallyDaily').textContent = counts.daily;
+      $('#tallyWeekly').textContent = counts.weekly;
+      $('#tally3d').textContent = counts['3day'];
+      $('#tally30d').textContent = counts['30day'];
+      $('#tallyLive').textContent = counts.live;
     }
     $('#calPrev').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); });
     $('#calNext').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); });
-
-    /* ===========================
-       Achievements (badges, ticks, history paging)
-       =========================== */
-    const PAGE_SZ = 20; let page = 0;
-
-    function renderAchievements(){
-      $('#achPoints').textContent = points;
-
-      // Weekly badges
-      const b = $('#badgesGrid'); b.innerHTML='';
-      weeklyDone.forEach(w=>{
-        const def = WEEKLY_DEFS.find(d=>d.id===w.id);
-        const el = document.createElement('span');
-        el.className = 'badge';
-        el.title = def ? def.title : w.id;
-        el.textContent = def ? def.id.replace('W','W') : w.id;
-        b.appendChild(el);
-      });
-
-      // Daily ticks (count this month)
-      const now = new Date();
-      const monthDailies = dailyDone.filter(iso => {
-        const d = new Date(iso);
-        return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
-      }).length;
-      $('#streakDisplay').textContent = `Daily completions this month: ${monthDailies}`;
-      const ticks = $('#dailyTicks'); ticks.innerHTML='';
-      if(monthDailies){
-        const list = document.createElement('div');
-        list.textContent = '✓ '.repeat(Math.min(monthDailies, 60));
-        ticks.appendChild(list);
-      }
-
-      // History (paginated)
-      paintHistory();
-    }
-
-    function paintHistory(){
-      const ul = $('#historyList'); ul.innerHTML='';
-      const start = page*PAGE_SZ, end = start + PAGE_SZ;
-      history.slice(start, end).forEach(h=>{
-        const li = document.createElement('li');
-        const d = new Date(h.ts);
-        const when = `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        const delta = h.pointsDelta>0 ? `(+${h.pointsDelta})` : (h.pointsDelta<0 ? `(${h.pointsDelta})` : '');
-        li.className = 'history-item';
-        li.innerHTML = `<strong>${h.type.toUpperCase()}</strong> — ${h.title || h.id} ${delta} <span class="hero-meta">• ${when}</span>`;
-        ul.appendChild(li);
+    function paintTallies(){
+      const box = $('#tallyLists'); box.style.display='none'; box.innerHTML='';
+      $$('.tally').forEach(t=>t.onclick=()=>{
+        const type=t.dataset.tally; box.style.display='block'; box.innerHTML='';
+        const mapType = {
+          daily: h=>h.type==='daily',
+          weekly: h=>h.type==='weekly' || h.type==='weekly-span',
+          '3day': h=>h.type.startsWith('3day'),
+          '30day': h=>h.type.startsWith('30day'),
+          live: h=>h.type==='live'
+        };
+        history.filter(mapType[type]).forEach(h=>{
+          const d=new Date(h.ts);
+          const li=document.createElement('div'); li.className='history-item';
+          li.textContent = `${h.title||h.id} • ${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+          box.appendChild(li);
+        });
       });
     }
-    $('#prevPage').addEventListener('click', ()=>{ if(page>0){ page--; paintHistory(); }});
-    $('#nextPage').addEventListener('click', ()=>{ if((page+1)*PAGE_SZ < history.length){ page++; paintHistory(); }});
 
-    /* ===========================
-       Modals (open/close)
-       =========================== */
-    function openModal(id){ const m = document.getElementById(id); if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); } }
-    function closeModal(id){ const m = document.getElementById(id); if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); } }
-    $$('[data-close]').forEach(btn=> btn.addEventListener('click', e => closeModal(e.target.getAttribute('data-close'))));
-    // Clicking outside closes
-    ['subscribeModal','purchaseModal'].forEach(mid=>{
-      const m = document.getElementById(mid);
-      m.addEventListener('click', e => { if(e.target === m) closeModal(mid); });
+    /* ===== Live booking (gold in calendar) ===== */
+    $('#btnBookLive')?.addEventListener('click', ()=>{
+      addHistory({type:'live', id:'live', title:'Live Demonstration Booking', pointsDelta:0});
+      alert('Booked. A gold entry has been added to your calendar.');
     });
 
-    /* ===========================
-       Initial paints
-       =========================== */
-    paintTopBar();
-    renderWeekly();
+    /* ===== Modals ===== */
+    function openModal(id){ const m=document.getElementById(id); if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); } }
+    function closeModal(id){ const m=document.getElementById(id); if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); } }
+    $$('[data-close]').forEach(b=>b.addEventListener('click', e=>closeModal(e.target.getAttribute('data-close'))));
+    ['subscribeModal','purchaseModal'].forEach(mid=>{
+      const m=document.getElementById(mid);
+      m.addEventListener('click', e=>{ if(e.target===m) closeModal(mid); });
+    });
 
-    // If user opens Achievements, paint content (also done on tab click)
-    if($('#tab-achievements').classList.contains('is-active')){ renderAchievements(); renderCalendar(); }
+    // Initial paints for default tab
+    renderAchievements(); // so Ach page is ready when opened
+    renderCalendar();     // so My Calendar is ready when opened
   })();
   </script>
 </body>
