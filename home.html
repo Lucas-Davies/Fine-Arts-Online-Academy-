@@ -1,807 +1,580 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="color-scheme" content="dark" />
-  <title>Home</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<title>Home</title>
 
-  <!-- ================================
-       DESIGN TOKENS
-       ================================ -->
-  <style>
-    :root{
-      /* Palette */
-      --ink:#eef3ff;           --ink-dim:#cfd3e1;  --muted:rgba(238,243,255,.78);
-      --bg:#000;               --panel:#0b0f14;    --stroke:rgba(255,255,255,.16);
-      --blue:#0A84FF;          --green:#32d74b;    --gold:#ffd700; --silver:#c0c7d1;
-      --red:#ff453a;
+<style>
+/* =========================
+   DESIGN TOKENS
+   ========================= */
+:root{
+  /* Palette */
+  --ink:#eef3ff; --ink-dim:#cfd3e1; --muted:rgba(238,243,255,.78);
+  --bg:#000; --stroke:rgba(255,255,255,.18);
+  --blue:#0A84FF; --green:#32d74b; --gold:#ffd700; --silver:#c0c7d1; --red:#ff453a;
 
-      /* Layout */
-      --r:12px;                --gap:12px;         --maxw:1240px;
-      --nav-h:68px;
-    }
+  /* Layout */
+  --gap:12px; --r:14px; --maxw:1240px;
+  --nav-h:68px;
+}
 
-    /* Base reset */
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
-    body{
-      margin:0; background:var(--bg); color:var(--ink);
-      font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
-    }
-    a,button{ color:inherit; text-decoration:none; cursor:pointer }
-    img{ pointer-events:none; -webkit-user-drag:none }
+/* Reset-ish */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
+}
+a{color:inherit; text-decoration:none}
 
-    /* Fixed background */
-    .bg{
-      position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background:#000 url("./assets/home-bg.jpg") center/cover no-repeat;
-    }
+/* Full-bleed, fixed BG */
+.bg{position:fixed; inset:0; z-index:-1; background:#000 url("./assets/home-bg.jpg") center/cover no-repeat}
 
-    /* ================================
-       HEADER (single unified bar)
-       ================================ */
-    .nav{
-      position:fixed; inset:0 0 auto 0; height:var(--nav-h); z-index:30;
-      display:flex; align-items:center; gap:10px; padding:8px 12px;
-      background:linear-gradient(180deg, rgba(0,0,0,.85), rgba(0,0,0,.35) 70%, transparent);
-      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    }
-    /* Remove brand text per request */
-    .brand{ display:none }
+/* =========================
+   HEADER
+   ========================= */
+.nav{
+  position:sticky; top:0; left:0; right:0; height:var(--nav-h);
+  display:flex; align-items:center; gap:10px; padding:8px 12px; z-index:30;
+  background:linear-gradient(180deg, rgba(0,0,0,.85), rgba(0,0,0,.35) 60%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.nav-left{display:flex; gap:10px; align-items:center; flex:0 1 auto}
+.nav-right{margin-left:auto; display:flex; align-items:center}
 
-    /* Tab buttons (and the avatar left edge) share this shape */
-    .chip{
-      display:inline-flex; align-items:center; justify-content:center;
-      font-weight:800; padding:10px 14px; border-radius:12px;
-      border:1px solid var(--stroke); background:rgba(0,0,0,.55);
-      white-space:nowrap; transition:transform .06s ease, filter .2s ease;
-      touch-action:manipulation;
-    }
-    .chip:focus-visible, .chip:hover{ transform:translateY(-1px) }
-    .chip.is-active{ background:var(--blue); border-color:transparent; color:#fff }
+/* Tab buttons + Avatar tab share the same base */
+.btn-tab{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:116px; height:44px; padding:0 14px;
+  border-radius:12px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.55); color:var(--ink); font-weight:900; cursor:pointer;
+  transition:transform .06s ease, filter .15s ease;
+}
+.btn-tab:active{transform:translateY(1px)}
+.btn-tab.is-active{background:var(--blue); border-color:transparent; color:#fff}
 
-    .tabs{
-      display:flex; gap:10px; align-items:center; flex:1 1 auto; min-width:0;
-    }
+/* Avatar control: left block (points) + round right (initials) */
+.avatarTab{
+  position:relative; display:inline-flex; align-items:center; gap:10px; padding-right:56px;
+}
+.avatarTab .points{
+  font-weight:900;
+}
+.avatarTab .dot{
+  position:absolute; right:0; top:0; bottom:0; width:44px;
+  border-left:1px solid var(--stroke);
+  border-top-right-radius:22px; border-bottom-right-radius:22px;
+  display:grid; place-items:center; font-weight:900;
+}
+.avatarTab.silver{ background:var(--silver); color:#0f1116 }
+.avatarTab.silver .dot{ background:linear-gradient(135deg,#d9dee6,#b7bec9) }
+.avatarTab.gold{ background:var(--gold); color:#0f1116; border-color:transparent }
+.avatarTab.gold .dot{ background:linear-gradient(135deg,#ffe88a,#f6c400) }
 
-    /* Overflow → More */
-    .more{ position:relative }
-    .more > .chip{ display:none } /* only shown when overflow exists */
-    .more-panel{
-      position:absolute; right:0; top:calc(100% + 8px);
-      display:none; flex-direction:column; gap:8px; padding:10px;
-      background:var(--panel); border:1px solid var(--stroke); border-radius:12px;
-      box-shadow:0 18px 48px rgba(0,0,0,.55); z-index:40;
-    }
-    .more.open > .more-panel{ display:flex }
-    /* iPhone full-width sheet */
-    @media (max-width:680px){
-      .more.open > .more-panel{
-        position:fixed; left:0; right:0; top:var(--nav-h); bottom:0;
-        border-radius:0; overflow:auto; padding:16px;
-      }
-      .more.open > .more-panel .chip{ width:100%; justify-content:flex-start }
-    }
+/* =========================
+   WRAP
+   ========================= */
+.wrap{max-width:var(--maxw); margin:0 auto; padding:10px 14px 80px}
 
-    /* Avatar control (square-ish left + round image on right) */
-    .avatar{
-      display:flex; align-items:center; gap:8px; margin-left:auto;
-      --a-h:38px;
-    }
-    .avatar .btn{
-      composes: chip;
-      display:inline-flex; align-items:center; gap:10px;
-      padding-right:8px; /* room for the round image */
-      position:relative;
-      background:var(--silver); color:#0f1116; border:0; box-shadow:none;
-    }
-    .avatar.gold .btn{ background:var(--gold) }
-    .avatar .img{
-      width:var(--a-h); height:var(--a-h); border-radius:50%;
-      display:grid; place-items:center; font-weight:900;
-      background:linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.06));
-      border:1px solid var(--stroke);
-    }
-    .avatar-menu{
-      position:absolute; right:12px; top:calc(100% + 8px); z-index:40;
-      display:none; width:min(92vw, 340px);
-      background:var(--panel); border:1px solid var(--stroke); border-radius:14px; padding:10px;
-      box-shadow:0 18px 46px rgba(0,0,0,.55);
-    }
-    .avatar.open .avatar-menu{ display:block }
-    .menu-row{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:8px; border-radius:10px; border:1px solid var(--stroke); background:#0a0f12;
-    }
-    .menu-note{ color:var(--ink-dim); font-size:.86rem; margin:6px 2px }
+/* =========================
+   HERO CARDS
+   ========================= */
+.hero{
+  position:relative; overflow:hidden; background:#000;
+  border:1px solid var(--stroke); border-radius:16px;
+  padding:16px; margin:12px 0;
+}
+.hero .title{ margin:0 0 6px; font-weight:900; font-size:20px; display:flex; align-items:center; gap:8px }
+.hero .meta{ margin:0 0 6px; color:var(--ink-dim) }
+.hero .desc{ margin:8px 0 56px; color:var(--muted) } /* space for CTAs */
 
-    /* ================================
-       WRAP + PANELS
-       ================================ */
-    .wrap{ max-width:var(--maxw); margin:0 auto; padding:calc(var(--nav-h) + 10px) 12px 80px }
-    .panel{ display:none }
-    .panel.is-active{ display:block; animation:fade .18s ease }
-    @keyframes fade{ from{ opacity:.6; transform:translateY(4px) } to{ opacity:1; transform:none } }
+.cta-left{ position:absolute; left:16px; bottom:14px; display:flex; gap:10px }
 
-    /* Buttons */
-    .btn{ border:0; border-radius:12px; font-weight:800; padding:12px 16px }
-    .btn.blue{  background:var(--blue);  color:#fff }
-    .btn.green{ background:var(--green); color:#000 }
-    .btn.ghost{ background:rgba(0,0,0,.5); color:var(--ink); border:1px solid var(--stroke) }
-    .btn[disabled]{ opacity:.55; cursor:not-allowed }
+/* Buttons */
+.btn{ padding:12px 16px; border-radius:12px; border:0; font-weight:900; cursor:pointer }
+.btn.blue{background:var(--blue); color:#fff}
+.btn.green{background:var(--green); color:#000}
+.btn.gold{background:var(--gold); color:#0f1116}
+.btn.grey{background:#3a3a3a; color:#fff}
+.btn[disabled]{opacity:.55; cursor:not-allowed}
 
-    /* Heroes */
-    .hero{
-      position:relative; background:#000; border:1px solid var(--stroke); border-radius:12px;
-      padding:16px; margin:12px 0; overflow:hidden;
-    }
-    .hero .title{ margin:0 0 4px; font-weight:900; font-size:18px; display:flex; align-items:center; gap:8px }
-    .hero .meta{ margin:0; color:var(--ink-dim); font-size:.92rem }
-    .hero .desc{ margin:8px 0 0; color:var(--muted) }
-    .hero.complete{ box-shadow:0 0 0 3px var(--green) inset }
-    .hero.complete .title::after{ content:" ✓"; color:var(--green); font-weight:900 }
+/* Silver padlock icon */
+.padlock{ width:22px; height:22px; display:inline-block; vertical-align:-3px }
+.padlock svg{ width:100%; height:100% }
+.padlock .shackle{ fill:none; stroke:var(--silver); stroke-width:2.4 }
+.padlock .body{ fill:var(--silver) }
+.padlock .keyhole{ fill:#0f1116 }
 
-    /* Silver padlock (premium) */
-    .lock{ width:22px; height:22px; flex:0 0 auto }
-    .lock svg{ width:100%; height:100% }
-    .lock .shackle{ fill:none; stroke:var(--silver); stroke-width:2.4 }
-    .lock .body{ fill:var(--silver) }
-    .lock .keyhole{ fill:#0f1116 }
+/* Price + Points bubble (disappear when purchased) */
+.price, .pts{
+  position:absolute; right:12px; border-radius:999px; font-weight:900; padding:6px 10px;
+  background:rgba(0,0,0,.6); border:1px solid var(--stroke)
+}
+.price{ bottom:12px; color:#fff }
+.pts{ top:12px; color:#0f1116; background:var(--gold); border-color:transparent; box-shadow:0 6px 18px rgba(255,215,0,.22) }
+.pts[hidden], .price[hidden]{ display:none }
 
-    /* Price (BR) + Points bubble (TR; solid gold) */
-    .price{
-      position:absolute; right:12px; bottom:12px; min-width:56px; text-align:center;
-      background:rgba(0,0,0,.55); border:1px solid var(--stroke); border-radius:10px; padding:6px 10px; font-weight:900;
-    }
-    .points{
-      position:absolute; right:12px; top:12px; transform:translate(8px,-8px);
-      border-radius:999px; padding:6px 10px; font-weight:900; color:#0f1116;
-      background:var(--gold); box-shadow:0 8px 26px rgba(255,215,0,.35); border:0;
-    }
+/* Completion ring + tick */
+.hero.complete{ box-shadow:0 0 0 3px var(--green) inset }
+.hero.complete .title::after{ content:" ✓"; color:var(--green); font-weight:900 }
 
-    /* Layout helpers */
-    .btn-row{ display:flex; gap:10px; align-items:center }
-    .cta-left{ position:absolute; left:16px; bottom:16px }
+/* Layouts */
+.weekly-grid{ display:grid; gap:var(--gap) }
+.grid-3{ grid-template-columns:repeat(3,minmax(0,1fr)) }
 
-    /* Weekly layout – portrait stacks; landscape grid */
-    .weekly{ display:grid; gap:var(--gap); margin-top:10px }
-    @media (orientation:portrait){ .weekly{ grid-template-columns:1fr } }
-    @media (orientation:landscape){ .weekly{ grid-template-columns:repeat(3,1fr) } }
+/* Portrait: stack weekly + taller course/weekly heroes for readability */
+@media (orientation:portrait){
+  .weekly-grid{ grid-template-columns:1fr }
+  .hero.tall{ min-height: 360px } /* +20% for iPhone readability */
+  #dailyHero{ min-height: 260px }  /* daily in portrait */
+}
 
-    /* Grids for Courses/Live */
-    .grid{ display:grid; gap:var(--gap); margin:12px 0 }
-    .grid-3{ grid-template-columns:repeat(3, minmax(0,1fr)) }
-    @media (max-width:680px){ .grid-3{ grid-template-columns:1fr } }
-    .tall{ min-height: clamp(240px, 28vh, 360px) }              /* base */
-    @media (max-width:680px){ .tall{ min-height: clamp(288px, 34vh, 430px) } }  /* +20% on iPhone */
+/* Landscape: daily spans full width; weekly/courses 3-up and higher */
+@media (orientation:landscape){
+  .weekly-grid{ grid-template-columns:repeat(3,minmax(0,1fr)) }
+  .hero.tall{ min-height: 300px }
+  #dailyHero{ min-height: 220px }
+}
 
-    /* Modals (hidden by default; no pointer-events when closed) */
-    .modal{ position:fixed; inset:0; display:none; place-items:center; z-index:70 }
-    .modal.open{ display:grid }
-    .modal > .bgd{ position:absolute; inset:0; background:rgba(0,0,0,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
-    .modal .card{
-      position:relative; width:min(92vw, 560px); background:#0f1116; border:1px solid var(--stroke);
-      border-radius:16px; padding:18px; box-shadow:0 18px 48px rgba(0,0,0,.55); z-index:1
-    }
+/* =========================
+   BOTTOM SHEET (Avatar menu)
+   ========================= */
+.sheet{
+  position:fixed; inset:0; display:none; z-index:60;
+  background:rgba(0,0,0,.5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.sheet.open{ display:block }
+.sheet .panel{
+  position:absolute; left:0; right:0; bottom:0; border-top-left-radius:18px; border-top-right-radius:18px;
+  background:#0f1116; border-top:1px solid var(--stroke); padding:14px; max-height:80vh; overflow:auto;
+}
+.sheet .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; border:1px solid var(--stroke); background:#0a0f14; margin-bottom:10px }
+.sheet .row a{ font-weight:900 }
+.sheet h3{ margin:6px 2px 10px; font-size:16px }
 
-    /* Accessibility helpers */
-    .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0) }
-  </style>
+/* Utilities */
+.section-title{ margin:18px 2px 8px; font-size:18px; font-weight:900 }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
+.hide{ display:none !important }
+</style>
 </head>
+<body>
 
-<body oncontextmenu="return false">
-  <div class="bg" aria-hidden="true"></div>
+<div class="bg" aria-hidden="true"></div>
 
-  <!-- ================================
-       HEADER
-       ================================ -->
-  <header class="nav" role="banner">
-    <div class="tabs" id="tabsBar" role="tablist" aria-label="Primary">
-      <button class="chip is-active" role="tab" aria-selected="true" data-target="pan-challenges">Challenges</button>
-      <button class="chip" role="tab" aria-selected="false" data-target="pan-courses">Courses</button>
-      <button class="chip" role="tab" aria-selected="false" data-target="pan-live">Live</button>
+<header class="nav">
+  <div class="nav-left" role="tablist" aria-label="Primary">
+    <button class="btn-tab is-active" data-tab="challenges" aria-selected="true">Challenges</button>
+    <button class="btn-tab" data-tab="courses" aria-selected="false">Courses</button>
+    <button class="btn-tab" data-tab="live" aria-selected="false">Live</button>
+  </div>
 
-      <div class="more" id="moreWrap" aria-controls="morePanel">
-        <button class="chip" id="moreBtn" aria-haspopup="true" aria-expanded="false">More ▾</button>
-        <div class="more-panel" id="morePanel" role="menu"></div>
+  <div class="nav-right">
+    <!-- Avatar tab (points + initials) -->
+    <button id="avatarTab" class="btn-tab avatarTab silver" aria-haspopup="dialog" aria-expanded="false">
+      <span class="points" id="pointsBadge">0</span>
+      <span class="dot" id="avatarInitials">JG</span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- TABS -->
+  <section id="panel-challenges" data-panel="challenges">
+    <article class="hero" id="dailyHero" aria-labelledby="dailyTitle">
+      <h2 class="title" id="dailyTitle">Today’s Daily Challenge</h2>
+      <p class="meta" id="dailyDate">—</p>
+      <p class="desc" id="dailyDesc">Warm up: 15–20 minutes of quick charcoal gestures. Fill one page with 10–15 poses focusing on big shapes and clear value separation.</p>
+      <div class="cta-left">
+        <button class="btn blue" id="btnDaily">Complete</button>
       </div>
-    </div>
+    </article>
 
-    <!-- Avatar (silver when not subscribed; gold when subscribed). No “Account” button -->
-    <div class="avatar" id="avatar">
-      <button class="btn" id="avatarBtn" aria-haspopup="true" aria-expanded="false">
-        Avatar
-        <span class="img" id="avatarImg">JG</span>
-      </button>
+    <h3 class="section-title">Weekly Challenges (Subscribers)</h3>
+    <div class="weekly-grid" id="weeklyGrid"></div>
+  </section>
 
-      <div class="avatar-menu" id="avatarMenu" role="menu">
-        <div class="menu-note"><strong>Account</strong></div>
-        <div class="menu-row">
-          <span>Subscription</span>
-          <button class="chip" id="subToggle" aria-pressed="false">Off</button>
-        </div>
-
-        <div class="menu-note"><strong>Shortcuts</strong></div>
-        <div class="menu-row"><a class="chip" href="#calendar" id="goCal">My Calendar</a></div>
-        <div class="menu-row"><a class="chip" href="profile.html#achievements">Achievements</a></div>
-        <div class="menu-row"><a class="chip" href="profile.html#slot1">Placeholder 1</a></div>
-        <div class="menu-row"><a class="chip" href="profile.html#slot2">Placeholder 2</a></div>
-        <div class="menu-row"><a class="chip" href="profile.html#slot3">Placeholder 3</a></div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ================================
-       MAIN
-       ================================ -->
-  <main class="wrap" role="main">
-    <!-- CHALLENGES -->
-    <section class="panel is-active" id="pan-challenges" role="tabpanel">
-      <article class="hero" id="dailyHero" aria-labelledby="dailyTitle">
-        <h2 class="title" id="dailyTitle">Today’s Daily Challenge</h2>
-        <p class="meta"><span id="dailyDate">—</span></p>
-        <p class="desc">A fast 15–20 minute warm-up. Keep it loose, focus on big decisions.</p>
-        <div class="cta-left btn-row">
-          <button class="btn blue" id="btnDaily">Complete</button>
+  <section id="panel-courses" class="hide" data-panel="courses">
+    <h2 class="section-title">Foundations (Subscribers)</h2>
+    <div class="weekly-grid">
+      <!-- Foundations -->
+      <article class="hero tall course" data-id="found-setup" data-kind="foundation">
+        <h3 class="title"><span class="padlock" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/></svg>
+          <svg viewBox="0 0 24 24" style="position:absolute;inset:0;opacity:0"><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx=".6"/></svg>
+        </span> Materials &amp; Setup</h3>
+        <p class="meta">Prepare your space: paper, charcoal, inks, brushes, safe layout.</p>
+        <p class="desc">Step-by-step setup to start drawing/painting with confidence.</p>
+        <div class="cta-left">
+          <button class="btn blue start-found" disabled>Start Course</button>
         </div>
       </article>
 
-      <h3 class="title" style="margin:16px 2px 6px">Weekly Challenges (Subscribers)</h3>
-      <div class="weekly" id="weeklyWrap"></div>
-    </section>
+      <article class="hero tall course" data-id="found-drawing" data-kind="foundation">
+        <h3 class="title"><span class="padlock" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/></svg>
+          <svg viewBox="0 0 24 24" style="position:absolute;inset:0;opacity:0"><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx=".6"/></rect></svg>
+        </span> Drawing</h3>
+        <p class="meta">Line, tone, proportion, gesture, observation.</p>
+        <p class="desc">Foundational drills to build accuracy and flow.</p>
+        <div class="cta-left">
+          <button class="btn blue start-found" disabled>Start Course</button>
+        </div>
+      </article>
 
-    <!-- COURSES -->
-    <section class="panel" id="pan-courses" role="tabpanel">
-      <h2 class="title" style="margin:12px 2px 6px">Courses</h2>
-
-      <h3 class="title" style="margin:12px 2px 6px">Foundations (Subscribers)</h3>
-      <div class="grid grid-3">
-        <article class="hero tall course" data-kind="foundation" data-id="found-setup" data-link="course-found-setup.html">
-          <div class="title"><span class="lock" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6"/></svg>
-          </span> Materials &amp; Setup</div>
-          <p class="meta">Prepare your space: paper, charcoal, inks, brushes, safe layout.</p>
-          <p class="desc">Step-by-step setup to start drawing/painting with confidence.</p>
-          <div class="cta-left btn-row"><button class="btn blue btnStart">Start Course</button></div>
-        </article>
-
-        <article class="hero tall course" data-kind="foundation" data-id="found-drawing" data-link="course-found-drawing.html">
-          <div class="title"><span class="lock" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6"/></svg>
-          </span> Drawing</div>
-          <p class="meta">Line, tone, proportion, gesture, observation.</p>
-          <p class="desc">Foundational drills to build accuracy and flow.</p>
-          <div class="cta-left btn-row"><button class="btn blue btnStart">Start Course</button></div>
-        </article>
-
-        <article class="hero tall course" data-kind="foundation" data-id="found-painting" data-link="course-found-painting.html">
-          <div class="title"><span class="lock" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6"/></svg>
-          </span> Painting</div>
-          <p class="meta">Surface prep, colour mixing, value structure, brushwork.</p>
-          <p class="desc">Learn stable processes that free you to be expressive.</p>
-          <div class="cta-left btn-row"><button class="btn blue btnStart">Start Course</button></div>
-        </article>
-      </div>
-
-      <h3 class="title" style="margin:12px 2px 6px">1-Day Intensives</h3>
-      <div class="grid grid-3">
-        <article class="hero tall course" data-kind="paid" data-id="1d-gesture" data-link="course-1d-gesture.html" data-points="300">
-          <div class="title">Gesture Drawing</div>
-          <p class="meta">Fast, confident gesture studies.</p>
-          <p class="desc">Build energy and decision-making in minutes.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">300</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="1d-ink" data-link="course-1d-ink.html" data-points="300">
-          <div class="title">Ink Essentials</div>
-          <p class="meta">Brush, pen, splash control.</p>
-          <p class="desc">Harness accidents while keeping structure.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">300</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="1d-charcoal" data-link="course-1d-charcoal.html" data-points="300">
-          <div class="title">Charcoal Tonals</div>
-          <p class="meta">Structure with light/dark.</p>
-          <p class="desc">Design clear value statements with charcoal.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">300</div>
-          <div class="price">$?</div>
-        </article>
-      </div>
-
-      <h3 class="title" style="margin:12px 2px 6px">3-Day Courses</h3>
-      <div class="grid grid-3">
-        <article class="hero tall course" data-kind="paid" data-id="3d-portrait" data-link="course-3d-portrait.html" data-points="500">
-          <div class="title">Portrait Sprint</div>
-          <p class="meta">Planes, proportions, expression.</p>
-          <p class="desc">A concentrated 3-day block to level-up portraits.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">500</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="3d-urban" data-link="course-3d-urban.html" data-points="500">
-          <div class="title">Urban Sketching</div>
-          <p class="meta">Perspective on location.</p>
-          <p class="desc">Speed, accuracy, and atmosphere outdoors.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">500</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="3d-experimental" data-link="course-3d-experimental.html" data-points="500">
-          <div class="title">Experimental Media</div>
-          <p class="meta">Combine mediums without fear.</p>
-          <p class="desc">Push materials while keeping control.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">500</div>
-          <div class="price">$?</div>
-        </article>
-      </div>
-
-      <h3 class="title" style="margin:12px 2px 6px">30-Day Courses</h3>
-      <div class="grid grid-3">
-        <article class="hero tall course" data-kind="paid" data-id="30d-draw" data-link="course-30d-draw.html" data-points="1500">
-          <div class="title">Drawing Foundations</div>
-          <p class="meta">Daily habit and core skills.</p>
-          <p class="desc">A month of guided practice to lock in fundamentals.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">1500</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="30d-paint" data-link="course-30d-paint.html" data-points="1500">
-          <div class="title">Paint with Confidence</div>
-          <p class="meta">Colour, value, edges.</p>
-          <p class="desc">Disciplined routines to paint with clarity.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">1500</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall course" data-kind="paid" data-id="30d-portrait" data-link="course-30d-portrait.html" data-points="1500">
-          <div class="title">Expressive Portraits</div>
-          <p class="meta">Structure plus spontaneity.</p>
-          <p class="desc">From armature to edge design to decisive accents.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuy">Buy</button></div>
-          <div class="points" title="Redeem with points">1500</div>
-          <div class="price">$?</div>
-        </article>
-      </div>
-    </section>
-
-    <!-- LIVE -->
-    <section class="panel" id="pan-live" role="tabpanel">
-      <h2 class="title" style="margin:12px 2px 6px">Live Demonstrations</h2>
-      <div class="grid grid-3">
-        <article class="hero tall live" data-id="live-1" data-link="live-1.html" data-points="?" data-price="$?">
-          <div class="title">Upcoming Demo #1</div>
-          <p class="meta">Booking adds a gold calendar entry; completion adds ✓.</p>
-          <p class="desc">Streaming link delivered via email after purchase.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuyLive">Buy</button></div>
-          <div class="points" title="Redeem with points">?</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall live" data-id="live-2" data-link="live-2.html" data-points="?" data-price="$?">
-          <div class="title">Upcoming Demo #2</div>
-          <p class="meta">Details to be announced.</p>
-          <p class="desc">Gold entry on booking; ✓ when watched.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuyLive">Buy</button></div>
-          <div class="points" title="Redeem with points">?</div>
-          <div class="price">$?</div>
-        </article>
-
-        <article class="hero tall live" data-id="live-3" data-link="live-3.html" data-points="?" data-price="$?">
-          <div class="title">Upcoming Demo #3</div>
-          <p class="meta">Details to be announced.</p>
-          <p class="desc">Gold entry on booking; ✓ when watched.</p>
-          <div class="cta-left btn-row"><button class="btn green btnBuyLive">Buy</button></div>
-          <div class="points" title="Redeem with points">?</div>
-          <div class="price">$?</div>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <!-- ================================
-       MODALS
-       ================================ -->
-  <!-- Purchase (courses + live) -->
-  <div class="modal" id="purchaseModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="bgd" data-close="#purchaseModal"></div>
-    <div class="card">
-      <h3 id="purchaseTitle">Buy</h3>
-      <p id="purchaseDesc">Choose how you want to unlock.</p>
-      <p id="purchasePoints" class="meta"></p>
-      <div class="btn-row" style="margin-top:10px">
-        <button class="btn green" id="btnPay">Pay</button>
-        <button class="btn" style="background:var(--gold);color:#0f1116" id="btnRedeem">Redeem with Points</button>
-        <button class="btn ghost" data-close="#purchaseModal">Cancel</button>
-      </div>
+      <article class="hero tall course" data-id="found-painting" data-kind="foundation">
+        <h3 class="title"><span class="padlock" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/></svg>
+          <svg viewBox="0 0 24 24" style="position:absolute;inset:0;opacity:0"><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx=".6"/></svg>
+        </span> Painting</h3>
+        <p class="meta">Surface prep, colour mixing, value structure, brushwork.</p>
+        <p class="desc">Learn stable processes that free you to be expressive.</p>
+        <div class="cta-left">
+          <button class="btn blue start-found" disabled>Start Course</button>
+        </div>
+      </article>
     </div>
-  </div>
 
-  <!-- Not enough points -->
-  <div class="modal" id="notEnough" role="dialog" aria-modal="true">
-    <div class="bgd" data-close="#notEnough"></div>
-    <div class="card">
-      <h3>Not enough points</h3>
-      <p id="needText">—</p>
-      <div class="btn-row" style="margin-top:10px">
-        <button class="btn ghost" data-close="#notEnough">Close</button>
-      </div>
+    <h2 class="section-title">1-Day Intensives</h2>
+    <div class="weekly-grid grid-3">
+      <article class="hero tall course" data-id="1d-gesture" data-kind="paid">
+        <h3 class="title">Gesture Drawing</h3>
+        <p class="meta">Fast, confident gesture studies.</p>
+        <p class="desc">Build energy and decision-making in minutes.</p>
+        <div class="cta-left">
+          <button class="btn green buy">Buy</button>
+        </div>
+        <div class="pts" data-pts="300"><span>300</span> pts</div>
+        <div class="price" data-price="$39"><span>$39</span></div>
+      </article>
+
+      <article class="hero tall course" data-id="1d-ink" data-kind="paid">
+        <h3 class="title">Ink Essentials</h3>
+        <p class="meta">Brush, pen, splash control.</p>
+        <p class="desc">Harness accidents while keeping structure.</p>
+        <div class="cta-left">
+          <button class="btn green buy">Buy</button>
+        </div>
+        <div class="pts" data-pts="300"><span>300</span> pts</div>
+        <div class="price" data-price="$39"><span>$39</span></div>
+      </article>
+
+      <article class="hero tall course" data-id="1d-charcoal" data-kind="paid">
+        <h3 class="title">Charcoal Tonals</h3>
+        <p class="meta">Structure with light/dark.</p>
+        <p class="desc">Design clear value statements with charcoal.</p>
+        <div class="cta-left">
+          <button class="btn green buy">Buy</button>
+        </div>
+        <div class="pts" data-pts="300"><span>300</span> pts</div>
+        <div class="price" data-price="$39"><span>$39</span></div>
+      </article>
     </div>
-  </div>
 
-  <!-- Redeem confirm -->
-  <div class="modal" id="confirmRedeem" role="dialog" aria-modal="true">
-    <div class="bgd" data-close="#confirmRedeem"></div>
-    <div class="card">
-      <h3>Confirm Redeem</h3>
-      <p>Redeem points to unlock this item?</p>
-      <div class="btn-row" style="margin-top:10px">
-        <button class="btn ghost" data-close="#confirmRedeem">Cancel</button>
-        <button class="btn blue" id="doRedeem">Redeem</button>
-      </div>
+    <h2 class="section-title">3-Day Courses</h2>
+    <div class="weekly-grid grid-3">
+      <article class="hero tall course" data-id="3d-portrait" data-kind="paid" data-redeem="500">
+        <h3 class="title">Portrait Sprint</h3>
+        <p class="meta">Planes, proportions, expression.</p>
+        <p class="desc">A concentrated 3-day block to level-up portraits.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="500"><span>500</span> pts</div>
+        <div class="price" data-price="$79"><span>$79</span></div>
+      </article>
+
+      <article class="hero tall course" data-id="3d-urban" data-kind="paid" data-redeem="500">
+        <h3 class="title">Urban Sketching</h3>
+        <p class="meta">Perspective on location.</p>
+        <p class="desc">Speed, accuracy, and atmosphere outdoors.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="500"><span>500</span> pts</div>
+        <div class="price" data-price="$79"><span>$79</span></div>
+      </article>
+
+      <article class="hero tall course" data-id="3d-experimental" data-kind="paid" data-redeem="500">
+        <h3 class="title">Experimental Media</h3>
+        <p class="meta">Combine mediums without fear.</p>
+        <p class="desc">Push materials while keeping control.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="500"><span>500</span> pts</div>
+        <div class="price" data-price="$79"><span>$79</span></div>
+      </article>
     </div>
+  </section>
+
+  <section id="panel-live" class="hide" data-panel="live">
+    <h2 class="section-title">Live Demonstrations</h2>
+    <div class="weekly-grid grid-3">
+      <article class="hero tall live" data-id="live-1">
+        <h3 class="title">Upcoming Demo #1</h3>
+        <p class="meta">Streaming link delivered via email after purchase.</p>
+        <p class="desc">Bookings add gold entries to your calendar; completion marks ✓.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="1800"><span>1800</span> pts</div>
+        <div class="price" data-price="$29"><span>$29</span></div>
+      </article>
+      <article class="hero tall live" data-id="live-2">
+        <h3 class="title">Upcoming Demo #2</h3>
+        <p class="meta">Details to be announced.</p>
+        <p class="desc">Bookings add gold entries; completion marks ✓.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="1800"><span>1800</span> pts</div>
+        <div class="price" data-price="$29"><span>$29</span></div>
+      </article>
+      <article class="hero tall live" data-id="live-3">
+        <h3 class="title">Upcoming Demo #3</h3>
+        <p class="meta">Details to be announced.</p>
+        <p class="desc">Bookings add gold entries; completion marks ✓.</p>
+        <div class="cta-left"><button class="btn green buy">Buy</button></div>
+        <div class="pts" data-pts="1800"><span>1800</span> pts</div>
+        <div class="price" data-price="$29"><span>$29</span></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- ============ AVATAR BOTTOM SHEET ============ -->
+<div class="sheet" id="avatarSheet" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="panel" role="document">
+    <h3>Account</h3>
+    <div class="row">
+      <strong>Subscription</strong>
+      <button class="btn grey" id="subToggle" aria-pressed="false">Off</button>
+    </div>
+    <div class="row"><a href="#" id="openCalendar">My Calendar</a><span>›</span></div>
+    <div class="row"><a href="profile.html#achievements">Achievements</a><span>›</span></div>
+    <h3>Shortcuts</h3>
+    <div class="row"><a href="profile.html#slot1">Placeholder 1</a><span>›</span></div>
+    <div class="row"><a href="profile.html#slot2">Placeholder 2</a><span>›</span></div>
+    <div class="row"><a href="profile.html#slot3">Placeholder 3</a><span>›</span></div>
+    <h3>Avatar</h3>
+    <div class="row"><a href="#" id="uploadAvatar">Upload Avatar (soon)</a><span>›</span></div>
+    <div class="row"><button class="btn grey" id="closeSheet">Close</button></div>
   </div>
+</div>
 
-  <!-- ================================
-       APP LOGIC
-       ================================ -->
-  <script>
-    (()=>{
-      'use strict';
+<!-- Optional inline pricing fallback (replace later / or inject window.PRICE_LIST) -->
+<script id="pricingData" type="application/json">
+{
+  "1d-gesture":{"price":"$39","points":300},
+  "1d-ink":{"price":"$39","points":300},
+  "1d-charcoal":{"price":"$39","points":300},
+  "3d-portrait":{"price":"$79","points":500},
+  "3d-urban":{"price":"$79","points":500},
+  "3d-experimental":{"price":"$79","points":500},
+  "live-1":{"price":"$29","points":1800},
+  "live-2":{"price":"$29","points":1800},
+  "live-3":{"price":"$29","points":1800}
+}
+</script>
 
-      /* ---------- tiny helpers ---------- */
-      const $ = (s,r=document)=>r.querySelector(s);
-      const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
-      const pad = n => String(n).padStart(2,'0');
-      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      const toISO = d => d.toISOString().slice(0,10);
-      const isPortrait = ()=> window.matchMedia('(orientation: portrait)').matches;
+<script>
+(()=>{'use strict';
+/* ---------- Helpers ---------- */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const pad=n=>String(n).padStart(2,'0');
+const toISO=d=>d.toISOString().slice(0,10);
+const k={
+  sub:'ao_sub', points:'ao_points', purchased:'ao_purchased',
+  weeklyDone:'ao_weekly_done', dailyDone:'ao_daily_done', avatar:'ao_avatar'
+};
+const store={ get:(k,f)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch{return f}},
+              set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+const compactK = n => (n>=1000? (Math.floor(n/1000)+'k'): String(n)); // no decimals
 
-      /* ---------- state (localStorage) ---------- */
-      const K = {
-        sub:'ao_sub', points:'ao_points', purchased:'ao_purchased',
-        daily:'ao_daily', weekly:'ao_weekly', history:'ao_hist'
-      };
-      const store = {
-        get(k,f){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):f }catch{ return f } },
-        set(k,v){ localStorage.setItem(k, JSON.stringify(v)) },
-        del(k){ localStorage.removeItem(k) }
-      };
+/* ---------- State ---------- */
+let isSub=!!store.get(k.sub,false);
+let points=+store.get(k.points,0);
+let purchased=store.get(k.purchased,[]);
+let weeklyDone=store.get(k.weeklyDone,[]); // ids
+let dailyDone=store.get(k.dailyDone,[]);   // ["YYYY-MM-DD"]
 
-      let isSubscriber = !!store.get(K.sub,false);
-      let points = +store.get(K.points,0);
-      let purchased = store.get(K.purchased,[]);
-      let dailyDone = store.get(K.daily,[]);
-      let weeklyDone = store.get(K.weekly,[]);
-      let history = store.get(K.history,[]);
+/* ---------- Header Tabs ---------- */
+const tabBtns=$$('.btn-tab[data-tab]');
+const panels=$$('[data-panel]');
+tabBtns.forEach(b=>{
+  b.addEventListener('click', ()=>{
+    tabBtns.forEach(x=>{x.classList.toggle('is-active',x===b); x.setAttribute('aria-selected', x===b?'true':'false');});
+    panels.forEach(p=>p.classList.toggle('hide', p.dataset.panel!==b.dataset.tab));
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
 
-      /* ---------- header: tabs + overflow “More” ---------- */
-      const tabsBar = $('#tabsBar');
-      const moreWrap = $('#moreWrap'), moreBtn = $('#moreBtn'), morePanel = $('#morePanel');
+/* ---------- Avatar control ---------- */
+const avatarBtn = $('#avatarTab');
+const avatarSheet = $('#avatarSheet');
+const subToggle = $('#subToggle');
+const pointsBadge = $('#pointsBadge');
+const avatarInitials = $('#avatarInitials');
 
-      function layoutTabs(){
-        // Reset
-        morePanel.innerHTML='';
-        const children = [...tabsBar.querySelectorAll('.chip:not(#moreBtn)')];
-        // First, ensure all visible
-        children.forEach(c=>{ if(c!==moreWrap) c.style.display=''; });
-        // Compute available width
-        const rightW = $('#avatar')?.offsetWidth || 0;
-        const avail = tabsBar.clientWidth - rightW - 12;
-        let used = 0; const overflow=[];
-        for(const el of children){
-          if(el===moreWrap) continue;
-          const w = el.offsetWidth + 10;
-          if(used + w <= avail){ used += w; }
-          else { overflow.push(el); }
-        }
-        if(overflow.length){
-          moreBtn.style.display='inline-flex';
-          overflow.forEach(btn=>{
-            btn.style.display='none';
-            const clone = document.createElement('button');
-            clone.className='chip';
-            clone.textContent = btn.textContent.trim();
-            clone.addEventListener('click', ()=>{ btn.click(); closeMore(); });
-            morePanel.appendChild(clone);
-          });
-        }else{
-          moreBtn.style.display='none';
-        }
-      }
-      function closeMore(){ moreWrap.classList.remove('open'); moreBtn.setAttribute('aria-expanded','false'); }
-      window.addEventListener('resize', ()=> requestAnimationFrame(layoutTabs));
-      moreBtn.addEventListener('click', ()=>{
-        const open = !moreWrap.classList.contains('open');
-        closeAvatar();
-        if(open){ moreWrap.classList.add('open'); moreBtn.setAttribute('aria-expanded','true'); }
-        else closeMore();
-      });
-      document.addEventListener('click', (e)=>{ if(!moreWrap.contains(e.target) && e.target!==moreBtn) closeMore(); });
+function paintAvatar(){
+  pointsBadge.textContent = compactK(points);
+  avatarBtn.classList.toggle('gold', isSub);
+  avatarBtn.classList.toggle('silver', !isSub);
+  subToggle.textContent = isSub?'On':'Off';
+  subToggle.className = 'btn ' + (isSub?'green':'grey');
+  subToggle.setAttribute('aria-pressed', isSub?'true':'false');
+}
+paintAvatar();
 
-      /* ---------- header: avatar + dropdown ---------- */
-      const avatar = $('#avatar'), avatarBtn = $('#avatarBtn'), avatarMenu = $('#avatarMenu'), subToggle = $('#subToggle');
-      function paintAvatar(){
-        avatar.classList.toggle('gold', isSubscriber);
-        avatarBtn.setAttribute('aria-expanded','false');
-        subToggle.textContent = isSubscriber ? 'On' : 'Off';
-        subToggle.setAttribute('aria-pressed', isSubscriber?'true':'false');
-      }
-      function openAvatar(){ closeMore(); avatar.classList.add('open'); avatarBtn.setAttribute('aria-expanded','true'); }
-      function closeAvatar(){ avatar.classList.remove('open'); avatarBtn.setAttribute('aria-expanded','false'); }
-      avatarBtn.addEventListener('click', (e)=>{ e.stopPropagation(); avatar.classList.contains('open')?closeAvatar():openAvatar(); });
-      document.addEventListener('click', (e)=>{ if(!avatar.contains(e.target)) closeAvatar(); });
-      subToggle.addEventListener('click', ()=>{
-        isSubscriber = !isSubscriber; store.set(K.sub, isSubscriber); paintAvatar(); lockState();
-      });
+avatarBtn.addEventListener('click', ()=>{
+  avatarSheet.classList.add('open');
+  avatarSheet.setAttribute('aria-hidden','false');
+  avatarBtn.setAttribute('aria-expanded','true');
+});
+$('#closeSheet').addEventListener('click', closeSheet);
+avatarSheet.addEventListener('click', (e)=>{ if(e.target===avatarSheet) closeSheet(); });
+function closeSheet(){
+  avatarSheet.classList.remove('open');
+  avatarSheet.setAttribute('aria-hidden','true');
+  avatarBtn.setAttribute('aria-expanded','false');
+}
 
-      /* ---------- tabs switching ---------- */
-      const panels = $$('.panel');
-      tabsBar.querySelectorAll('.chip[role="tab"]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          tabsBar.querySelectorAll('.chip[role="tab"]').forEach(b=> b.classList.toggle('is-active', b===btn));
-          panels.forEach(p=> p.classList.toggle('is-active', p.id === btn.dataset.target));
-          window.scrollTo({top:0, behavior:'smooth'});
-        });
-      });
+subToggle.addEventListener('click', ()=>{
+  isSub = !isSub; store.set(k.sub,isSub); paintAvatar(); paintGating(); paintWeeklies(); 
+});
 
-      /* ---------- DAILY ---------- */
-      const today = new Date();
-      $('#dailyDate').textContent = `${dayNames[today.getDay()]} ${pad(today.getDate())}/${pad(today.getMonth()+1)}`;
-      function paintDaily(){
-        const done = dailyDone.includes(toISO(today));
-        const hero = $('#dailyHero'); const btn = $('#btnDaily');
-        if(done){ hero.classList.add('complete'); btn.textContent='Undo'; btn.className='btn blue'; }
-        else { hero.classList.remove('complete'); btn.textContent='Complete'; btn.className='btn blue'; }
-      }
-      paintDaily();
-      $('#btnDaily').addEventListener('click', ()=>{
-        const key = toISO(today);
-        const done = dailyDone.includes(key);
-        if(done){ dailyDone = dailyDone.filter(x=>x!==key); points=Math.max(0, points-1); }
-        else { dailyDone.push(key); points+=1; history.unshift({ts:Date.now(), type:'daily', title:'Daily Challenge'}); }
-        store.set(K.daily,dailyDone); store.set(K.points,points); store.set(K.history,history);
-        paintDaily();
-      });
+$('#uploadAvatar').addEventListener('click', (e)=>{ e.preventDefault(); alert('Avatar upload coming soon.'); });
 
-      /* ---------- WEEKLY: 3 cards (current + 2 previous) ---------- */
-      const WEEKLY = [
-        {id:'W01', title:'Gesture Lines', desc:'Loose lines, large arm movement.'},
-        {id:'W02', title:'Negative Space', desc:'See shapes around the subject.'},
-        {id:'W03', title:'Value Ladder', desc:'Five-step tonal control.'},
-        {id:'W04', title:'Edges—Hard/Soft', desc:'Control transitions.'},
-        {id:'W05', title:'Ink + Wash', desc:'Line then dilute wash.'},
-        {id:'W06', title:'Contour & Blind', desc:'Trust the line, look more.'},
-        {id:'W07', title:'Planes of the Head', desc:'Break forms into planes.'},
-        {id:'W08', title:'Texture Hunt', desc:'Rubbings + drawn textures.'},
-        {id:'W09', title:'Silhouette Power', desc:'Readability in outline.'},
-        {id:'W10', title:'Warm/Cool Contrast', desc:'Temperature decisions.'},
-        {id:'W11', title:'Mark Variety', desc:'Thick, thin, broken, dragged.'},
-        {id:'W12', title:'Compositional Threes', desc:'Foreground/mid/background.'},
-        {id:'W13', title:'Speed Studies', desc:'1–5 minute bursts.'},
-        {id:'W14', title:'Cross-hatching', desc:'Controlled texture build.'},
-        {id:'W15', title:'Ink Splashes', desc:'Directed spontaneity.'},
-        {id:'W16', title:'Charcoal Tonals', desc:'Mass the shadows.'},
-        {id:'W17', title:'Lost & Found Edges', desc:'Melt and sharpen selectively.'},
-        {id:'W18', title:'Gesture Portrait', desc:'Energy over detail.'},
-        {id:'W19', title:'Light Direction', desc:'Single source studies.'},
-        {id:'W20', title:'Abstracted Forms', desc:'Simplify to shapes.'},
-        {id:'W21', title:'Perspective Basics', desc:'1-point & 2-point.'},
-        {id:'W22', title:'Figure Rhythm', desc:'S-curve, C-curve flow.'},
-        {id:'W23', title:'Limited Palette', desc:'3 colours max.'},
-        {id:'W24', title:'Big Brushes', desc:'Commit to bold passes.'},
-        {id:'W25', title:'Smudge & Lift', desc:'Subtractive drawing.'},
-        {id:'W26', title:'Line Hierarchy', desc:'Weight guides the eye.'},
-        {id:'W27', title:'Edges with Water', desc:'Feathered dissolves.'},
-        {id:'W28', title:'Thumbnails', desc:'Plan before render.'},
-        {id:'W29', title:'Pattern & Repetition', desc:'Motifs unify.'},
-        {id:'W30', title:'Proportion Check', desc:'Sight-size habits.'},
-        {id:'W31', title:'Expressive Tools', desc:'Sticks, cards, rags.'},
-        {id:'W32', title:'Colour Notes', desc:'Small patches first.'},
-        {id:'W33', title:'Focal Point', desc:'Contrast and detail.'},
-        {id:'W34', title:'Edges & Atmosphere', desc:'Depth via softness.'},
-        {id:'W35', title:'Ink Portrait', desc:'Brush + splash accents.'},
-        {id:'W36', title:'Value Composition', desc:'3-value design.'},
-        {id:'W37', title:'Contour + Tone', desc:'Line then mass.'},
-        {id:'W38', title:'Gesture Landscapes', desc:'Broad shapes quickly.'},
-        {id:'W39', title:'Reflected Light', desc:'Turn the form.'},
-        {id:'W40', title:'Textural Contrast', desc:'Smooth vs rough.'},
-        {id:'W41', title:'Lost Foreground', desc:'Merge into background.'},
-        {id:'W42', title:'Colour Harmony', desc:'Analogous harmony.'},
-        {id:'W43', title:'Ink & Charcoal Mix', desc:'Wet over dry.'},
-        {id:'W44', title:'Expressive Hands', desc:'Structure + gesture.'},
-        {id:'W45', title:'Skies & Weather', desc:'Mood studies.'},
-        {id:'W46', title:'Back-lighting', desc:'Rims and silhouettes.'},
-        {id:'W47', title:'Fabric & Folds', desc:'Light logic.'},
-        {id:'W48', title:'Architecture Lines', desc:'Plumb & level.'},
-        {id:'W49', title:'Edge Priorities', desc:'Where to sharpen.'},
-        {id:'W50', title:'Colour Accents', desc:'Small high-chroma hits.'},
-        {id:'W51', title:'Gesture Animals', desc:'Capture movement.'},
-        {id:'W52', title:'Best-of Remix', desc:'Combine 3 skills.'}
-      ];
-      const weeklyWrap = $('#weeklyWrap');
+/* ---------- Daily ---------- */
+const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const today=new Date(), isoToday=toISO(today);
+$('#dailyDate').textContent = `${dayNames[today.getDay()]} ${pad(today.getDate())}/${pad(today.getMonth()+1)}`;
 
-      function firstSun(y){ const d=new Date(y,0,1); const off=(7-d.getDay())%7; const s=new Date(y,0,1+off); s.setHours(0,0,0,0); return s; }
-      function weekIdx(d){ const y=d.getFullYear(); const s=firstSun(y); const w=Math.floor((d-s)/(7*86400000)); return (w%52+52)%52; }
-      function startOfWeek(d){ const x=new Date(d); x.setDate(x.getDate()-x.getDay()); x.setHours(0,0,0,0); return x; }
+function paintDaily(){
+  const done = dailyDone.includes(isoToday);
+  $('#btnDaily').textContent = done?'Undo':'Complete';
+  $('#btnDaily').className = 'btn ' + (done?'grey':'blue');
+  $('#dailyHero').classList.toggle('complete', done);
+}
+paintDaily();
 
-      function renderWeekly(){
-        weeklyWrap.innerHTML='';
-        const base = startOfWeek(new Date());   // this week (Sun)
-        const starts = [-2,-1,0].map(w=> new Date(base.getFullYear(), base.getMonth(), base.getDate()+w*7));
-        let cards = starts.map(s=>{
-          const idx = weekIdx(s);
-          const def = WEEKLY[idx];
-          const complete = weeklyDone.some(x=>x.id===def.id);
-          return { id:def.id, title:def.title, desc:def.desc, start:+s, complete };
-        });
+$('#btnDaily').addEventListener('click', ()=>{
+  const idx=dailyDone.indexOf(isoToday);
+  if(idx===-1){ dailyDone.push(isoToday); points+=1; }
+  else{ dailyDone.splice(idx,1); points=Math.max(0,points-1); }
+  store.set(k.dailyDone,dailyDone); store.set(k.points,points); paintDaily(); paintAvatar();
+});
 
-        // Order: outstanding first (top in portrait / left in landscape), oldest first
-        cards.sort((a,b)=> (a.complete-b.complete) || (a.start-b.start));
+/* ---------- Weekly (3 only) ---------- */
+const WEEKLY = [
+  {id:'W1', title:'Ink Portrait', desc:'Brush + splash accents.'},
+  {id:'W2', title:'Value Composition', desc:'Design with 3 clear values.'},
+  {id:'W3', title:'Edges & Atmosphere', desc:'Depth via soft transitions.'}
+];
+function weeklyOrder(){
+  // done items at end (portrait: bottom; landscape grid naturally pushes rightmost)
+  const doneSet=new Set(weeklyDone);
+  return WEEKLY.slice().sort((a,b)=>{
+    const A=doneSet.has(a.id), B=doneSet.has(b.id);
+    return (A===B)?0 : (A?1:-1);
+  });
+}
+function padlockSVG(){
+  return `<span class="padlock" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/></svg>
+    <svg viewBox="0 0 24 24" style="position:absolute;inset:0;opacity:0"><rect class="body" x="3" y="11" width="18" height="10" rx="2"/><circle class="keyhole" cx="12" cy="16" r="1.3"/><rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx=".6"/></svg>
+  </span>`;
+}
+function paintWeeklies(){
+  const grid = $('#weeklyGrid'); grid.innerHTML='';
+  weeklyOrder().forEach(w=>{
+    const done = weeklyDone.includes(w.id);
+    const el = document.createElement('article');
+    el.className = 'hero tall' + (done?' complete':'');
+    el.dataset.week = w.id;
+    el.innerHTML = `
+      <h4 class="title">${isSub?'':padlockSVG()} ${w.title}</h4>
+      <p class="meta">Sun ${pad(today.getDate())}/${pad(today.getMonth()+1)}</p>
+      <p class="desc">${w.desc}</p>
+      <div class="cta-left">
+        <a class="btn ${isSub?'blue':''}" ${isSub?'':'aria-disabled="true"'} ${isSub?'href="weekly-${w.id}.html"':''}>Start Challenge</a>
+      </div>`;
+    grid.appendChild(el);
+  });
+}
+paintWeeklies();
 
-        for(const c of cards){
-          const card = document.createElement('article');
-          card.className = 'hero';
-          if(c.complete) card.classList.add('complete');
-          card.dataset.weekId = c.id;
-          card.innerHTML = `
-            <div class="title">
-              ${isSubscriber ? '' : `
-                <span class="lock" aria-hidden="true">
-                  <svg viewBox="0 0 24 24">
-                    <path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11"/>
-                    <rect class="body" x="3" y="11" width="18" height="10" rx="2"/>
-                    <circle class="keyhole" cx="12" cy="16" r="1.3"/>
-                    <rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6"/>
-                  </svg>
-                </span>`}
-              ${c.title}
-            </div>
-            <p class="meta">${dayNames[new Date(c.start).getDay()]} ${pad(new Date(c.start).getDate())}/${pad(new Date(c.start).getMonth()+1)}</p>
-            <p class="desc">${c.desc}</p>
-            <div class="cta-left"><button class="btn blue btnWeekly" ${isSubscriber?'':'disabled'}>Start Challenge</button></div>
-          `;
-          weeklyWrap.appendChild(card);
-        }
-        // listeners
-        $$('.btnWeekly', weeklyWrap).forEach(btn=>{
-          btn.addEventListener('click', (e)=>{
-            const card = e.target.closest('.hero'); const id = card.dataset.weekId;
-            if(!isSubscriber) return;
-            // mark complete instantly for demo (or navigate to page)
-            if(!weeklyDone.some(w=>w.id===id)){ weeklyDone.push({id, date: Date.now()}); store.set(K.weekly,weeklyDone); }
-            card.classList.add('complete');
-            // re-order to move completed to bottom/right
-            renderWeekly();
-          });
-        });
-      }
+/* public API for weekly pages to mark completion */
+window.AO_markWeeklyComplete = function(weekId, title){
+  if(!weeklyDone.includes(weekId)){
+    weeklyDone.push(weekId);
+    store.set(k.weeklyDone, weeklyDone);
+    points += 10; store.set(k.points,points); paintAvatar(); paintWeeklies();
+  }
+};
 
-      /* ---------- COURSES ---------- */
-      function lockState(){
-        // Foundations: lock when not subscriber
-        $$('#pan-courses [data-kind="foundation"]').forEach(card=>{
-          const padlock = card.querySelector('.lock');
-          padlock.style.display = isSubscriber ? 'none' : 'inline-block';
-          card.querySelector('.btnStart').disabled = !isSubscriber;
-        });
-      }
+/* ---------- Courses: pricing + buy/redeem flow ---------- */
+let pricing = {};
+function readPricing(){
+  if(window.PRICE_LIST) pricing = window.PRICE_LIST;
+  else{
+    const j=$('#pricingData'); if(j){ try{ pricing=JSON.parse(j.textContent||'{}'); }catch{} }
+  }
+  // apply
+  $$('.course, .live').forEach(card=>{
+    const id = card.dataset.id; const p = pricing[id]||{};
+    const priceEl = card.querySelector('.price'); const ptsEl = card.querySelector('.pts');
+    if(p.price && priceEl){ priceEl.dataset.price = p.price; priceEl.firstElementChild.textContent=p.price; }
+    if(p.points!=null && ptsEl){ ptsEl.dataset.pts = p.points; ptsEl.firstElementChild.textContent = p.points; }
+  });
+}
+readPricing();
 
-      // Buy flow (green), “Redeem with points” only in modal
-      let pending = null; // {id,title,link,points,kind}
-      function openPurchase(card){
-        const id = card.dataset.id, link = card.dataset.link || '#';
-        const pointsNeed = +(card.getAttribute('data-points') || 0);
-        const title = (card.querySelector('.title')?.textContent || 'Item').trim();
-        pending = { id, link, pointsNeed, title, kind:card.classList.contains('live')?'live':'course', card };
-        $('#purchaseTitle').textContent = `Buy “${title}”`;
-        $('#purchasePoints').textContent = pointsNeed ? `Redeem with ${pointsNeed} points` : 'Points not available';
-        $('#btnRedeem').disabled = !pointsNeed;
-        openModal('#purchaseModal');
-      }
+function paintGating(){
+  // Foundational courses gated by sub
+  $$('.course[data-kind="foundation"]').forEach(card=>{
+    const btn=card.querySelector('.start-found');
+    if(isSub){ btn.removeAttribute('disabled'); card.querySelector('.padlock')?.classList.add('hide'); }
+    else{ btn.setAttribute('disabled',''); card.querySelector('.padlock')?.classList.remove('hide'); }
+  });
+  // Weekly gating is handled in paintWeeklies (padlock on title)
+}
+paintGating();
 
-      // Convert purchased card to “Open”
-      function convertToOpen(card){
-        card.querySelector('.price')?.remove();
-        card.querySelector('.points')?.remove();
-        const btn = card.querySelector('.btnBuy, .btnBuyLive, .btnStart');
-        if(btn){ btn.textContent = 'Open'; btn.className = 'btn green'; btn.disabled = false;
-          btn.onclick = ()=> window.location.href = card.dataset.link || '#';
-        }
-        card.classList.add('complete');
-      }
+function markPurchased(card){
+  // hide price + points, turn button into Enter
+  card.querySelector('.price')?.setAttribute('hidden','');
+  card.querySelector('.pts')?.setAttribute('hidden','');
+  const b = card.querySelector('.buy');
+  if(b){ b.textContent='Enter'; b.className='btn green enter'; }
+}
+purchased.forEach(id=>{
+  const card = document.querySelector(`[data-id="${id}"]`); if(card) markPurchased(card);
+});
 
-      $$('.btnBuy').forEach(b=> b.addEventListener('click', (e)=> openPurchase(e.target.closest('.course'))));
-      $$('.btnBuyLive').forEach(b=> b.addEventListener('click', (e)=> openPurchase(e.target.closest('.live'))));
+document.addEventListener('click', e=>{
+  const b=e.target.closest('.buy'); if(!b) return;
+  const card = b.closest('.hero'); const id = card.dataset.id;
+  const ptsEl = card.querySelector('.pts'); const need = +(ptsEl?.dataset.pts||0);
 
-      // Points bubble -> show delta (“how many more do I need / how many left”)
-      $$('.points').forEach(b=>{
-        b.addEventListener('click', (e)=>{
-          const card = e.target.closest('[data-id]');
-          const need = +(card.getAttribute('data-points') || 0);
-          if(!need || isNaN(need)){ alert('Points price unavailable.'); return; }
-          const diff = need - points;
-          if(diff>0) alert(`You have ${points} points.\nYou need ${diff} more to redeem this.`);
-          else alert(`You have ${points} points.\nAfter redeeming you would have ${points-need}.`);
-        });
-      });
+  // Simple buy sheet (green Buy or Redeem hidden inside dialog)
+  const choice = confirm(ptsEl?`Buy with money (${card.querySelector('.price span').textContent})?\n\nPress “OK” for card payment.\nPress “Cancel” to try Redeem with Points.`:`Proceed to payment?`);
+  if(choice){
+    // simulate success
+    if(!purchased.includes(id)){ purchased.push(id); store.set(k.purchased,purchased); }
+    markPurchased(card);
+  }else{
+    // Redeem path
+    if(points < need){ alert(`You have ${points} pts. Need ${need-points} more.`); return; }
+    points -= need; store.set(k.points,points); paintAvatar();
+    if(!purchased.includes(id)){ purchased.push(id); store.set(k.purchased,purchased); }
+    markPurchased(card);
+  }
+});
 
-      // Purchase modal buttons
-      $('#btnPay').addEventListener('click', ()=>{
-        if(!pending) return;
-        // mark purchased
-        if(!purchased.includes(pending.id)){ purchased.push(pending.id); store.set(K.purchased,purchased); }
-        convertToOpen(pending.card);
-        closeModal('#purchaseModal');
-      });
+/* ---------- Calendar stub from avatar sheet ---------- */
+$('#openCalendar').addEventListener('click', (e)=>{ e.preventDefault(); alert('Calendar will appear here in a future build.'); });
 
-      $('#btnRedeem').addEventListener('click', ()=>{
-        if(!pending || !pending.pointsNeed) return;
-        if(points < pending.pointsNeed){
-          $('#needText').textContent = `You have ${points} points; you need ${pending.pointsNeed - points} more.`;
-          closeModal('#purchaseModal'); openModal('#notEnough'); return;
-        }
-        closeModal('#purchaseModal'); openModal('#confirmRedeem');
-      });
+/* ---------- Init points display ---------- */
+paintAvatar();
 
-      $('#doRedeem').addEventListener('click', ()=>{
-        if(!pending) return;
-        points -= pending.pointsNeed; store.set(K.points,points);
-        if(!purchased.includes(pending.id)){ purchased.push(pending.id); store.set(K.purchased,purchased); }
-        convertToOpen(pending.card);
-        closeModal('#confirmRedeem');
-      });
-
-      // Convert already-purchased on load
-      function hydratePurchases(){
-        purchased.forEach(id=>{
-          const card = document.querySelector(`[data-id="${id}"]`);
-          if(card) convertToOpen(card);
-        });
-      }
-
-      // Foundations starts → require sub
-      $$('.btnStart').forEach(b=>{
-        b.addEventListener('click', (e)=>{
-          if(!isSubscriber) return;
-          const card = e.target.closest('.course');
-          window.location.href = card.dataset.link || '#';
-        });
-      });
-
-      /* ---------- Modals (no overlay intercepts when closed) ---------- */
-      function openModal(sel){ const m=$(sel); if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); } }
-      function closeModal(sel){ const m=$(sel); if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); } }
-      $$('[data-close]').forEach(el=> el.addEventListener('click', e=> closeModal(e.target.getAttribute('data-close'))));
-      // click outside (background)
-      $$('.modal .bgd').forEach(bgd=> bgd.addEventListener('click', (e)=> closeModal(e.target.getAttribute('data-close')||('#'+bgd.parentElement.id))));
-
-      /* ---------- init ---------- */
-      function init(){
-        paintAvatar();
-        lockState();
-        renderWeekly();
-        hydratePurchases();
-        layoutTabs();
-      }
-      init();
-
-      // Re-render weekly on orientation change to maintain order expectations
-      window.matchMedia('(orientation: portrait)').addEventListener?.('change', renderWeekly);
-
-    })();
-  </script>
+})();
+</script>
 </body>
 </html>
