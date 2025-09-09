@@ -4,131 +4,263 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="color-scheme" content="dark" />
-  <title>Home — Fine Arts Online Academy (FAOA)</title>
+  <title>Home — Art Online by Jody Graham</title>
   <link rel="stylesheet" href="assets/styles.css" />
-  <style>
-    /* --- Minimal fallback so rows/cards work even if styles.css is missing pieces --- */
-    .wrap{ position:relative; z-index:1; padding-top:96px; padding-left:20px; padding-right:20px; padding-bottom:48px }
-    .section{ margin-top:18px }
-    .section-title{ margin:10px 2px; font-size:18px; font-weight:800; letter-spacing:.2px }
-
-    .row{
-      display:grid;
-      grid-auto-flow:column;
-      grid-auto-columns: clamp(160px, 32vw, 240px);
-      gap:12px;
-      overflow-x:auto;
-      padding:6px 2px 14px;
-      scroll-snap-type:x mandatory;
-    }
-    .row::-webkit-scrollbar{ display:none }
-
-    .row > .card{
-      position:relative; min-height:150px;
-      border-radius:18px; border:1px solid rgba(255,255,255,.18);
-      overflow:hidden; scroll-snap-align:start;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center; color:#eef3ff;
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      text-decoration:none;
-    }
-    .row > .card .title{ font-weight:800; letter-spacing:.2px }
-    .upsell{ display:flex; align-items:center; justify-content:space-between; gap:16px;
-             padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
-             background:rgba(0,0,0,.45); margin:0 0 16px }
-    .upsell h2{ margin:0 0 4px; font-size:18px }
-    .upsell p{ margin:0; color:rgba(238,243,255,.75) }
-    .upsell-actions{ display:flex; gap:10px; flex-wrap:wrap }
-  </style>
+  <meta name="description" content="Daily & weekly challenges, foundations, live demonstrations, and online courses for drawing and painting." />
 </head>
-<body>
+<body class="home-bg">
+  <!-- Background hook (shares your existing scheme) -->
+  <div class="bg" aria-hidden="true"></div>
 
-<!-- Top nav -->
-<header class="nav">
-  <div class="logo-block">
-    <div class="logo">Fine Arts Online Academy</div>
-    <div class="logo-sub">by Jody Graham</div>
-  </div>
-  <div class="nav-right">
-    <span id="welcome" class="welcome"></span>
-    <span id="pointsPill" class="pill" style="margin-left:8px">Points: 0</span>
-    <button class="btn primary" id="logoutBtn">Sign Out</button>
-  </div>
-</header>
+  <!-- ===== Global top nav (shared across pages) ===== -->
+  <header class="nav">
+    <div class="logo-block">
+      <div class="logo-title">Art Online</div>
+      <div class="logo-sub">by Jody Graham</div>
+    </div>
+    <div class="nav-actions">
+      <!-- Simulate subscription until auth is wired -->
+      <button class="btn ghost" id="toggleSub" aria-pressed="false">Subscriber: <span id="subState">Off</span></button>
+      <button class="btn primary" id="signinBtn">Sign in</button>
+    </div>
+  </header>
 
-<!-- Background -->
-<main class="page-wrap">
-  <div class="bg home-bg" aria-hidden="true"></div>
-  <div class="overlay" aria-hidden="true"></div>
+  <main class="wrap">
+    <!-- ===== Tabs ===== -->
+    <nav class="tabs" role="tablist" aria-label="Primary">
+      <button class="tab is-active" role="tab" aria-selected="true" aria-controls="tab-challenges" id="tabbtn-challenges">Challenges</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-foundations" id="tabbtn-foundations">Foundations</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-courses" id="tabbtn-courses">Courses</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="tab-live" id="tabbtn-live">Live Demonstrations</button>
+    </nav>
 
-  <section class="wrap">
+    <!-- ===== CHALLENGES (default) ===== -->
+    <section class="tab-panel is-active" id="tab-challenges" role="tabpanel" aria-labelledby="tabbtn-challenges">
+      <!-- Daily (single hero, free for all) -->
+      <h2 class="section-title">Daily Challenge</h2>
+      <div class="grid grid-1">
+        <article class="hero">
+          <div class="hero-media placeholder" aria-hidden="true"></div>
+          <div class="hero-body">
+            <h3 class="hero-title" id="dailyTitle">Today’s Daily Prompt</h3>
+            <p class="hero-meta" id="dailyDate"></p>
+            <p class="hero-desc" id="dailyDesc">A quick 15–20 minute warm-up suitable for any level. Mix drawing with a splash of paint or ink if you like.</p>
+            <div class="hero-actions">
+              <button class="btn primary">Open Challenge</button>
+              <button class="btn ghost">Save for later</button>
+            </div>
+          </div>
+        </article>
+      </div>
 
-  
+      <!-- Weekly (3 heroes, subscribers only) -->
+      <div class="section-head">
+        <h2 class="section-title">Weekly Challenges</h2>
+        <p class="section-sub">Subscribers get the latest three weekly challenges. Each releases Sunday 12:00 am and expires 4 weeks later.</p>
+      </div>
 
-    <!-- Fundamentals -->
-    <section class="section">
-      <h2 class="section-title">Fundamentals</h2>
-      <div class="row">
-        <!-- LINKED: Fundamentals Course 1 -->
-        <a class="card" href="courses/fundamental1.html#/?courseId=fundamental1" aria-label="Open Fundamentals Course 1">
-          <div class="title">Course 1</div>
-        </a>
+      <div class="grid grid-3" id="weeklyGrid" data-locked="true"><!-- JS injects 3 cards --></div>
 
-        <!-- Placeholders (not yet linked) -->
-        <div class="card"><div class="title">Course 2</div></div>
-        <div class="card"><div class="title">Course 3</div></div>
-        <div class="card"><div class="title">Course 4</div></div>
-        <div class="card"><div class="title">Course 5</div></div>
-        <div class="card"><div class="title">Course 6</div></div>
+      <div class="lock-overlay" id="weeklyLock" aria-hidden="false">
+        <div class="lock-card" role="dialog" aria-modal="false" aria-labelledby="lockTitle">
+          <div class="lock-title" id="lockTitle">Subscribers only</div>
+          <p class="lock-text">Unlock weekly challenges with a subscription.</p>
+          <div class="lock-actions">
+            <button class="btn primary">Subscribe</button>
+            <button class="btn ghost" id="tryWeekly">Preview</button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 3-Day Courses -->
-    <section class="section">
-      <h2 class="section-title">3-Day Courses</h2>
-      <div class="row">
-        <div class="card"><div class="title">Course 1</div></div>
-        <div class="card"><div class="title">Course 2</div></div>
-        <div class="card"><div class="title">Course 3</div></div>
+    <!-- ===== FOUNDATIONS ===== -->
+    <section class="tab-panel" id="tab-foundations" role="tabpanel" aria-labelledby="tabbtn-foundations">
+      <h2 class="section-title">Foundations</h2>
+      <div class="grid grid-4">
+        <article class="hero">
+          <div class="hero-media placeholder"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Materials & Setup</h3>
+            <p class="hero-desc">Paper, charcoal, inks, brushes, easel, and safe workspace layout.</p>
+            <div class="hero-actions"><button class="btn primary">Open</button></div>
+          </div>
+        </article>
+        <article class="hero">
+          <div class="hero-media placeholder"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Drawing</h3>
+            <p class="hero-desc">Line, tone, proportion, gesture and observation — build confident habits.</p>
+            <div class="hero-actions"><button class="btn primary">Open</button></div>
+          </div>
+        </article>
+        <article class="hero">
+          <div class="hero-media placeholder"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Painting</h3>
+            <p class="hero-desc">Surface prep, colour mixing, value structure, and brushwork.</p>
+            <div class="hero-actions"><button class="btn primary">Open</button></div>
+          </div>
+        </article>
+        <article class="hero">
+          <div class="hero-media placeholder"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Expressive Mark Making</h3>
+            <p class="hero-desc">Loosen up: unconventional tools, dynamic marks, and integrating splashes.</p>
+            <div class="hero-actions"><button class="btn primary">Open</button></div>
+          </div>
+        </article>
       </div>
     </section>
 
-    <!-- 30-Day Courses -->
-    <section class="section">
-      <h2 class="section-title">30-Day Courses</h2>
-      <div class="row">
-        <div class="card"><div class="title">Course 1</div></div>
-        <div class="card"><div class="title">Course 2</div></div>
+    <!-- ===== COURSES ===== -->
+    <section class="tab-panel" id="tab-courses" role="tabpanel" aria-labelledby="tabbtn-courses">
+      <h2 class="section-title">Online Courses</h2>
+
+      <h3 class="section-title small">1-Day Intensives</h3>
+      <div class="grid grid-3">
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Gesture Drawing</h3><p class="hero-desc">Fast, confident gestures to capture life.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Ink Essentials</h3><p class="hero-desc">Brush, pen, and splash control.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Charcoal Tonals</h3><p class="hero-desc">Structure with light and dark.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+      </div>
+
+      <h3 class="section-title small">3-Day Courses</h3>
+      <div class="grid grid-3">
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Portrait Sprint</h3><p class="hero-desc">Planes, proportions, expression.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Urban Sketching</h3><p class="hero-desc">Perspective and texture in the wild.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Experimental Media</h3><p class="hero-desc">Combine mediums without fear.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+      </div>
+
+      <h3 class="section-title small">30-Day Courses</h3>
+      <div class="grid grid-3">
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Drawing Foundations</h3><p class="hero-desc">Daily habit and core skills.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Paint with Confidence</h3><p class="hero-desc">Colour, value, edges.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
+        <article class="hero"><div class="hero-media placeholder"></div><div class="hero-body"><h3 class="hero-title">Expressive Portraits</h3><p class="hero-desc">Structure plus spontaneity.</p><div class="hero-actions"><button class="btn primary">Open</button></div></div></article>
       </div>
     </section>
 
-  </section>
-</main>
+    <!-- ===== LIVE DEMONSTRATIONS ===== -->
+    <section class="tab-panel" id="tab-live" role="tabpanel" aria-labelledby="tabbtn-live">
+      <h2 class="section-title">Live Demonstrations</h2>
+      <div class="grid grid-2">
+        <article class="hero">
+          <div class="hero-media placeholder live"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Upcoming: Expressive Ink Portrait</h3>
+            <p class="hero-meta">Live • Sun 20 Oct • 10:00–11:30</p>
+            <p class="hero-desc">Watch Jody develop a portrait using energetic ink splashes and bold lines.</p>
+            <div class="hero-actions">
+              <button class="btn primary">Register</button>
+              <button class="btn ghost">Add to calendar</button>
+            </div>
+          </div>
+        </article>
+        <article class="hero">
+          <div class="hero-media placeholder"></div>
+          <div class="hero-body">
+            <h3 class="hero-title">Replay: Charcoal Tonal Study</h3>
+            <p class="hero-meta">Recorded session</p>
+            <p class="hero-desc">Learn a fast workflow for building value structure with charcoal.</p>
+            <div class="hero-actions">
+              <button class="btn primary">Watch</button>
+              <button class="btn ghost">Save</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
 
-<script src="assets/app.js"></script>
-<script>
-  // Require a session; guests allowed but show upsell
-  let session = null;
-  try { session = JSON.parse(localStorage.getItem('session')); } catch(e) {}
-  if (!session) { window.location.replace('index.html'); }
+  <script>
+  /* ===== Tabs ===== */
+  const tabButtons = [...document.querySelectorAll('.tab')];
+  const panels = [...document.querySelectorAll('.tab-panel')];
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => {
+        const selected = b === btn;
+        b.classList.toggle('is-active', selected);
+        b.setAttribute('aria-selected', selected ? 'true' : 'false');
+      });
+      panels.forEach(p => p.classList.remove('is-active'));
+      const panel = document.getElementById(btn.getAttribute('aria-controls'));
+      if (panel) panel.classList.add('is-active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
 
-  // Welcome label
-  const welcome = document.getElementById('welcome');
-  if (welcome && session?.user) {
-    const label = session.kind === 'free' ? 'Guest' : (session.user.split('@')[0] || 'Member');
-    welcome.textContent = `Hi, ${label}`;
+  /* ===== Subscriber toggle (simulated) ===== */
+  const toggleSub = document.getElementById('toggleSub');
+  const subState = document.getElementById('subState');
+  const weeklyGrid = document.getElementById('weeklyGrid');
+  const weeklyLock = document.getElementById('weeklyLock');
+
+  let isSub = false;
+  function applySubState() {
+    weeklyGrid.dataset.locked = String(!isSub);
+    weeklyLock.style.display = isSub ? 'none' : 'grid';
+    subState.textContent = isSub ? 'On' : 'Off';
+    toggleSub.setAttribute('aria-pressed', isSub ? 'true' : 'false');
+  }
+  toggleSub?.addEventListener('click', () => { isSub = !isSub; applySubState(); });
+  document.getElementById('tryWeekly')?.addEventListener('click', () => {
+    weeklyLock.classList.add('peek'); setTimeout(() => weeklyLock.classList.remove('peek'), 1200);
+  });
+
+  /* ===== Daily (today) ===== */
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dailyTitle = document.getElementById('dailyTitle');
+  const dailyDate = document.getElementById('dailyDate');
+  const today = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => `${dayNames[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+  dailyDate.textContent = fmt(today);
+
+  /* ===== Weekly (3 cards) =====
+     Each challenge starts Sunday 00:00 (local), expires 4 weeks later Sunday 00:00.
+     We show the most recent 3 Sundays (including current if past 00:00 today and today is Sunday). */
+  function startOfSunday(d){
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const day = x.getDay(); // 0=Sun
+    const diff = (day + 7) % 7; // days since last Sunday
+    x.setDate(x.getDate() - diff); // go back to Sunday
+    x.setHours(0,0,0,0);
+    return x;
+  }
+  function addWeeks(d, w){ const x = new Date(d); x.setDate(x.getDate() + w*7); return x; }
+  function formatRange(start, end){
+    return `Expires ${pad(end.getDate())}/${pad(end.getMonth()+1)} • Starts ${pad(start.getDate())}/${pad(start.getMonth()+1)}`;
   }
 
-  // Upsell for guest/free
-  if (session?.kind === 'free') {
-    const upsell = document.getElementById('upsell');
-    if (upsell) upsell.hidden = false;
+  function buildWeeklyCards() {
+    weeklyGrid.innerHTML = '';
+    const baseSunday = startOfSunday(today);
+    // build previous 2 + current => total 3
+    const sundays = [0, -1, -2].map(w => addWeeks(baseSunday, w));
+    sundays.forEach((sunday, idx) => {
+      const expiry = addWeeks(sunday, 4); // 4-week expiry at 00:00
+      const expired = today >= expiry;
+      const article = document.createElement('article');
+      article.className = 'hero weekly';
+      article.innerHTML = `
+        <div class="hero-media placeholder" aria-hidden="true"></div>
+        <div class="hero-body">
+          <h3 class="hero-title">Week of ${pad(sunday.getDate())}/${pad(sunday.getMonth()+1)}</h3>
+          <p class="hero-meta">${formatRange(sunday, expiry)}</p>
+          <p class="hero-desc">A guided theme with steps and an optional mixed-media variation.</p>
+          <div class="hero-actions">
+            <button class="btn primary" ${expired ? 'disabled' : ''}>Open Weekly</button>
+            <button class="btn ghost">Save</button>
+          </div>
+        </div>
+        <div class="hero-expiry ${expired ? 'is-expired':''}">
+          ${expired ? 'Expired' : `Expires ${pad(expiry.getDate())}/${pad(expiry.getMonth()+1)}`}
+        </div>
+      `;
+      weeklyGrid.appendChild(article);
+    });
   }
-
-  // Points pill (optional)
-  const profile = JSON.parse(localStorage.getItem('profile') || '{}');
-  const pointsPill = document.getElementById('pointsPill');
-  if (pointsPill) pointsPill.textContent = 'Points: ' + (profile.points || 0);
-</script>
+  buildWeeklyCards();
+  applySubState();
+  </script>
 </body>
 </html>
