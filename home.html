@@ -20,10 +20,58 @@
   --gap:12px; --r:14px; --maxw:1240px;
   --nav-h:68px;
 }
-
 /* Reset-ish */
 *{box-sizing:border-box}
 html,body{height:100%}
+
+/* ===== Header Tabs Auto-Scale & Avatar Styling ===== */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  overflow: hidden;                /* stop horizontal scroll */
+}
+
+.nav .tab {
+  flex: 1 1 auto;                  /* scale to fit */
+  min-width: 0;                    /* shrink as needed */
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(13px, 3vw, 16px); /* adapt to screen */
+  padding: 10px 12px;              /* tighter padding */
+  border-radius: 10px;             /* same rounded corners */
+}
+
+/* Avatar tab styled same size as others */
+.nav .avatar-tab {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 10px 12px;
+  font-size: clamp(13px, 3vw, 16px);
+  border-radius: 10px;             /* left side square, right side rounded separately */
+  background: var(--gold);         /* subscriber gold background */
+  color: #000;
+  font-weight: 800;
+}
+
+/* Avatar initials bubble on right */
+.nav .avatar-initials {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  border-radius: 50%;              /* circle on right side */
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: rgba(0,0,0,.3);
+  color: #fff;
+}
+
 body{
   margin:0; background:var(--bg); color:var(--ink);
   font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
