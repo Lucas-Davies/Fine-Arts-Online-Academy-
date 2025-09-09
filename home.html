@@ -667,5 +667,232 @@
 
   })();
   </script>
+<!-- ========= PATCH: header cleanup, avatar dropdown, landscape/portrait "More", clickability ========= -->
+<style>
+  /* Make sure nothing invisible is blocking taps/clicks */
+  .overlay:not(.open),
+  .popover:not(.open),
+  .modal:not(.open){ pointer-events:none }
+  .hero, .btn, .tab, .more-btn, .more-item, .avatar, .pill, a, button { pointer-events:auto }
+
+  /* Remove any "Account" control in the header */
+  .nav :is(.account, .btn-account, [data-role="account"]) { display:none !important }
+
+  /* Tabs inside header: same square-ish shape (to match avatar’s left edge) */
+  .nav .tab{
+    border-radius:12px !important;         /* square-ish */
+    padding:11px 16px !important;
+    white-space:nowrap;
+  }
+
+  /* Avatar container (right end) — square-ish left, circular right */
+  .pill{
+    display:flex; align-items:center; gap:8px;
+    padding:6px 8px 6px 12px;
+    border-radius:12px 999px 999px 12px !important; /* left square-ish, right round */
+    overflow:hidden;
+  }
+  /* Non-subscriber = SILVER; Subscriber = GOLD (your main script toggles .gold/.silver) */
+  .pill.silver{ background:#c0c7d1 !important; color:#0f1116 !important; border:0 !important; }
+  .pill.gold  { background:#ffd700 !important; color:#0f1116 !important; border:0 !important;
+                box-shadow:0 8px 26px rgba(255,215,0,.28) }
+
+  /* Round avatar circle anchored on the RIGHT side of the pill */
+  .pill .avatar{
+    order:2;
+    width:36px; height:36px; min-width:36px;
+    border-radius:50% !important;
+    background:#0b0f14;
+    border:2px solid rgba(0,0,0,.18);
+    display:grid; place-items:center; font-weight:900;
+  }
+  /* Keep optional points compact at the left (can be empty if you prefer) */
+  .pill .points-badge{ order:1; background:transparent; border:0; padding:0; font-weight:900 }
+
+  /* Avatar dropdown */
+  .avatar-wrap{ position:relative }
+  .avatar-menu{
+    position:absolute; right:0; top:calc(100% + 8px); z-index:60;
+    display:none; width:min(92vw, 320px);
+    background:#0f1116; border:1px solid var(--stroke); border-radius:14px; padding:10px;
+    box-shadow:0 18px 46px rgba(0,0,0,.55);
+  }
+  .avatar-wrap.open .avatar-menu{ display:block }
+  .menu-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 12px; border-radius:12px; border:1px solid var(--stroke);
+    background:rgba(0,0,0,.55); font-weight:800; cursor:pointer;
+  }
+  .menu-row a{ color:var(--ink); text-decoration:none; font-weight:800 }
+  .menu-note{ margin:6px 4px 4px; color:var(--ink-dim); font-size:.86rem }
+
+  /* “More” menu — default popover */
+  .more-wrap{ position:relative }
+  .more-btn{
+    padding:10px 14px; border-radius:12px; border:1px solid var(--stroke);
+    background:rgba(0,0,0,.55); color:var(--ink); font-weight:800; cursor:pointer;
+  }
+  .more-list{
+    position:absolute; right:0; top:calc(100% + 6px); min-width:220px; z-index:55;
+    display:none; flex-direction:column; gap:6px; padding:8px; border-radius:12px;
+    background:#0f1116; border:1px solid var(--stroke); box-shadow:0 14px 36px rgba(0,0,0,.5);
+  }
+  .more-wrap.open .more-list{ display:flex }
+  .more-item{
+    padding:10px 12px; border-radius:12px; border:1px solid var(--stroke);
+    background:rgba(0,0,0,.55); color:var(--ink); font-weight:800; text-align:left;
+  }
+
+  /* iPhone portrait: “More” becomes full-screen sheet for easy tapping */
+  @media (max-width: 680px) and (orientation:portrait){
+    .more-list.fullscreen{
+      position:fixed; inset:calc(var(--nav-h) + 4px) 10px 10px 10px;
+      border-radius:14px; padding:12px; gap:10px; overflow:auto;
+    }
+    .more-item{ padding:14px 16px; font-size:17px }
+  }
+</style>
+
+<script>
+(() => {
+  const $  = (s,r=document)=>r.querySelector(s);
+  const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+
+  /* ---------- 1) Remove any "Account" button ----------- */
+  $$('.nav :is(.account, .btn-account, [data-role="account"])').forEach(n=> n.remove());
+
+  /* ---------- 2) Ensure the avatar is at the far right --- */
+  const header = $('.nav');
+  const pill   = $('#pillUser');
+  if (header && pill) { pill.parentElement.style.marginLeft = 'auto'; }
+
+  /* ---------- 3) Build avatar dropdown ------------------ */
+  if (pill && !pill.closest('.avatar-wrap')){
+    const wrap = document.createElement('div');
+    wrap.className = 'avatar-wrap';
+    pill.parentNode.insertBefore(wrap, pill);
+    wrap.appendChild(pill);
+
+    // Dropdown content (subscription toggle moved here)
+    const menu = document.createElement('div');
+    menu.className = 'avatar-menu';
+    menu.innerHTML = `
+      <div class="menu-note"><strong>Account</strong></div>
+      <div class="menu-row" id="menuSubRow">
+        <span>Subscription</span>
+        <button class="toggle" id="menuToggleSub" aria-pressed="false">Off</button>
+      </div>
+      <div class="menu-row"><a href="profile.html#achievements">Achievements</a><span>›</span></div>
+      <div class="menu-row"><a href="#tab-courses" id="menuCourses">Courses</a><span>›</span></div>
+      <div class="menu-row"><a href="#tab-live" id="menuLive">Live</a><span>›</span></div>
+      <div class="menu-note"><strong>Shortcuts</strong></div>
+      <div class="menu-row"><a href="profile.html#slot1">Placeholder 1</a><span>›</span></div>
+      <div class="menu-row"><a href="profile.html#slot2">Placeholder 2</a><span>›</span></div>
+      <div class="menu-row"><a href="profile.html#slot3">Placeholder 3</a><span>›</span></div>
+    `;
+    wrap.appendChild(menu);
+
+    // Open/close
+    const avatarBtn = $('#avatarLink');
+    avatarBtn?.addEventListener('click', (e)=>{ e.preventDefault(); wrap.classList.toggle('open'); });
+    document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) wrap.classList.remove('open'); });
+
+    // Sync the subscription toggle with the app’s main toggle state
+    const hdrToggle  = $('#toggleSub');
+    const menuToggle = $('#menuToggleSub');
+    const sync = ()=>{
+      const on = hdrToggle?.getAttribute('aria-pressed') === 'true';
+      menuToggle.textContent = on ? 'On' : 'Off';
+      menuToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      // gold/silver avatar background is already handled by your app paintTopChrome()
+    };
+    sync();
+    hdrToggle?.addEventListener('click', sync);
+    menuToggle?.addEventListener('click', ()=>{ hdrToggle?.click(); sync(); });
+  }
+
+  /* ---------- 4) Tabs overflow: hide “More” in landscape, use only when needed in portrait ---- */
+  const midTabs  = header?.querySelector('.nav__tabs') || header; // where tabs live
+  const moreWrap = header?.querySelector('.more-wrap');
+  const moreBtn  = header?.querySelector('#btnMore');
+  const moreList = header?.querySelector('#moreList');
+
+  function isPortraitPhone(){
+    return window.matchMedia('(max-width: 680px)').matches &&
+           window.matchMedia('(orientation: portrait)').matches;
+  }
+  function isLandscapeOrWide(){
+    return window.matchMedia('(orientation: landscape)').matches ||
+           window.innerWidth >= 900;
+  }
+
+  function layoutTabs(){
+    if(!midTabs || !moreWrap || !moreBtn || !moreList) return;
+
+    // Always show all tabs and hide MORE in landscape / wide screens
+    if (isLandscapeOrWide()){
+      // Put every hidden tab back, hide more
+      $$('.tab', midTabs).forEach(b => b.style.display = 'inline-flex');
+      moreWrap.classList.remove('open');
+      moreBtn.style.display = 'none';
+      return;
+    }
+
+    // Portrait phones: enable overflow-to-More
+    moreList.classList.add('fullscreen');
+    moreList.innerHTML = '';
+    moreBtn.style.display = 'inline-flex';
+
+    // Measure available width between header edges (minus avatar)
+    const leftWidth  = header.children[0]?.offsetWidth || 0;
+    const rightWidth = header.children[header.children.length-1]?.offsetWidth || 0;
+    const available  = header.clientWidth - leftWidth - rightWidth - 28;
+
+    let used = 0;
+    const overflow = [];
+    const tabs = $$('.tab', midTabs);
+
+    tabs.forEach(btn => {
+      btn.style.display = 'inline-flex';
+      const w = btn.offsetWidth + 10;      // include gap
+      if (used + w <= available){ used += w; }
+      else { overflow.push(btn); }
+    });
+
+    if (overflow.length){
+      // Hide overflowed tabs, move them into More sheet
+      overflow.forEach(btn=>{
+        btn.style.display = 'none';
+        const item = document.createElement('button');
+        item.className = 'more-item';
+        item.textContent = btn.textContent.trim();
+        item.addEventListener('click', ()=>{ btn.click(); moreWrap.classList.remove('open'); });
+        moreList.appendChild(item);
+      });
+    } else {
+      moreBtn.style.display = 'none';
+      moreWrap.classList.remove('open');
+    }
+  }
+
+  // Wire MORE button open/close
+  moreBtn?.addEventListener('click', ()=> moreWrap.classList.toggle('open'));
+  document.addEventListener('click', (e)=>{ if(moreWrap && !moreWrap.contains(e.target)) moreWrap.classList.remove('open'); });
+
+  // Initial + on resize
+  layoutTabs();
+  window.addEventListener('resize', () => requestAnimationFrame(layoutTabs));
+
+  /* ---------- 5) Make absolutely sure buttons are tappable (iOS quirks) ---------- */
+  $$('.btn, .tab, .more-btn, .more-item, .avatar, a, button').forEach(el=>{
+    el.style.touchAction = 'manipulation';
+    el.style.cursor = 'pointer';
+  });
+
+})();
+</script>
+<!-- ========= /PATCH ========= -->
 </body>
 </html>
+
+ 
