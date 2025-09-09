@@ -1808,7 +1808,258 @@
 
   })();
   </script>
+<!-- ========= PATCH: Unified header, avatar menu, premium padlocks, gold bubbles, responsive tabs ========= -->
+<style>
+/* 1) Remove the old brand text (keep header height stable) */
+.nav .logo{ display:none !important }
 
+/* 2) Add a tabbar inside the header (we’ll move your existing .tabs into here) */
+.nav__tabs {
+  display:flex; gap:10px; align-items:center; justify-content:center;
+  flex:1 1 auto; margin:0 12px;
+}
+.nav__tabs .tab{ white-space:nowrap }
+
+/* 3) “More” menu (auto overflow on small screens) */
+.more-wrap{ position:relative }
+.more-btn{
+  padding:10px 14px; border-radius:12px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.55); color:var(--ink); font-weight:800; cursor:pointer;
+}
+.more-list{
+  position:absolute; right:0; top:calc(100% + 6px); min-width:200px; z-index:30;
+  display:none; flex-direction:column; gap:6px; padding:8px; border-radius:12px;
+  background:#0f1116; border:1px solid var(--stroke); box-shadow:0 14px 36px rgba(0,0,0,.5);
+}
+.more-wrap.open .more-list{ display:flex }
+.more-item{
+  padding:10px 12px; border-radius:10px; border:1px solid var(--stroke);
+  background:rgba(0,0,0,.55); color:var(--ink); font-weight:800; cursor:pointer; text-align:left;
+}
+.more-item:hover{ filter:brightness(1.05) }
+
+/* 4) Avatar dropdown */
+.avatar-wrap{ position:relative }
+.avatar-menu{
+  position:absolute; right:0; top:calc(100% + 8px); width:min(86vw, 320px); z-index:40;
+  display:none; background:#0f1116; border:1px solid var(--stroke); border-radius:14px; padding:10px;
+  box-shadow:0 18px 46px rgba(0,0,0,.55);
+}
+.avatar-wrap.open .avatar-menu{ display:block }
+.menu-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px; border-radius:10px; border:1px solid var(--stroke); background:#0b0f14 }
+.menu-row a{ font-weight:800 }
+.menu-note{ margin:6px 0 2px; color:var(--ink-dim); font-size:.86rem }
+
+/* 5) Premium SILVER share button (already used—keep enforcing) */
+.btn-share{
+  padding:8px 10px; border-radius:10px; font-weight:800;
+  background:linear-gradient(135deg, rgba(192,199,209,.35), rgba(255,255,255,.10)) !important;
+  border-color:rgba(192,199,209,.55) !important; color:#0f1116 !important;
+  box-shadow:0 4px 14px rgba(192,199,209,.22);
+}
+
+/* 6) PREMIUM padlock icon style (silver, with cutout + keyhole) */
+.padlock{ width:22px; height:22px; flex:0 0 auto; display:inline-block; vertical-align:-3px }
+.padlock svg{ display:block; width:100%; height:100% }
+.padlock.silver svg .shackle{ fill:none; stroke:#c0c7d1; stroke-width:2.4 }
+.padlock.silver svg .body{ fill:#c0c7d1 }
+.padlock.silver svg .keyhole{ fill:#0f1116 } /* cut-out */
+
+ /* 7) SOLID GOLD bubbles + pill (no transparency) */
+.points-bubble,
+.pill.gold{
+  background:#ffd700 !important; border:0 !important; color:#0f1116 !important;
+  box-shadow:0 8px 26px rgba(255,215,0,.35) !important;
+}
+.points-bubble{ border-radius:999px; padding:6px 10px; }
+.pill{ border-radius:999px; }
+.pill.silver{ background:#c0c7d1 !important; color:#0f1116 !important; box-shadow:none }
+
+/* 8) Redeem/points buttons in heroes as solid gold if present */
+.btn.redeem-gold{ background:#ffd700 !important; color:#0f1116 !important; border:0 !important; box-shadow:0 8px 26px rgba(255,215,0,.28) }
+
+/* 9) Keep heroes tidy; never let text overlap CTAs */
+.hero{ padding-bottom:78px !important } /* breathing room for bottom-left buttons */
+
+/* 10) Make all primary buttons identical size (daily undo included) */
+.btn{ padding:12px 16px !important; font-size:16px !important; border-radius:12px !important; font-weight:800 }
+
+/* 11) Tabs strip living IN the header; hide the old sticky wrapper visual space */
+.tabs{ display:none !important }  /* we will recreate inside header via JS */
+</style>
+
+<script>
+(()=>{
+
+  /* ===== Utilities from page (safe re-use) ===== */
+  const $  = (s,r=document)=>r.querySelector(s);
+  const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+  const compact = n => { const a=Math.abs(+n||0); return a>=1000 ? (Math.round(n/100)/10)+'k' : String(n); };
+
+  /* --------------------------------------------------------------------------------
+   *  A) Build unified header: move tabs into the top bar + “More” overflow handling
+   * -------------------------------------------------------------------------------- */
+  const header = document.querySelector('.nav');
+  if(header){
+    // 1) Middle container for tabs
+    const mid = document.createElement('div');
+    mid.className = 'nav__tabs';
+    // pull your existing tab buttons
+    const oldTabs = document.querySelector('.tabs');
+    const tabs = oldTabs ? Array.from(oldTabs.querySelectorAll('.tab')) : [];
+    tabs.forEach(b=> mid.appendChild(b));
+    // 2) Insert “More” wrapper (hidden until needed)
+    const more = document.createElement('div');
+    more.className = 'more-wrap';
+    more.innerHTML = `<button class="more-btn" aria-haspopup="true" aria-expanded="false" id="btnMore">More ▾</button>
+                      <div class="more-list" id="moreList"></div>`;
+    mid.appendChild(more);
+    // 3) Move the new mid block into header (center)
+    header.insertBefore(mid, header.children[1] || null);
+
+    // 4) Overflow algorithm — push extra tabs into “More”
+    const btnMore = $('#btnMore', mid), listMore = $('#moreList', mid);
+    function layoutTabs(){
+      // reset
+      listMore.innerHTML = '';
+      const all = Array.from(mid.querySelectorAll('.tab'));
+      const visible = [];
+      const avail = ()=> header.clientWidth - (header.children[0]?.offsetWidth||0) - (header.children[header.children.length-1]?.offsetWidth||0) - 40;
+      let used = 0; let overflow = [];
+      all.forEach(btn=>{
+        btn.style.display='inline-flex';
+        const w = btn.offsetWidth + 10; // gap
+        if(used + w <= avail()){ used += w; visible.push(btn); }
+        else overflow.push(btn);
+      });
+      if(overflow.length){
+        btnMore.style.display='inline-flex';
+        btnMore.setAttribute('aria-expanded','false');
+        overflow.forEach(btn=>{
+          btn.style.display='none';
+          const item = document.createElement('button');
+          item.className='more-item';
+          item.textContent = btn.textContent.trim();
+          item.addEventListener('click', ()=> btn.click());
+          listMore.appendChild(item);
+        });
+      }else{
+        btnMore.style.display='none';
+        listMore.innerHTML='';
+      }
+    }
+    layoutTabs();
+    window.addEventListener('resize', ()=> requestAnimationFrame(layoutTabs));
+    btnMore?.addEventListener('click', ()=>{
+      more.classList.toggle('open');
+      btnMore.setAttribute('aria-expanded', more.classList.contains('open')?'true':'false');
+    });
+    document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) more.classList.remove('open'); });
+  }
+
+  /* --------------------------------------------------------------------------------
+   *  B) Avatar dropdown: subscription toggle, calendar, achievements, +3 placeholders
+   * -------------------------------------------------------------------------------- */
+  const pill = document.getElementById('pillUser');
+  if(pill){
+    const wrap = document.createElement('div');
+    wrap.className = 'avatar-wrap';
+    // move existing pill content inside the wrapper
+    pill.parentNode.insertBefore(wrap, pill);
+    wrap.appendChild(pill);
+
+    const menu = document.createElement('div');
+    menu.className = 'avatar-menu';
+    menu.innerHTML = `
+      <div class="menu-note"><strong>Account</strong></div>
+      <div class="menu-row">
+        <span>Subscription</span>
+        <button class="toggle" id="menuToggleSub" aria-pressed="false">Off</button>
+      </div>
+      <div class="menu-row"><a href="#tab-calendar" id="menuGotoCal">My Calendar</a><span>›</span></div>
+      <div class="menu-row"><a href="profile.html#achievements" id="menuAch">Achievements</a><span>›</span></div>
+      <div class="menu-note"><strong>Shortcuts</strong></div>
+      <div class="menu-row"><a href="profile.html#slot1">Placeholder 1</a><span>›</span></div>
+      <div class="menu-row"><a href="profile.html#slot2">Placeholder 2</a><span>›</span></div>
+      <div class="menu-row"><a href="profile.html#slot3">Placeholder 3</a><span>›</span></div>
+    `;
+    wrap.appendChild(menu);
+
+    // open/close
+    const avatar = document.getElementById('avatarLink');
+    avatar?.addEventListener('click', (e)=>{ e.preventDefault(); wrap.classList.toggle('open'); });
+    document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) wrap.classList.remove('open'); });
+
+    // sync subscription toggle with the existing header toggle
+    const menuToggle = document.getElementById('menuToggleSub');
+    const hdrToggle  = document.getElementById('toggleSub');
+    const sync = ()=>{
+      const on = hdrToggle?.getAttribute('aria-pressed')==='true';
+      menuToggle.setAttribute('aria-pressed', on?'true':'false');
+      menuToggle.textContent = on?'On':'Off';
+    };
+    sync();
+    hdrToggle?.addEventListener('click', sync);
+    menuToggle?.addEventListener('click', ()=>{ hdrToggle?.click(); sync(); });
+
+    // “My Calendar” jumps to calendar tab
+    const gotoCal = document.getElementById('menuGotoCal');
+    const tabBtnCal = document.getElementById('tabbtn-calendar');
+    gotoCal?.addEventListener('click', (e)=>{ e.preventDefault(); tabBtnCal?.click(); wrap.classList.remove('open'); });
+  }
+
+  /* --------------------------------------------------------------------------------
+   *  C) Premium silver padlock SVG — replace all existing .padlock icons
+   * -------------------------------------------------------------------------------- */
+  const PADLOCK_SILVER =
+    `<svg viewBox="0 0 24 24" aria-hidden="true">
+       <path class="shackle" d="M7 11V8.5a5 5 0 0 1 10 0V11" />
+       <rect class="body" x="3" y="11" width="18" height="10" rx="2"/>
+       <circle class="keyhole" cx="12" cy="16" r="1.3"/>
+       <rect class="keyhole" x="11.2" y="14.7" width="1.6" height="2.8" rx="0.6"/>
+     </svg>`;
+  $$('.padlock').forEach(pl=>{
+    pl.classList.add('silver');
+    pl.innerHTML = PADLOCK_SILVER;
+  });
+
+  /* --------------------------------------------------------------------------------
+   *  D) Solid gold treatment for points pill & bubbles; remove “Points:” text
+   * -------------------------------------------------------------------------------- */
+  const pointsValue = document.getElementById('pointsValue');
+  const pillUser = document.getElementById('pillUser');
+  // remove "Points:" label (if still present) and keep compact value
+  if(pointsValue){
+    const labelNode = pointsValue.previousSibling;
+    if(labelNode && labelNode.nodeType===3){ labelNode.textContent = ''; } // strip text node
+    // apply compact format once here; your main script continues updating number
+    const current = pointsValue.textContent.trim();
+    if(/^\d+$/.test(current)) pointsValue.textContent = compact(+current);
+  }
+  // enforce gold/silver solid look now; main script already toggles classes
+  pillUser?.classList.add('gold'); // will be toggled by your paintTopChrome()
+
+  // make every redeem button gold-solid if present
+  $$('.btnRedeem, .btn-redeem, [data-redeem] .btn').forEach(b=> b.classList.add('redeem-gold'));
+  // make every hero points bubble solid gold if user is subscriber (your code toggles this too)
+  const isSub = (document.getElementById('toggleSub')?.getAttribute('aria-pressed')==='true');
+  if(isSub){ $$('.points-bubble').forEach(b=> b.classList.remove('silver')); }
+
+  /* --------------------------------------------------------------------------------
+   *  E) Ensure all share buttons have premium silver styling
+   * -------------------------------------------------------------------------------- */
+  $$('.btn-share').forEach(b=> b.classList.add('silver'));
+
+  /* --------------------------------------------------------------------------------
+   *  F) Keep header items right-aligned: avatar hard-right
+   * -------------------------------------------------------------------------------- */
+  // Already true by DOM order; this just ensures the pill hugs the right edge
+  const rightBox = document.querySelector('.nav .pill')?.parentElement;
+  if(rightBox){ rightBox.style.marginLeft = 'auto'; }
+
+})();
+</script>
+<!-- ========= /PATCH ========= -->
   <!-- End of main app logic. Close body/html. -->
 </body>
 </html>
