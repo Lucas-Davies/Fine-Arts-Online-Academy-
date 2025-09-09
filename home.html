@@ -6,534 +6,1105 @@
   <meta name="color-scheme" content="dark" />
   <title>Home — Art Online by Jody Graham</title>
 
+  <!-- ================================
+       DESIGN TOKENS (Home-only)
+       ================================ -->
   <style>
     :root{
-      --ink:#eef3ff; --muted:rgba(238,243,255,.78); --greyText:#cfd3e1;
-      --stroke:rgba(255,255,255,.18); --surface:#000; /* SOLID BLACK HEROES */
-      --blue:#0A84FF; --green:#32d74b; --gold:#ffd700; --red:#ff453a; --pink:#ff2d55;
-      --r-lg:16px; --r-md:12px; --gap:12px; --maxw:1200px;
-      --nav-h:64px; --tabs-h:56px; --chrome-h: calc(var(--nav-h) + var(--tabs-h) + 24px);
+      /* Core palette */
+      --ink:#eef3ff;
+      --muted:rgba(238,243,255,.78);
+      --ink-dim:#cfd3e1;
+      --stroke:rgba(255,255,255,.18);
+
+      /* Surfaces */
+      --bg:#000;                  /* page background */
+      --hero:#000;                /* SOLID BLACK heroes */
+
+      /* Brand colours */
+      --blue:#0A84FF;             /* iOS blue (free/start) */
+      --green:#32d74b;            /* success / weekly complete ring */
+      --gold:#ffd700;             /* subscriber + points + live */
+      --silver:#c0c7d1;           /* non-subscriber chrome */
+      --red:#ff453a;              /* 30-day + expiry text */
+      --pink:#ff2d55;             /* 3-day */
+
+      /* Layout */
+      --r-lg:16px;
+      --r-md:12px;
+      --gap:12px;
+      --maxw:1240px;
+
+      /* Chrome heights (used for landscape “no-scroll”) */
+      --nav-h:72px;
+      --tabs-h:56px;
+      --chrome-h: calc(var(--nav-h) + var(--tabs-h) + 28px);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+    /* Reset-ish */
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
     body{
-      margin:0; color:var(--ink);
+      margin:0; background:var(--bg); color:var(--ink);
       font:16px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      background:#000;
-      -webkit-user-select:none; user-select:none;       /* deter copy */
+      -webkit-user-select:none; user-select:none;      /* deter copy */
       -webkit-touch-callout:none;
     }
-    a{color:inherit; text-decoration:none}
-    img{pointer-events:none; -webkit-user-drag:none}
-    body:focus-visible{outline:none}
+    a{ color:inherit; text-decoration:none }
+    img{ pointer-events:none; -webkit-user-drag:none }
 
-    /* Fixed, full-bleed background that never moves */
+    /* ===== Fixed, full-bleed background (never moves) ===== */
     .bg{
       position:fixed; inset:0; z-index:-1;
-      background:#000 url("./assets/home-bg.jpg") center center / cover no-repeat;
-      /* Use a fixed layer element rather than background-attachment for iOS */
-      will-change:transform;
+      background: #000 url("./assets/home-bg.jpg") center center / cover no-repeat;
+      will-change:transform;                 /* iOS-friendly “fixed” layer */
     }
 
-    /* Top Nav */
-    .nav{position:fixed; top:0; left:0; right:0; height:var(--nav-h);
-      display:flex; align-items:flex-start; justify-content:space-between; padding:8px 20px; z-index:10;
-      background:linear-gradient(180deg, rgba(0,0,0,.7), transparent);
-      -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    /* ================================
+       TOP NAV
+       ================================ */
+    .nav{
+      position:fixed; top:0; left:0; right:0; height:var(--nav-h);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 16px; z-index:20;
+      background:linear-gradient(180deg, rgba(0,0,0,.8), rgba(0,0,0,.25) 70%, transparent);
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     }
-    .logo-block{line-height:1.1}
-    .logo-title{font-weight:900; letter-spacing:.2px; color:var(--blue)}
-    .logo-sub{font-weight:700; color:#fff}
-    .nav-actions{display:flex; align-items:center; gap:10px}
-    .points-display{font-weight:800; background:rgba(0,0,0,.55); border:1px solid var(--stroke);
-      border-radius:999px; padding:6px 10px}
-    .avatar{width:34px; height:34px; border-radius:50%; border:1px solid var(--stroke);
+    .logo{
+      line-height:1.05;
+      display:flex; flex-direction:column;
+    }
+    .logo .t1{ font-weight:900; letter-spacing:.2px; color:var(--blue); font-size:18px }
+    .logo .t2{ font-weight:700; color:#fff; font-size:14px }
+
+    /* Avatar + points pill (gold when subscribed, silver when not) */
+    .pill{
+      display:flex; align-items:center; gap:10px;
+      padding:6px 8px 6px 10px; border-radius:999px;
+      border:1px solid var(--stroke);
       background:linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
-      display:grid; place-items:center; font-weight:900}
-    .btn{padding:10px 14px; border-radius:12px; font-weight:700; border:0; cursor:pointer}
-    .btn.primary{background:var(--blue); color:#fff}
-    .btn.success{background:var(--green); color:#000; font-weight:900}
-    .btn.warn{background:var(--gold); color:#000; font-weight:900}
-    .btn.ghost{background:rgba(0,0,0,.55); border:1px solid var(--stroke); color:var(--ink)}
-    .btn[disabled]{opacity:.55; cursor:not-allowed}
-
-    .wrap{position:relative; z-index:1; padding:96px 20px 64px; max-width:var(--maxw); margin:0 auto}
-
-    /* Tabs */
-    .tabs{display:flex; gap:8px; padding:6px; margin:-8px 0 12px; position:sticky; top:var(--nav-h); z-index:5;
-      justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.35) 60%, transparent); border-radius:14px;
-      -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px)}
-    .tab{padding:10px 14px; border-radius:999px; border:1px solid var(--stroke); background:rgba(0,0,0,.55); color:var(--ink); font-weight:700; cursor:pointer}
-    .tab.is-active{background:var(--blue); color:#fff; border-color:transparent}
-    .tab-panel{display:none; animation:fade .2s ease} .tab-panel.is-active{display:block}
-    @keyframes fade{from{opacity:.6; transform:translateY(4px)} to{opacity:1; transform:none}}
-
-    /* Heroes (SOLID BLACK) */
-    .hero{position:relative; overflow:hidden; border-radius:var(--r-lg); border:1px solid var(--stroke); background:var(--surface); min-height:220px; margin:12px 0}
-    .hero-body{position:relative; z-index:1; padding:16px; display:flex; flex-direction:column; gap:8px; height:100%}
-    .hero-title{margin:0; font-size:18px; font-weight:900}
-    .hero-meta{margin:0; color:var(--greyText); font-size:.92rem}
-    .hero-desc{margin:0; color:var(--muted)}
-    .padlock{width:20px; height:20px; vertical-align:-3px; margin-right:6px; color:var(--ink)} /* padlock = hero text colour */
-
-    /* Daily banner (full-width) */
-    .hero-banner{height: clamp(260px, calc((100dvh - var(--chrome-h)) * 0.52), 440px); display:flex; align-items:flex-end}
-    .expire-chip{display:inline-flex; gap:6px; align-items:center; border:1px solid var(--stroke); padding:6px 10px; border-radius:999px; background:rgba(0,0,0,.55); color:var(--ink)}
-    .hero-cta{position:absolute; right:16px; bottom:16px; z-index:2}
-    .btn-complete{min-width:140px; min-height:56px; border-radius:12px; background:var(--blue); color:#fff; font-weight:900}
-    .btn-undo{min-width:140px; min-height:56px; border-radius:12px; background:#3a3a3a; color:#fff; font-weight:900}
-    .is-complete{box-shadow:0 0 0 3px var(--green) inset}
-    .is-complete .hero-title::after{content:"  ✓ Complete"; color:var(--green); font-weight:900; margin-left:6px}
-
-    /* Weekly (3 across; stack in portrait) */
-    .weekly-row{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap); margin-top:12px; height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.40), 340px)}
-    .weekly .hero-body{display:flex; flex-direction:column; gap:6px}
-    .weekly .hero-expiry{position:absolute; right:16px; top:16px; font-size:.85rem; padding:6px 10px; border-radius:12px; background:rgba(0,0,0,.55); border:1px solid var(--stroke)}
-    .weekly.is-expired{opacity:.7}
-
-    /* Start buttons pinned bottom-left in weekly and courses */
-    .btn-left{position:absolute; left:16px; bottom:16px}
-
-    /* Courses */
-    .grid{display:grid; gap:var(--gap); margin:12px 0}
-    .grid-3{grid-template-columns:repeat(3, minmax(0,1fr))}
-    .tall-hero{min-height: clamp(220px, 26vh, 320px)}
-    .course.locked .padlock{display:inline} .course:not(.locked) .padlock{display:none}
-    .course.is-complete{box-shadow:0 0 0 3px var(--green) inset}
-    /* Theme hint ring on spans via data-theme */
-    .course[data-theme="pink"] .hero-title::before{content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--pink); margin-right:8px}
-
-    /* Modals */
-    .modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); backdrop-filter:blur(6px); z-index:20}
-    .modal.open{display:grid}
-    .modal-content{background:#0f1116; border:1px solid var(--stroke); border-radius:12px; padding:18px; width:min(92vw, 560px); box-shadow:0 16px 42px rgba(0,0,0,.5)}
-    .modal-actions{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-    .field{display:grid; gap:6px; margin-top:8px}
-    .field input{padding:10px 12px; border-radius:10px; border:1px solid var(--stroke); background:#0a0a0a; color:var(--ink)}
-
-    /* Achievements */
-    .achievements-summary{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:10px 0}
-    .badge{display:inline-grid; place-items:center; width:56px; height:56px; border-radius:50%;
-      background:linear-gradient(135deg, rgba(10,132,255,.22), rgba(255,255,255,.04)); border:1px solid var(--stroke); font-weight:900}
-    .history-list{list-style:none; padding:0; margin:8px 0}
-    .history-item{padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; gap:10px; align-items:center}
-    .pager{display:flex; gap:8px; margin-top:8px}
-
-    /* Calendar (black) */
-    #tab-calendar .calendar-wrap{background:#000; border:1px solid var(--stroke); border-radius:12px; padding:10px}
-    .cal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
-    .tallies{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px}
-    .tally{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--stroke); border-radius:999px; padding:6px 10px; cursor:pointer; background:#0a0a0a}
-    .chip{width:10px; height:10px; border-radius:50%}
-    .chip.blue{background:var(--blue)} .chip.green{background:#00c853} .chip.pink{background:var(--pink)} .chip.red{background:var(--red)} .chip.gold{background:var(--gold)}
-    .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
-    .cal-cell{min-height:86px; border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:4px; position:relative; background:#0a0a0a; cursor:pointer}
-    .cal-date{font-size:.82rem; color:var(--greyText)}
-    .bar{height:10px; border-radius:6px; margin-top:4px; width:100%} /* edge-to-edge bars */
-    .bar.blue{background:var(--blue)} .bar.green{background:#00c853} .bar.pink{background:var(--pink)} .bar.red{background:var(--red)} .bar.gold{background:var(--gold)}
-    .kebab{height:4px; border-radius:6px; margin-top:6px; background:#8a8a8a}
-    .span{position:absolute; left:4px; right:4px; bottom:3px; height:3px; border-radius:4px}
-    .span.green{background:#00c853} .span.pink{background:var(--pink)} .span.red{background:var(--red)}
-
-    /* Day-detail modal list */
-    .day-list{max-height:300px; overflow:auto; border-top:1px solid rgba(255,255,255,.1); margin-top:8px; padding-top:8px}
-
-    /* Portrait stacking */
-    @media (orientation:portrait){
-      .tabs{top:62px}
-      .weekly-row{grid-template-columns:1fr; height:auto}
-      .grid-3{grid-template-columns:1fr}
     }
+    .pill.gold{ background:linear-gradient(135deg, rgba(255,215,0,.25), rgba(255,255,255,.06)); border-color:rgba(255,215,0,.35) }
+    .pill.silver{ background:linear-gradient(135deg, rgba(192,199,209,.25), rgba(255,255,255,.06)); border-color:rgba(192,199,209,.35) }
+
+    .points-badge{
+      display:inline-flex; align-items:center; gap:6px;
+      font-weight:900; padding:6px 10px; border-radius:999px;
+      background:rgba(0,0,0,.45);
+      border:1px solid var(--stroke);
+    }
+    .avatar{
+      width:34px; height:34px; border-radius:50%;
+      display:grid; place-items:center; font-weight:900;
+      border:1px solid var(--stroke);
+      background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    }
+
+    /* Subscriber toggle (affects weekly + foundations only) */
+    .toggle{
+      appearance:none; padding:10px 14px; border-radius:12px;
+      border:1px solid var(--stroke); background:rgba(0,0,0,.5);
+      color:var(--ink); font-weight:700; cursor:pointer;
+    }
+
+    /* ================================
+       WRAPPER + TABS RIBBON
+       ================================ */
+    .wrap{ position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:calc(var(--nav-h) + 8px) 16px 72px }
+
+    /* Edge-to-edge blue-styled tabs; no scroll */
+    .tabs{
+      display:flex; gap:10px; align-items:center; justify-content:center;
+      position:sticky; top:var(--nav-h); z-index:15;
+      padding:8px; margin:6px 0 12px;
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.35) 60%, rgba(0,0,0,0));
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    }
+    .tab{
+      padding:10px 16px; border-radius:12px;
+      background:rgba(0,0,0,.55); border:1px solid var(--stroke);
+      color:var(--ink); font-weight:800; cursor:pointer;
+      transition:transform .06s ease, background .2s ease;
+    }
+    .tab:is(:hover,:focus-visible){ transform:translateY(-1px) }
+    .tab.is-active{ background:var(--blue); color:#fff; border-color:transparent }
+
+    /* iPhone portrait – ribbon under pill, full-width */
+    @media (max-width:680px){
+      .tabs{ top:calc(var(--nav-h) + 2px) }
+    }
+    /* iPad/desktop – slightly bigger tabs */
+    @media (min-width:900px){
+      .tab{ padding:12px 18px; font-size:17px }
+    }
+
+    .tab-panel{ display:none; animation:fade .18s ease }
+    .tab-panel.is-active{ display:block }
+    @keyframes fade{ from{opacity:.6; transform:translateY(4px)} to{opacity:1; transform:none} }
+
+    /* ================================
+       BUTTONS
+       ================================ */
+    .btn{ padding:10px 14px; border-radius:12px; border:0; cursor:pointer; font-weight:800 }
+    .btn.blue{  background:var(--blue);  color:#fff }
+    .btn.green{ background:var(--green); color:#000 }
+    .btn.grey{  background:#3a3a3a;    color:#fff }
+    .btn.ghost{ background:rgba(0,0,0,.5); color:var(--ink); border:1px solid var(--stroke) }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed }
+
+    /* Mini share button (¼ size of primary) */
+    .btn-share{
+      padding:8px 10px; border-radius:10px; font-weight:800;
+      background:rgba(255,255,255,.10); border:1px solid var(--stroke); color:var(--ink);
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .btn-row{ display:flex; gap:10px; align-items:center }
+
+    /* ================================
+       HERO CARDS (solid black)
+       ================================ */
+    .hero{
+      position:relative; overflow:hidden; background:var(--hero);
+      border:1px solid var(--stroke); border-radius:var(--r-lg);
+      min-height:220px; padding:16px; margin:12px 0;
+    }
+    .hero .title{ margin:0; font-weight:900; font-size:18px; display:flex; align-items:center; gap:8px }
+    .hero .meta{ margin:4px 0 0; color:var(--ink-dim); font-size:.92rem }
+    .hero .desc{ margin:8px 0 0; color:var(--muted) }
+
+    /* Completion ring + tick (applies to any hero) */
+    .hero.complete{ box-shadow:0 0 0 3px var(--green) inset }
+    .hero.complete .title::after{ content:" ✓ Complete"; color:var(--green); font-weight:900; margin-left:6px }
+
+    /* Gold/Silver padlocks (disappear when unlocked) */
+    .padlock{
+      width:20px; height:20px; vertical-align:-3px; flex:0 0 auto;
+      fill:currentColor; color:var(--gold);
+    }
+    .padlock.silver{ color:var(--silver) }
+
+    /* Price (bottom-right) + Points bubble (top-right) */
+    .price{
+      position:absolute; right:12px; bottom:12px;
+      padding:6px 10px; border-radius:10px; font-weight:900;
+      background:rgba(0,0,0,.55); border:1px solid var(--stroke);
+      color:#fff; min-width:54px; text-align:center;
+    }
+    .points-bubble{
+      position:absolute; right:12px; top:12px;
+      transform:translate(8px,-8px);                 /* bubble “overlaps” corner */
+      padding:6px 10px; border-radius:10px; font-weight:900;
+      background:linear-gradient(135deg, rgba(255,215,0,.25), rgba(255,255,255,.06));
+      border:1px solid rgba(255,215,0,.45);
+      color:#000;
+      box-shadow:0 6px 18px rgba(255,215,0,.22);
+    }
+    .points-bubble.silver{
+      background:linear-gradient(135deg, rgba(192,199,209,.25), rgba(255,255,255,.06));
+      border-color:rgba(192,199,209,.45); color:#0f1116;
+      box-shadow:none;
+    }
+
+    /* Hero CTA placements */
+    .cta-left{ position:absolute; left:16px; bottom:16px }
+    .cta-right{ position:absolute; right:16px; bottom:16px }
+
+    /* Weekly row (3 across landscape; stacked portrait) */
+    .weekly-row{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gap);
+      margin-top:12px;
+      height: clamp(220px, calc((100dvh - var(--chrome-h)) * 0.40), 340px);
+    }
+    @media (orientation:portrait){ .weekly-row{ grid-template-columns:1fr; height:auto } }
+
+    /* Weekly status — expiry text in RED, remove “Active” badge entirely */
+    .weekly-exp{
+      position:absolute; top:12px; left:12px; padding:6px 10px;
+      border-radius:10px; border:1px solid rgba(255,69,58,.35);
+      color:var(--red); background:rgba(255,69,58,.10); font-weight:800;
+    }
+
+    /* Daily banner (full-width; height tuned to avoid scroll with weekly row) */
+    .banner{
+      display:flex; align-items:flex-end;
+      height: clamp(260px, calc((100dvh - var(--chrome-h)) * 0.52), 440px);
+    }
+    .expire-chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px; font-weight:800;
+      color:var(--red); border:1px solid rgba(255,69,58,.35); background:rgba(255,69,58,.12);
+    }
+
+    /* Grids for Courses tab */
+    .grid{ display:grid; gap:var(--gap); margin:12px 0 }
+    .grid-3{ grid-template-columns:repeat(3, minmax(0,1fr)) }
+    .tall{ min-height: clamp(220px, 26vh, 320px) }
+    @media (orientation:portrait){ .grid-3{ grid-template-columns:1fr } }
+
+    /* ================================
+       CALENDAR (iOS-inspired)
+       ================================ */
+    .calendar-shell{ background:#000; border:1px solid var(--stroke); border-radius:16px; padding:10px }
+    .cal-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    .cal-left{ display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+    .cal-right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+
+    .cal-view{ display:inline-flex; border:1px solid var(--stroke); border-radius:10px; overflow:hidden }
+    .cal-view button{
+      padding:8px 12px; background:rgba(0,0,0,.5); border:0; color:var(--ink); font-weight:800; cursor:pointer;
+    }
+    .cal-view button.is-active{ background:var(--blue); color:#fff }
+
+    .cal-filter{ display:flex; gap:6px; flex-wrap:wrap }
+    .chip{
+      display:inline-flex; align-items:center; gap:6px; padding:6px 10px;
+      border:1px solid var(--stroke); border-radius:999px; background:#0a0a0a; font-weight:800;
+    }
+    .dot{ width:10px; height:10px; border-radius:50% }
+    .dot.blue{ background:var(--blue) } .dot.green{ background:#00c853 }
+    .dot.pink{ background:var(--pink) } .dot.red{ background:var(--red) }
+    .dot.gold{ background:var(--gold) }
+
+    .search{ min-width:220px; padding:10px 12px; border-radius:10px; border:1px solid var(--stroke); background:#0a0a0a; color:var(--ink) }
+
+    /* Totals bar (no parentheses; overlay detail) */
+    .totals{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px }
+    .total{ cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px; border:1px solid var(--stroke); background:#0a0a0a; font-weight:900 }
+
+    /* Month grid */
+    .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px }
+    .cell{
+      background:#0a0a0a; border:1px solid rgba(255,255,255,.1); border-radius:10px; min-height:92px; padding:4px; position:relative; cursor:pointer;
+      overflow:hidden;
+    }
+    .cell .date{ font-size:.82rem; color:var(--ink-dim) }
+
+    /* Event blocks — edge-to-edge with readable text inside */
+    .ev{
+      margin-top:6px; width:100%; border-radius:6px; padding:4px 6px; font-weight:800; font-size:.82rem;
+      color:#0d1117; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .ev.blue{  background:var(--blue);  color:#fff }
+    .ev.green{ background:#00c853; color:#0b1b12 }
+    .ev.pink{  background:var(--pink);  color:#18060a }
+    .ev.red{   background:var(--red);   color:#1b0504 }
+    .ev.gold{  background:var(--gold);  color:#1a1400 }
+
+    /* Span lines (weekly/3d/30d) drawn at bottom edge */
+    .span{ position:absolute; left:4px; right:4px; bottom:3px; height:3px; border-radius:4px }
+    .span.green{ background:#00c853 } .span.pink{ background:var(--pink) } .span.red{ background:var(--red) }
+
+    /* Day popover with hour grid */
+    .popover{
+      position:fixed; inset:0; display:none; place-items:center; z-index:40;
+      background:rgba(0,0,0,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .popover.open{ display:grid }
+    .pop-card{
+      width:min(96vw, 980px); max-height:86vh; overflow:auto;
+      background:#0f1116; border:1px solid var(--stroke); border-radius:16px; padding:14px;
+    }
+    .hours{ display:grid; grid-template-columns:60px 1fr; gap:8px; margin-top:8px }
+    .hour{ color:var(--ink-dim); font-size:.82rem; text-align:right; padding-right:8px }
+    .hour-line{ border-bottom:1px dashed rgba(255,255,255,.12); height:38px; position:relative }
+    .hour-ev{
+      position:absolute; left:6px; right:6px;
+      border-radius:8px; padding:6px 8px; font-weight:800; font-size:.85rem;
+    }
+
+    /* Manual event editor */
+    .editor{ display:grid; gap:10px; grid-template-columns:1fr 1fr; margin-top:8px }
+    .editor .row{ display:flex; gap:8px; align-items:center }
+    .editor input, .editor select, .editor textarea{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--stroke); background:#0a0a0a; color:var(--ink)
+    }
+    .editor textarea{ min-height:80px; resize:vertical }
+
+    /* Scroll-overlay used by totals (does NOT push calendar down) */
+    .overlay{
+      position:fixed; inset:0; display:none; place-items:center; z-index:35;
+      background:rgba(0,0,0,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    }
+    .overlay.open{ display:grid }
+    .overlay .sheet{
+      width:min(96vw, 820px); max-height:80vh; overflow:auto;
+      background:#0f1116; border:1px solid var(--stroke); border-radius:16px; padding:14px;
+    }
+
+    /* ================================
+       MODALS (purchase, redeem, confirm)
+       ================================ */
+    .modal{ position:fixed; inset:0; display:none; place-items:center; z-index:50;
+      background:rgba(0,0,0,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
+    .modal.open{ display:grid }
+    .modal .card{
+      width:min(92vw, 560px); background:#0f1116; border:1px solid var(--stroke);
+      border-radius:16px; padding:18px; box-shadow:0 18px 48px rgba(0,0,0,.55)
+    }
+    .modal .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px }
+
+    /* ================================
+       HELPERS
+       ================================ */
+    .section-title{ margin:12px 2px 6px; font-size:18px; font-weight:900; letter-spacing:.2px }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
   </style>
 </head>
-
 <body class="home-bg" oncontextmenu="return false">
+  <!-- Fixed full-bleed BG (never scrolls) -->
   <div class="bg" aria-hidden="true"></div>
 
   <!-- ===== Top Nav ===== -->
-  <header class="nav">
-    <div class="logo-block">
-      <div class="logo-title">Art Online</div>
-      <div class="logo-sub">by Jody Graham</div>
+  <header class="nav" role="banner">
+    <div class="logo" aria-label="Brand">
+      <span class="t1">Art Online</span>
+      <span class="t2">by Jody Graham</span>
     </div>
-    <div class="nav-actions">
-      <div id="pointsDisplay" class="points-display">Points: <span id="pointsValue">0</span></div>
-      <button class="btn ghost" id="toggleSub" aria-pressed="false">Subscriber: <span id="subState">Off</span></button>
-      <a class="avatar" href="profile.html" title="Profile (click to view)">JG</a>
+
+    <!-- Points + Avatar combined pill (gold when subscribed, silver when not) -->
+    <div class="pill silver" id="pillUser">
+      <div class="points-badge" id="pointsBadge">
+        Points: <span id="pointsValue">0</span>
+      </div>
+      <a class="avatar" id="avatarLink" href="profile.html" title="Profile">JG</a>
     </div>
+
+    <!-- Subscriber toggle (gates Weekly + Foundations; courses are paid) -->
+    <button class="toggle" id="toggleSub" aria-pressed="false" title="Toggle subscription">
+      Subscriber: <span id="subState">Off</span>
+    </button>
   </header>
 
-  <main class="wrap">
-    <!-- ===== Tabs ===== -->
-    <nav class="tabs" role="tablist" aria-label="Primary">
-      <button class="tab is-active" role="tab" aria-selected="true" aria-controls="tab-challenges" id="tabbtn-challenges">Challenges</button>
-      <button class="tab" role="tab" aria-controls="tab-foundations" id="tabbtn-foundations">Foundations</button>
-      <button class="tab" role="tab" aria-controls="tab-courses" id="tabbtn-courses">Courses</button>
-      <button class="tab" role="tab" aria-controls="tab-live" id="tabbtn-live">Live</button>
-      <button class="tab" role="tab" aria-controls="tab-achievements" id="tabbtn-achievements">Achievements</button>
-      <button class="tab" role="tab" aria-controls="tab-calendar" id="tabbtn-calendar">My Calendar</button>
+  <main class="wrap" role="main">
+    <!-- ===== Tabs Ribbon (edge-to-edge, blue-styled, no scroll) ===== -->
+    <nav class="tabs" role="tablist" aria-label="Primary tabs">
+      <button class="tab is-active" role="tab" aria-selected="true"
+              aria-controls="tab-challenges" id="tabbtn-challenges">
+        Challenges
+      </button>
+
+      <!-- Foundations are merged into Courses; this tab contains
+           Foundations (top row) + Paid Courses + (cash/points) -->
+      <button class="tab" role="tab" aria-selected="false"
+              aria-controls="tab-courses" id="tabbtn-courses">
+        Courses
+      </button>
+
+      <button class="tab" role="tab" aria-selected="false"
+              aria-controls="tab-live" id="tabbtn-live">
+        Live
+      </button>
+
+      <button class="tab" role="tab" aria-selected="false"
+              aria-controls="tab-calendar" id="tabbtn-calendar">
+        My Calendar
+      </button>
     </nav>
 
-    <!-- ===== CHALLENGES ===== -->
+    <!-- ===========================================
+         TAB: CHALLENGES (Daily + Weekly)
+         =========================================== -->
     <section class="tab-panel is-active" id="tab-challenges" role="tabpanel" aria-labelledby="tabbtn-challenges">
-      <!-- Daily -->
-      <article class="hero hero-banner" id="dailyHero">
-        <div class="hero-body">
-          <div>
-            <h2 class="hero-title" id="dailyTitle">Today’s Daily Challenge</h2>
-            <p class="hero-meta">
-              <span id="dailyDate"></span>
-              &nbsp;•&nbsp;<span class="expire-chip">Expires in <span id="dailyExpires">--</span></span>
-            </p>
-            <p class="hero-desc" id="dailyDesc">A quick 15–20 minute warm-up. All instructions appear here.</p>
-          </div>
-          <div class="hero-cta">
-            <button class="btn btn-complete" id="btnDailyAction">Complete</button>
-          </div>
+      <!-- Daily (free for all). Button on LEFT, expiry in red. -->
+      <article class="hero banner" id="dailyHero" aria-labelledby="dailyTitle">
+        <h2 class="sr-only" id="dailyTitle">Today’s Daily Challenge</h2>
+        <div>
+          <p class="meta">
+            <span id="dailyDate">—</span>
+            &nbsp;•&nbsp;
+            <span class="expire-chip">Expires in <span id="dailyExpires">--</span></span>
+          </p>
+          <p class="desc" id="dailyDesc">
+            A fast 15–20 minute warm-up. Instructions are shown here inside the hero.
+          </p>
+        </div>
+
+        <!-- Primary action on the LEFT (Complete → grey Undo) -->
+        <div class="cta-left">
+          <button class="btn blue" id="btnDailyAction" aria-live="polite">Complete</button>
+          <!-- Mini share (¼ size) to generate a shareable image of this hero -->
+          <button class="btn-share" id="shareDaily" title="Share this daily">
+            <span aria-hidden="true">⤴︎</span> <span class="sr-only">Share</span>
+          </button>
         </div>
       </article>
 
-      <!-- Weekly (3 tiles, subscriber-only; no subscribe popup) -->
+      <!-- Weekly (subscriber-only). Show current + 2 previous. -->
+      <h3 class="section-title">Weekly Challenges (Subscribers)</h3>
       <div class="weekly-row" id="weeklyRow" aria-label="Weekly Challenges"></div>
-      <ul id="weeklyIndex" hidden></ul> <!-- hidden index of 52 weekly pages -->
+
+      <!-- Hidden index to 52 weekly pages (generated by JS) -->
+      <ul id="weeklyIndex" hidden></ul>
     </section>
 
-    <!-- ===== FOUNDATIONS (purchasable, not subscription-gated) ===== -->
-    <section class="tab-panel" id="tab-foundations" role="tabpanel" aria-labelledby="tabbtn-foundations">
-      <h2 class="section-title">Foundations</h2>
+    <!-- (Tabs “Courses”, “Live”, “My Calendar” panels come in Part 3) -->
+    <!-- ===========================================
+         TAB: COURSES (Foundations + Paid)
+         Foundations are subscription-gated (blue button)
+         Paid courses use green buttons
+         =========================================== -->
+    <section class="tab-panel" id="tab-courses" role="tabpanel" aria-labelledby="tabbtn-courses">
+      <h2 class="section-title">Courses</h2>
+
+      <!-- FOUNDATIONS (subscription-gated) -->
+      <h3 class="section-title">Foundations (Subscribers)</h3>
       <div class="grid grid-3">
-        <article class="hero tall-hero course locked" data-course-id="found-setup" data-course-type="1day" data-course-days="1" data-link="course-found-setup.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Materials & Setup</h3>
-            <p class="hero-desc">Paper, charcoal, inks, brushes, safety & layout.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+        <!-- Materials & Setup -->
+        <article class="hero tall course" data-kind="foundation" data-course-id="found-setup" data-link="course-found-setup.html">
+          <div class="title">
+            <svg class="padlock" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Materials &amp; Setup
+          </div>
+          <p class="meta">Prepare your space: paper, charcoal, inks, brushes, safe layout.</p>
+          <p class="desc">Step-by-step setup to start drawing/painting with confidence.</p>
+
+          <!-- Foundations: subscription-gated → blue -->
+          <div class="cta-left btn-row">
+            <button class="btn blue btnStartFoundation">Start Course</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="found-drawing" data-course-type="1day" data-course-days="1" data-link="course-found-drawing.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Drawing</h3>
-            <p class="hero-desc">Line, tone, proportion, gesture, observation.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <!-- Drawing -->
+        <article class="hero tall course" data-kind="foundation" data-course-id="found-drawing" data-link="course-found-drawing.html">
+          <div class="title">
+            <svg class="padlock" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Drawing
+          </div>
+          <p class="meta">Line, tone, proportion, gesture, observation.</p>
+          <p class="desc">Foundational drills to build accuracy and flow.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn blue btnStartFoundation">Start Course</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="found-painting" data-course-type="1day" data-course-days="1" data-link="course-found-painting.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Painting</h3>
-            <p class="hero-desc">Surface prep, colour mixing, value structure, brushwork.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <!-- Painting -->
+        <article class="hero tall course" data-kind="foundation" data-course-id="found-painting" data-link="course-found-painting.html">
+          <div class="title">
+            <svg class="padlock" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Painting
+          </div>
+          <p class="meta">Surface prep, colour mixing, value structure, brushwork.</p>
+          <p class="desc">Learn stable processes that free you to be expressive.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn blue btnStartFoundation">Start Course</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
         </article>
       </div>
-    </section>
 
-    <!-- ===== COURSES ===== -->
-    <section class="tab-panel" id="tab-courses" role="tabpanel" aria-labelledby="tabbtn-courses">
-      <h2 class="section-title">Online Courses</h2>
-
+      <!-- PAID COURSES (1-Day) -->
       <h3 class="section-title">1-Day Intensives</h3>
       <div class="grid grid-3">
-        <article class="hero tall-hero course locked" data-course-id="1d-gesture" data-course-type="1day" data-course-days="1" data-link="course-1d-gesture.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Gesture Drawing</h3>
-            <p class="hero-desc">Fast, confident gestures.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+        <article class="hero tall course" data-kind="paid" data-course-id="1d-gesture" data-link="course-1d-gesture.html" data-redeem="0">
+          <div class="title">Gesture Drawing</div>
+          <p class="meta">Fast, confident gesture studies.</p>
+          <p class="desc">Build energy and decision-making in minutes.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <!-- Top-right points bubble (unknown → “?”) -->
+          <div class="points-bubble silver" data-points="?" title="Points price"><span class="sr-only">Points</span><span class="bubblePoints">?</span></div>
+          <!-- Bottom-right price ($ from pricing.html; fallback $?) -->
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="1d-ink" data-course-type="1day" data-course-days="1" data-link="course-1d-ink.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Ink Essentials</h3>
-            <p class="hero-desc">Brush, pen, splash control.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="1d-ink" data-link="course-1d-ink.html" data-redeem="0">
+          <div class="title">Ink Essentials</div>
+          <p class="meta">Brush, pen, splash control.</p>
+          <p class="desc">Harness accidents while keeping structure.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="?"><span class="bubblePoints">?</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="1d-charcoal" data-course-type="1day" data-course-days="1" data-link="course-1d-charcoal.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Charcoal Tonals</h3>
-            <p class="hero-desc">Structure with light/dark.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="1d-charcoal" data-link="course-1d-charcoal.html" data-redeem="0">
+          <div class="title">Charcoal Tonals</div>
+          <p class="meta">Structure with light/dark.</p>
+          <p class="desc">Design clear value statements with charcoal.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="?"><span class="bubblePoints">?</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
       </div>
 
-      <h3 class="section-title">3-Day Courses <span class="hero-meta">Redeem: 500 points</span></h3>
+      <!-- PAID COURSES (3-Day, pink theme, 500 points) -->
+      <h3 class="section-title">3-Day Courses</h3>
       <div class="grid grid-3">
-        <article class="hero tall-hero course locked" data-course-id="3d-portrait" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-portrait.html" data-theme="pink">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Portrait Sprint</h3>
-            <p class="hero-desc">Planes, proportions, expression.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+        <article class="hero tall course" data-kind="paid" data-course-id="3d-portrait" data-link="course-3d-portrait.html" data-redeem="500" data-theme="pink">
+          <div class="title">Portrait Sprint</div>
+          <p class="meta">Planes, proportions, expression.</p>
+          <p class="desc">A concentrated 3-day block to level-up portraits.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="500"><span class="bubblePoints">500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="3d-urban" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-urban.html" data-theme="pink">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Urban Sketching</h3>
-            <p class="hero-desc">Perspective on location.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="3d-urban" data-link="course-3d-urban.html" data-redeem="500" data-theme="pink">
+          <div class="title">Urban Sketching</div>
+          <p class="meta">Perspective on location.</p>
+          <p class="desc">Speed, accuracy, and atmosphere outdoors.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="500"><span class="bubblePoints">500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="3d-experimental" data-course-type="3day" data-course-days="3" data-redeem="500" data-link="course-3d-experimental.html" data-theme="pink">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Experimental Media</h3>
-            <p class="hero-desc">Combine mediums without fear.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="3d-experimental" data-link="course-3d-experimental.html" data-redeem="500" data-theme="pink">
+          <div class="title">Experimental Media</div>
+          <p class="meta">Combine mediums without fear.</p>
+          <p class="desc">Push materials while keeping control.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="500"><span class="bubblePoints">500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
       </div>
 
-      <h3 class="section-title">30-Day Courses <span class="hero-meta">Redeem: 1500 points</span></h3>
+      <!-- PAID COURSES (30-Day, red theme, 1500 points) -->
+      <h3 class="section-title">30-Day Courses</h3>
       <div class="grid grid-3">
-        <article class="hero tall-hero course locked" data-course-id="30d-draw" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-draw.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Drawing Foundations</h3>
-            <p class="hero-desc">Daily habit and core skills.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+        <article class="hero tall course" data-kind="paid" data-course-id="30d-draw" data-link="course-30d-draw.html" data-redeem="1500">
+          <div class="title">Drawing Foundations</div>
+          <p class="meta">Daily habit and core skills.</p>
+          <p class="desc">A month of guided practice to lock in fundamentals.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="1500"><span class="bubblePoints">1500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="30d-paint" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-paint.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Paint with Confidence</h3>
-            <p class="hero-desc">Colour, value, edges.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="30d-paint" data-link="course-30d-paint.html" data-redeem="1500">
+          <div class="title">Paint with Confidence</div>
+          <p class="meta">Colour, value, edges.</p>
+          <p class="desc">Disciplined routines to paint with clarity.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="1500"><span class="bubblePoints">1500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero course locked" data-course-id="30d-portrait" data-course-type="30day" data-course-days="30" data-redeem="1500" data-link="course-30d-portrait.html">
-          <div class="hero-body">
-            <h3 class="hero-title"><svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Expressive Portraits</h3>
-            <p class="hero-desc">Structure plus spontaneity.</p>
-            <a class="btn primary btn-left btnStartCourse">Start Course</a>
+
+        <article class="hero tall course" data-kind="paid" data-course-id="30d-portrait" data-link="course-30d-portrait.html" data-redeem="1500">
+          <div class="title">Expressive Portraits</div>
+          <p class="meta">Structure plus spontaneity.</p>
+          <p class="desc">From armature to edge design to decisive accents.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnStartPaid">Pay Now</button>
+            <button class="btn-share btnShare" title="Share this course"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="1500"><span class="bubblePoints">1500</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
       </div>
     </section>
 
-    <!-- ===== LIVE ===== -->
+    <!-- ===========================================
+         TAB: LIVE DEMOS (Paid)
+         =========================================== -->
     <section class="tab-panel" id="tab-live" role="tabpanel" aria-labelledby="tabbtn-live">
       <h2 class="section-title">Live Demonstrations</h2>
       <div class="grid grid-3">
-        <article class="hero tall-hero" data-live-id="live-1">
-          <div class="hero-body">
-            <h3 class="hero-title">Upcoming Demo #1</h3>
-            <p class="hero-desc">Bookings create gold calendar entries; completion marks ✓ on this hero.</p>
-            <a class="btn primary btn-left btnBookLive">Book Demo</a>
+        <article class="hero tall live" data-live-id="live-1" data-link="live-1.html">
+          <div class="title">Upcoming Demo #1</div>
+          <p class="meta">Bookings create gold calendar entries; completion marks ✓.</p>
+          <p class="desc">Streaming link delivered via email after purchase.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnBookLive">Book Demo</button>
+            <button class="btn-share btnShare" title="Share this demo"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="?"><span class="bubblePoints">?</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero" data-live-id="live-2">
-          <div class="hero-body">
-            <h3 class="hero-title">Upcoming Demo #2</h3>
-            <p class="hero-desc">Placeholder live session.</p>
-            <a class="btn primary btn-left btnBookLive">Book Demo</a>
+
+        <article class="hero tall live" data-live-id="live-2" data-link="live-2.html">
+          <div class="title">Upcoming Demo #2</div>
+          <p class="meta">Gold entries on booking; completion marks ✓.</p>
+          <p class="desc">Details to be announced.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnBookLive">Book Demo</button>
+            <button class="btn-share btnShare" title="Share this demo"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="?"><span class="bubblePoints">?</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
-        <article class="hero tall-hero" data-live-id="live-3">
-          <div class="hero-body">
-            <h3 class="hero-title">Upcoming Demo #3</h3>
-            <p class="hero-desc">Placeholder live session.</p>
-            <a class="btn primary btn-left btnBookLive">Book Demo</a>
+
+        <article class="hero tall live" data-live-id="live-3" data-link="live-3.html">
+          <div class="title">Upcoming Demo #3</div>
+          <p class="meta">Gold entries on booking; completion marks ✓.</p>
+          <p class="desc">Details to be announced.</p>
+
+          <div class="cta-left btn-row">
+            <button class="btn green btnBookLive">Book Demo</button>
+            <button class="btn-share btnShare" title="Share this demo"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
           </div>
+
+          <div class="points-bubble silver" data-points="?"><span class="bubblePoints">?</span></div>
+          <div class="price" data-price="$?"><span class="priceText">$?</span></div>
         </article>
       </div>
     </section>
 
-    <!-- ===== ACHIEVEMENTS ===== -->
-    <section class="tab-panel" id="tab-achievements" role="tabpanel" aria-labelledby="tabbtn-achievements">
-      <h2 class="section-title">Achievements</h2>
-      <div class="achievements-summary">
-        <div class="points-display">Points: <span id="achPoints">0</span></div>
-        <div id="streakDisplay" class="hero-meta"></div>
-      </div>
-
-      <h3 class="section-title">Weekly Badges</h3>
-      <div id="badgesGrid"></div>
-
-      <h3 class="section-title">Daily Completions</h3>
-      <div id="dailyTicks"></div>
-
-      <h3 class="section-title">History</h3>
-      <ul id="historyList" class="history-list"></ul>
-      <div class="pager">
-        <button class="btn ghost" id="prevPage">Prev</button>
-        <button class="btn ghost" id="nextPage">Next</button>
-      </div>
-    </section>
-
-    <!-- ===== MY CALENDAR ===== -->
+    <!-- ===========================================
+         TAB: MY CALENDAR (iOS-style)
+         =========================================== -->
     <section class="tab-panel" id="tab-calendar" role="tabpanel" aria-labelledby="tabbtn-calendar">
       <h2 class="section-title">My Calendar</h2>
 
-      <div class="tallies">
-        <div class="tally" data-tally="daily"><span class="chip blue"></span> Daily (<span id="tallyDaily">0</span>)</div>
-        <div class="tally" data-tally="weekly"><span class="chip green"></span> Weekly (<span id="tallyWeekly">0</span>)</div>
-        <div class="tally" data-tally="3day"><span class="chip pink"></span> 3-Day (<span id="tally3d">0</span>)</div>
-        <div class="tally" data-tally="30day"><span class="chip red"></span> 30-Day (<span id="tally30d">0</span>)</div>
-        <div class="tally" data-tally="live"><span class="chip gold"></span> Live (<span id="tallyLive">0</span>)</div>
+      <!-- Totals (click to open overlay list; no parentheses) -->
+      <div class="totals" id="totalsBar">
+        <div class="total" data-key="daily"><span class="dot blue"></span> Daily <strong id="tDaily">0</strong></div>
+        <div class="total" data-key="weekly"><span class="dot green"></span> Weekly <strong id="tWeekly">0</strong></div>
+        <div class="total" data-key="3day"><span class="dot pink"></span> 3-Day <strong id="t3d">0</strong></div>
+        <div class="total" data-key="30day"><span class="dot red"></span> 30-Day <strong id="t30d">0</strong></div>
+        <div class="total" data-key="live"><span class="dot gold"></span> Live <strong id="tLive">0</strong></div>
       </div>
 
-      <div id="tallyLists" class="history-list" style="max-height:180px; overflow:auto; display:none"></div>
+      <div class="calendar-shell">
+        <div class="cal-top">
+          <!-- Left: month navigation -->
+          <div class="cal-left">
+            <button class="btn ghost" id="calPrev" title="Previous">◀</button>
+            <div id="calTitle" aria-live="polite">—</div>
+            <button class="btn ghost" id="calNext" title="Next">▶</button>
+          </div>
 
-      <div class="calendar-wrap">
-        <div class="cal-head">
-          <button class="btn ghost" id="calPrev">◀</button>
-          <div id="calTitle"></div>
-          <button class="btn ghost" id="calNext">▶</button>
+          <!-- Right: view toggle, filters, search, share -->
+          <div class="cal-right">
+            <div class="cal-view" role="tablist" aria-label="Calendar view">
+              <button class="is-active" id="viewMonth" aria-pressed="true">Month</button>
+              <button id="viewWeek" aria-pressed="false">Week</button>
+              <button id="viewDay" aria-pressed="false">Day</button>
+              <button id="viewYear" aria-pressed="false">Year</button>
+            </div>
+
+            <!-- Filters -->
+            <div class="cal-filter" id="calFilter">
+              <label class="chip"><span class="dot blue"></span><input type="checkbox" id="fDaily" checked> Daily</label>
+              <label class="chip"><span class="dot green"></span><input type="checkbox" id="fWeekly" checked> Weekly</label>
+              <label class="chip"><span class="dot pink"></span><input type="checkbox" id="f3d" checked> 3-Day</label>
+              <label class="chip"><span class="dot red"></span><input type="checkbox" id="f30d" checked> 30-Day</label>
+              <label class="chip"><span class="dot gold"></span><input type="checkbox" id="fLive" checked> Live</label>
+              <label class="chip"><input type="checkbox" id="fManual" checked> My Events</label>
+            </div>
+
+            <!-- Search -->
+            <input class="search" id="calSearch" type="search" placeholder="Search dates & events…" aria-label="Search calendar">
+            <!-- Share view -->
+            <button class="btn ghost" id="shareCalendar" title="Share this view as image">Share</button>
+          </div>
         </div>
-        <div class="cal-grid" id="calGrid"></div>
+
+        <!-- Calendar grid container (Month/Week/Day/Year views will reuse this shell) -->
+        <div id="calGrid" class="cal-grid" aria-live="polite"></div>
+      </div>
+
+      <!-- Manual event editor -->
+      <h3 class="section-title">Add/Edit My Event</h3>
+      <div class="editor" id="eventEditor">
+        <div class="row">
+          <label class="sr-only" for="evtTitle">Title</label>
+          <input id="evtTitle" type="text" placeholder="Event title">
+        </div>
+        <div class="row">
+          <label class="sr-only" for="evtDate">Date</label>
+          <input id="evtDate" type="date">
+          <label class="sr-only" for="evtTime">Time</label>
+          <input id="evtTime" type="time" step="900">
+          <select id="evtType" title="Type">
+            <option value="manual">My Event</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="3day">3-Day</option>
+            <option value="30day">30-Day</option>
+            <option value="live">Live</option>
+          </select>
+        </div>
+        <div class="row">
+          <select id="evtReminder" title="Reminder">
+            <option value="none">No reminder</option>
+            <option value="at">At time</option>
+            <option value="1h">1 hour before</option>
+            <option value="1d">1 day before</option>
+          </select>
+          <input id="evtId" type="text" placeholder="Event ID (auto when new)">
+        </div>
+        <div class="row">
+          <textarea id="evtNotes" placeholder="Notes (optional)"></textarea>
+        </div>
+        <div class="row">
+          <button class="btn blue" id="evtSave">Save / Update</button>
+          <button class="btn grey" id="evtClear">Clear</button>
+          <button class="btn ghost" id="evtDelete">Delete</button>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- ===== Modals ===== -->
-  <!-- Purchase (Pay / Redeem) -->
+  <!-- =========================
+       OVERLAYS & MODALS
+       ========================= -->
+
+  <!-- Totals overlay (click totals pills to open) -->
+  <div class="overlay" id="totalsOverlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <h3 id="totalsTitle">Totals</h3>
+      <div id="totalsList" class="history-list"></div>
+      <div class="actions" style="margin-top:8px">
+        <button class="btn blue" data-close="totalsOverlay">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day popover (hour grid + positioned entries) -->
+  <div class="popover" id="dayPopover" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="pop-card">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px">
+        <h3 id="popDate">—</h3>
+        <div class="btn-row">
+          <button class="btn ghost" data-close="dayPopover">Close</button>
+          <button class="btn ghost" id="popShare">Share Day</button>
+        </div>
+      </div>
+      <div class="hours" id="popHours">
+        <!-- JS will paint 24 rows of hour labels + lines and position .hour-ev blocks -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Course purchase modal (for paid courses) -->
   <div class="modal" id="purchaseModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
+    <div class="card">
       <h3 id="purchaseTitle">Unlock Course</h3>
-      <p id="purchaseDesc">This course is locked. Purchase to unlock, or redeem points if eligible.</p>
-      <div id="redeemInfo" class="hero-meta"></div>
-      <div class="modal-actions">
-        <button class="btn success" id="btnPayNow">Pay Now</button>
-        <button class="btn warn" id="btnRedeem">Redeem with Points</button>
-        <button class="btn ghost" data-close="purchaseModal">Cancel</button>
+      <p id="purchaseDesc">Purchase to unlock forever. You can also redeem with points if available.</p>
+      <p id="redeemInfo" class="meta"></p>
+      <div class="actions">
+        <button class="btn green" id="btnPayNow">Pay Now</button>
+        <button class="btn ghost" id="btnRedeem">Redeem with Points</button>
+        <button class="btn grey" data-close="purchaseModal">Cancel</button>
       </div>
     </div>
   </div>
 
   <!-- Not enough points -->
   <div class="modal" id="notEnoughModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
+    <div class="card">
       <h3>Not enough points</h3>
-      <p>You don’t have enough points to redeem this course.</p>
-      <div class="modal-actions">
-        <button class="btn primary" data-close="notEnoughModal">Okay</button>
+      <p>You don’t have enough points to redeem this item.</p>
+      <div class="actions">
+        <button class="btn blue" data-close="notEnoughModal">Okay</button>
       </div>
     </div>
   </div>
 
-  <!-- Confirm Redeem (username + password) -->
+  <!-- Confirm redeem (username + password) -->
   <div class="modal" id="redeemConfirmModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
+    <div class="card">
       <h3>Confirm Redeem</h3>
-      <p>Please confirm your account to redeem your points.</p>
-      <div class="field">
-        <label>Username <input type="text" id="redeemUser" autocomplete="username" /></label>
+      <p>Please confirm your account before redeeming points.</p>
+      <div class="row">
+        <label class="sr-only" for="redeemUser">Username</label>
+        <input id="redeemUser" type="text" placeholder="Username" autocomplete="username">
       </div>
-      <div class="field">
-        <label>Password <input type="password" id="redeemPass" autocomplete="current-password" /></label>
+      <div class="row">
+        <label class="sr-only" for="redeemPass">Password</label>
+        <input id="redeemPass" type="password" placeholder="Password" autocomplete="current-password">
       </div>
-      <div class="modal-actions">
-        <button class="btn warn" id="confirmRedeem">Redeem</button>
+      <div class="actions">
         <button class="btn ghost" data-close="redeemConfirmModal">Cancel</button>
+        <button class="btn blue" id="confirmRedeem">Redeem</button>
       </div>
     </div>
   </div>
 
-  <!-- Confirm Purchase (courses + live) -->
+  <!-- Confirm purchase (courses + live) -->
   <div class="modal" id="confirmPurchaseModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
+    <div class="card">
       <h3 id="confirmPurchaseTitle">Confirm Purchase</h3>
       <p id="confirmPurchaseText">Proceed to payment?</p>
-      <div class="modal-actions">
-        <button class="btn success" id="proceedPayment">Proceed</button>
-        <button class="btn ghost" data-close="confirmPurchaseModal">Cancel</button>
+      <div class="actions">
+        <button class="btn green" id="proceedPayment">Proceed</button>
+        <button class="btn grey" data-close="confirmPurchaseModal">Cancel</button>
       </div>
     </div>
   </div>
-
-  <!-- Day Detail (calendar items for one day) -->
-  <div class="modal" id="dayDetailModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <h3 id="dayDetailTitle">Day Items</h3>
-      <div id="dayDetailList" class="day-list"></div>
-      <div class="modal-actions">
-        <button class="btn primary" data-close="dayDetailModal">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== HOME LOGIC ===== -->
+  <!-- =========================
+       APP LOGIC (inline JS)
+       ========================= -->
   <script>
   (function(){
-    const $ = s => document.querySelector(s);
-    const $$ = s => Array.from(document.querySelectorAll(s));
-    const store = {
-      get(k, f){ try{const v=localStorage.getItem(k); return v?JSON.parse(v):f;}catch{return f} },
-      set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
-    };
-    const KEYS = {
-      sub:'ao_isSubscriber',
-      points:'ao_points',
-      hist:'ao_history',               // [{ts,type,id,title,pointsDelta,extra}]
-      purchased:'ao_purchasedCourses', // [courseId]  (also used for Foundations)
-      daily:'ao_completedDailies',     // ["YYYY-MM-DD"]
-      weekly:'ao_completedWeeklies',   // [{id:"W07", dateISO:"YYYY-MM-DD"}]
-      payment:'ao_payment_success'     // {ts,type:"course"|"live", id, title}
-    };
-    let isSubscriber = !!store.get(KEYS.sub, false);
-    let points = +store.get(KEYS.points, 0);
-    let history = store.get(KEYS.hist, []);
-    let purchased = store.get(KEYS.purchased, []);
-    let dailyDone = store.get(KEYS.daily, []);
-    let weeklyDone = store.get(KEYS.weekly, []);
+    'use strict';
 
-    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    /* ----------------------------------------------------
+     * Utilities
+     * ---------------------------------------------------- */
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
     const pad = n => String(n).padStart(2,'0');
-    const fmtDate = d => `${dayNames[d.getDay()]} ${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+    const toISODate = d => d.toISOString().slice(0,10);
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const fmtHM = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const fmtD_M = d => `${pad(d.getDate())}/${pad(d.getMonth()+1)}`;
+    const clamp = (v,min,max)=> Math.max(min, Math.min(max, v));
 
-    function paintTop(){ $('#pointsValue').textContent = points; $('#subState').textContent = isSubscriber?'On':'Off'; $('#toggleSub').setAttribute('aria-pressed', isSubscriber?'true':'false'); }
-    paintTop();
+    // Local storage helper (namespaced)
+    const K = {
+      sub:'ao_isSubscriber',            // bool
+      points:'ao_points',               // number
+      hist:'ao_history',                // array of event objects
+      purchased:'ao_purchasedCourses',  // array of courseIds (also covers Foundations once unlocked by sub)
+      daily:'ao_completedDailies',      // ["YYYY-MM-DD"]
+      weekly:'ao_completedWeeklies',    // [{id:'Wnn', dateISO:'YYYY-MM-DD'}]
+      payment:'ao_payment_success',     // from payment.html
+      pricingCache:'ao_pricing_cache',  // cache of {id:{price:'$99', points:500}}
+      profileShadow:'ao_profile_shadow' // serialized backup we "transmit" to profile.html
+    };
+    const store = {
+      get(k, fallback){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; }catch{ return fallback; } },
+      set(k, v){ localStorage.setItem(k, JSON.stringify(v)); },
+      del(k){ localStorage.removeItem(k); }
+    };
 
-    /* ===== Tabs ===== */
-    const tabBtns = $$('.tab'); const panels = $$('.tab-panel');
-    tabBtns.forEach(btn=>btn.addEventListener('click',()=>{
-      tabBtns.forEach(b=>{const sel=b===btn; b.classList.toggle('is-active',sel); b.setAttribute('aria-selected', sel?'true':'false');});
-      panels.forEach(p=>p.classList.remove('is-active'));
-      const panel = $('#'+btn.getAttribute('aria-controls')); if(panel) panel.classList.add('is-active');
-      window.scrollTo({top:0, behavior:'smooth'});
-      if(btn.id==='tabbtn-achievements'){ renderAchievements(); }
-      if(btn.id==='tabbtn-calendar'){ renderCalendar(); paintTallies(); }
-    }));
+    /* ----------------------------------------------------
+     * Global state
+     * ---------------------------------------------------- */
+    let isSubscriber = !!store.get(K.sub, false);
+    let points = +store.get(K.points, 0);
+    let history = store.get(K.hist, []);
+    let purchased = store.get(K.purchased, []);
+    let dailyDone = store.get(K.daily, []);
+    let weeklyDone = store.get(K.weekly, []);
+    let pricing = store.get(K.pricingCache, {}); // {id:{price:'$99',points:500}}
 
-    /* ===== Daily ===== */
-    const today = new Date(); const isoToday = (new Date()).toISOString().slice(0,10);
-    $('#dailyDate').textContent = fmtDate(today);
+    // DOM refs (used in multiple places)
+    const pillUser = $('#pillUser'), pointsBadge = $('#pointsBadge'), pointsValue = $('#pointsValue');
+    const toggleSubBtn = $('#toggleSub'), subStateTxt = $('#subState');
+
+    /* ----------------------------------------------------
+     * Brand chrome (points + avatar pill, subscriber colour)
+     * ---------------------------------------------------- */
+    function paintTopChrome(){
+      pointsValue.textContent = points;
+      subStateTxt.textContent = isSubscriber ? 'On' : 'Off';
+      toggleSubBtn.setAttribute('aria-pressed', isSubscriber ? 'true' : 'false');
+      pillUser.classList.toggle('gold', isSubscriber);
+      pillUser.classList.toggle('silver', !isSubscriber);
+      // Also update all points bubbles to gold if subscribed (per request)
+      $$('.points-bubble').forEach(b=>{
+        b.classList.toggle('silver', !isSubscriber);
+      });
+      // Padlocks: gold when locked. They disappear when unlocked.
+      // (Silver padlocks removed per latest spec — we use gold only for locked)
+    }
+    paintTopChrome();
+
+    toggleSubBtn.addEventListener('click', ()=>{
+      isSubscriber = !isSubscriber; store.set(K.sub, isSubscriber); paintTopChrome();
+      paintFoundationsLocks(); paintWeeklyBoard();
+      // Transmit this change to profile "shadow" record:
+      transmitProfileShadow();
+    });
+
+    /* ----------------------------------------------------
+     * SHARE helpers (image snapshots without external libs)
+     * ---------------------------------------------------- */
+    async function shareElementAsCard(el, filename='share.png', metaTitle=''){
+      // Create a basic canvas “poster” with key details (title, subtitle, points, price).
+      // (Not a pixel-perfect screenshot, but a clean, lean share image.)
+      const rect = el.getBoundingClientRect();
+      const W = 1200, H = 628; // social-ish
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // BG gradient
+      const g = ctx.createLinearGradient(0,0,W,H);
+      g.addColorStop(0, '#0b0e15');
+      g.addColorStop(1, '#111827');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+
+      // Frame
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = 4; ctx.strokeRect(10,10,W-20,H-20);
+
+      // Title
+      const titleEl = el.querySelector('.title') || el.querySelector('h2') || el;
+      const title = (titleEl?.textContent || metaTitle || 'Art Online').trim();
+      ctx.fillStyle = '#eef3ff';
+      ctx.font = 'bold 44px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif';
+      wrapText(ctx, title, 40, 120, W-80, 52);
+
+      // Meta lines
+      const price = (el.querySelector('.priceText')?.textContent || '').trim();
+      const pts = (el.querySelector('.bubblePoints')?.textContent || '').trim();
+      ctx.font = 'bold 28px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif';
+      ctx.fillStyle = '#cfd3e1';
+      const info = [
+        price ? `Price: ${price}` : 'Price: —',
+        pts && pts!=='?' ? `Points: ${pts}` : 'Points: —',
+        `Generated: ${new Date().toLocaleString()}`
+      ];
+      info.forEach((t,i)=> ctx.fillText(t, 40, 220 + i*36));
+
+      // Brand footer
+      ctx.font = 'bold 20px -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif';
+      ctx.fillStyle = '#0A84FF';
+      ctx.fillText('Art Online — by Jody Graham', 40, H-40);
+
+      // Download
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      a.click();
+    }
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+      const words = text.split(' ');
+      let line = '';
+      for(let n=0;n<words.length;n++){
+        const testLine = line + words[n] + ' ';
+        const {width} = ctx.measureText(testLine);
+        if(width > maxWidth && n>0){
+          ctx.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        }else{
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+    }
+
+    /* ----------------------------------------------------
+     * Pricing feed (from pricing.html) — placeholder hookup
+     * ---------------------------------------------------- */
+    async function tryLoadPricing(){
+      // Strategy:
+      // 1) If window.PRICE_LIST exists (pricing.html injected a script), use that.
+      // 2) Else, if there is an element <script type="application/json" id="pricingData"> on this page (or pricing.html loaded), parse it.
+      // 3) Else, keep any cached values; otherwise use placeholders ($?, ?).
+      try{
+        if(window.PRICE_LIST && typeof window.PRICE_LIST === 'object'){
+          pricing = window.PRICE_LIST;
+          store.set(K.pricingCache, pricing);
+          return;
+        }
+        const pd = $('#pricingData');
+        if(pd){
+          const data = JSON.parse(pd.textContent || '{}');
+          pricing = data || {};
+          store.set(K.pricingCache, pricing);
+        }
+      }catch(e){
+        // leave placeholders
+      }
+    }
+    function applyPricingToCards(){
+      const cards = $$('.course, .live');
+      cards.forEach(card=>{
+        const id = card.dataset.courseId || card.dataset.liveId;
+        const p = pricing[id] || {};
+        const priceEl = card.querySelector('.priceText');
+        const pointsEl = card.querySelector('.bubblePoints');
+        if(priceEl){ priceEl.textContent = p.price || '$?'; card.querySelector('.price')?.setAttribute('data-price', priceEl.textContent); }
+        if(pointsEl){ pointsEl.textContent = (p.points!=null)? String(p.points) : (card.getAttribute('data-redeem') || '?'); }
+      });
+    }
+
+    /* ----------------------------------------------------
+     * DAILY CHALLENGE (button on left; undo same-day; expiry red)
+     * ---------------------------------------------------- */
+    const today = new Date();
+    const isoToday = toISODate(new Date());
+    $('#dailyDate').textContent = `${dayNames[today.getDay()]} ${fmtD_M(today)}`;
+    $('#dailyDesc').textContent = 'A fast 15–20 minute warm-up. Keep it loose, focus on big decisions.';
+
     function untilMidnight(d=new Date()){
-      const n=new Date(d); const end=new Date(n); end.setDate(n.getDate()+1); end.setHours(0,0,0,0);
-      const diff=end - n; const m=Math.floor(diff/60000); const h=Math.floor(m/60), mm=m%60;
+      const n = new Date(d), end = new Date(n); end.setDate(n.getDate()+1); end.setHours(0,0,0,0);
+      const diff = end - n; const m = Math.floor(diff/60000); const h=Math.floor(m/60), mm=m%60;
       return `${h}h ${mm}m`;
     }
-    function tickExpire(){ $('#dailyExpires').textContent = untilMidnight(); }
-    tickExpire(); setInterval(tickExpire, 30000);
+    function tickDaily(){ $('#dailyExpires').textContent = untilMidnight(); }
+    tickDaily(); setInterval(tickDaily, 30000);
 
-    function setDailyButtonState(){
-      const btn = $('#btnDailyAction'); const hero = $('#dailyHero');
+    function paintDailyButton(){
+      const btn = $('#btnDailyAction'), hero = $('#dailyHero');
       const done = dailyDone.includes(isoToday);
-      if(done){ btn.textContent='Undo'; btn.className='btn btn-undo'; hero.classList.add('is-complete'); }
-      else { btn.textContent='Complete'; btn.className='btn btn-complete'; hero.classList.remove('is-complete'); }
+      if(done){ btn.textContent='Undo'; btn.className='btn grey'; hero.classList.add('complete'); }
+      else { btn.textContent='Complete'; btn.className='btn blue'; hero.classList.remove('complete'); }
     }
-    setDailyButtonState();
-
-    function addHistory(entry){ history.unshift({ts:Date.now(), ...entry}); store.set(KEYS.hist, history); }
-    function addDayEventBar(cell, color){ const bar=document.createElement('div'); bar.className='bar '+color; cell.appendChild(bar); }
+    paintDailyButton();
 
     $('#btnDailyAction').addEventListener('click', ()=>{
-      const done = dailyDone.includes(isoToday);
-      if(!done){
-        dailyDone.push(isoToday); store.set(KEYS.daily, dailyDone);
-        points += 1; store.set(KEYS.points, points); paintTop();
-        addHistory({type:'daily', id:isoToday, title:'Daily Challenge', pointsDelta:+1});
-        setDailyButtonState();
-        alert('Daily marked complete (+1 point).');
-      } else {
-        // Undo only allowed for same-day
-        dailyDone = dailyDone.filter(d=>d!==isoToday); store.set(KEYS.daily, dailyDone);
-        points = Math.max(0, points-1); store.set(KEYS.points, points); paintTop();
-        // Remove the most recent matching same-day daily event
-        const i = history.findIndex(h => h.type==='daily' && new Date(h.ts).toDateString() === new Date().toDateString());
-        if(i>-1){ history.splice(i,1); store.set(KEYS.hist, history); }
-        setDailyButtonState();
-        alert('Daily undone (−1 point).');
+      const idx = dailyDone.indexOf(isoToday);
+      if(idx === -1){
+        dailyDone.push(isoToday); store.set(K.daily,dailyDone);
+        points += 1; store.set(K.points, points);
+        history.unshift({ts:Date.now(), type:'daily', id:isoToday, title:'Daily Challenge', pointsDelta:+1});
+        paintTopChrome(); paintDailyButton(); renderCalendar(); transmitProfileShadow();
+      }else{
+        dailyDone.splice(idx,1); store.set(K.daily, dailyDone);
+        // remove most recent same-day daily entry to avoid triple entries
+        const rm = history.findIndex(h=>h.type==='daily' && new Date(h.ts).toDateString()=== new Date().toDateString());
+        if(rm>-1){ history.splice(rm,1); store.set(K.hist, history); }
+        points = Math.max(0, points-1); store.set(K.points, points);
+        paintTopChrome(); paintDailyButton(); renderCalendar(); transmitProfileShadow();
       }
     });
 
-    /* ===== 52 Weekly Challenges ===== */
+    $('#shareDaily').addEventListener('click', ()=> shareElementAsCard($('#dailyHero'), 'daily.png', 'Daily Challenge'));
+
+    /* ----------------------------------------------------
+     * 52 WEEKLY CHALLENGES (current + 2 previous; expiry text in red; no “Active”)
+     * ---------------------------------------------------- */
     const WEEKLY = [
       {id:'W01', title:'Gesture Lines', desc:'Loose lines, large arm movement.'},
       {id:'W02', title:'Negative Space', desc:'See shapes around the subject.'},
@@ -588,161 +1159,131 @@
       {id:'W51', title:'Gesture Animals', desc:'Capture movement.'},
       {id:'W52', title:'Best-of Remix', desc:'Combine 3 skills.'}
     ];
-
     function firstSundayOfYear(y){ const jan1=new Date(y,0,1); const dow=jan1.getDay(); const fs=new Date(y,0,1+((7-dow)%7)); fs.setHours(0,0,0,0); return fs; }
-    function addWeeks(d,w){ const x=new Date(d); x.setDate(x.getDate()+w*7); return x; }
-    function startOfSunday(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const dow=x.getDay(); x.setDate(x.getDate()-dow); x.setHours(0,0,0,0); return x; }
     function weekIndex(d){ const y=d.getFullYear(); const fs=firstSundayOfYear(y); const delta=d - fs; if(delta<0) return weekIndex(new Date(y-1,11,31)); const w=Math.floor(delta/(7*24*3600*1000)); return w % 52; }
-    function fmtRange(s,e){ return `Starts ${pad(s.getDate())}/${pad(s.getMonth()+1)} • Expires ${pad(e.getDate())}/${pad(e.getMonth()+1)}`; }
+    function startOfSunday(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const dow=x.getDay(); x.setDate(x.getDate()-dow); x.setHours(0,0,0,0); return x; }
+    function addWeeks(d,w){ const x=new Date(d); x.setDate(x.getDate()+w*7); return x; }
 
-    // Hidden index list (links to weekly-WNN.html placeholders)
-    const idxUl = $('#weeklyIndex');
-    WEEKLY.forEach(w=>{ const li=document.createElement('li'); const a=document.createElement('a'); a.href=`weekly-${w.id}.html`; a.textContent=`${w.id} — ${w.title}`; li.appendChild(a); idxUl.appendChild(li); });
+    const weeklyIndexUl = $('#weeklyIndex');
+    WEEKLY.forEach(w=>{ const li=document.createElement('li'); const a=document.createElement('a'); a.href=`weekly-${w.id}.html`; a.textContent=`${w.id} — ${w.title}`; li.appendChild(a); weeklyIndexUl.appendChild(li); });
 
-    function paintWeekly(){
+    function paintWeeklyBoard(){
       const row = $('#weeklyRow'); row.innerHTML='';
       const base = startOfSunday(new Date());
-      const sundays = [0,-1,-2].map(w=>addWeeks(base,w));
-      sundays.forEach(s=>{
-        const expiry = addWeeks(s,4); const expired = (new Date()) >= expiry;
-        const idx = weekIndex(s); const def = WEEKLY[idx];
+      const weeks = [0,-1,-2].map(w=>addWeeks(base,w));
+      weeks.forEach(s=>{
+        const idx = weekIndex(s); const def=WEEKLY[idx];
+        const expiry = addWeeks(s,4); // 4 weeks window (but per latest you removed “Active” notion)
+        const expired = (new Date()) >= expiry;
         const done = weeklyDone.some(x=>x.id===def.id);
-        const locked = !isSubscriber;
+        const locked = !isSubscriber; // subscriber gates weekly
         const card = document.createElement('article');
-        card.className = `hero weekly ${expired?'is-expired':''} ${locked?'locked':''}`;
-        card.dataset.weekId = def.id; card.dataset.startIso = s.toISOString(); card.dataset.expiryIso = expiry.toISOString();
+        card.className='hero';
+        card.dataset.weekId = def.id;
         card.innerHTML = `
-          <div class="hero-body">
-            <h3 class="hero-title">${locked?'<svg class="padlock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>':''}${def.title} ${done?'<span style="color:var(--green); font-weight:900;">✓</span>':''}</h3>
-            <p class="hero-meta">${fmtRange(s,expiry)}</p>
-            <p class="hero-desc">${def.desc}</p>
-            <a class="btn primary btn-left btnStartWeekly" ${locked||expired?'aria-disabled="true" tabindex="-1"':''}
+          <div class="weekly-exp">Expires ${pad(expiry.getDate())}/${pad(expiry.getMonth()+1)}</div>
+          <div class="title">
+            ${locked?'<svg class="padlock" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>':''}
+            ${def.title} ${done?'<span style="color:#32d74b;font-weight:900;">✓</span>':''}
+          </div>
+          <p class="meta">${dayNames[s.getDay()]} ${fmtD_M(s)} → ${dayNames[expiry.getDay()]} ${fmtD_M(expiry)}</p>
+          <p class="desc">${def.desc}</p>
+          <div class="cta-left btn-row">
+            <a class="btn blue btnStartWeekly" ${locked||expired?'aria-disabled="true" tabindex="-1"':''}
                href="${locked||expired?'#':`weekly-${def.id}.html`}" data-week="${def.id}">Start Challenge</a>
-            <div class="hero-expiry">${expired?'Expired':'Active'}</div>
-          </div>`;
-        if(done) card.classList.add('is-complete');
+            <button class="btn-share btnShareWeekly" data-week="${def.id}" title="Share weekly"><span aria-hidden="true">⤴︎</span><span class="sr-only">Share</span></button>
+          </div>
+        `;
+        if(done) card.classList.add('complete');
         row.appendChild(card);
       });
-      // If locked, Start link is inert (no popup)
-      $$('.btnStartWeekly').forEach(a=>{
+      // inert click if locked/expired (no popup)
+      $$('.btnStartWeekly', row).forEach(a=>{
         a.addEventListener('click', (e)=>{ if(a.getAttribute('aria-disabled')==='true'){ e.preventDefault(); } });
       });
+      $$('.btnShareWeekly', row).forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const card = b.closest('.hero');
+          shareElementAsCard(card, `${b.dataset.week}.png`, b.dataset.week);
+        });
+      });
     }
-    paintWeekly();
+    paintWeeklyBoard();
 
-    // Completion API for weekly pages
+    // Public API for weekly pages to mark complete
     window.AO_markWeeklyComplete = function(weekId, title){
-      const iso=(new Date()).toISOString().slice(0,10);
       if(!weeklyDone.some(w=>w.id===weekId)){
-        weeklyDone.push({id:weekId, dateISO:iso}); store.set(KEYS.weekly, weeklyDone);
-        points += 10; store.set(KEYS.points, points); paintTop();
-        addHistory({type:'weekly', id:weekId, title, pointsDelta:+10});
-        // Mark UI if card exists on current board
-        const card = document.querySelector(`[data-week-id="${weekId}"]`);
-        if(card){ card.classList.add('is-complete'); const t=card.querySelector('.hero-title'); if(t) t.insertAdjacentHTML('beforeend',' <span style="color:var(--green); font-weight:900;">✓</span>'); }
+        weeklyDone.push({id:weekId, dateISO: toISODate(new Date())});
+        store.set(K.weekly, weeklyDone);
+        history.unshift({ts:Date.now(), type:'weekly', id:weekId, title, pointsDelta:+10});
+        points += 10; store.set(K.points, points);
+        paintTopChrome(); paintWeeklyBoard(); renderCalendar(); transmitProfileShadow();
       }
     };
 
-    /* ===== Subscriber toggle (weekly only) ===== */
-    $('#toggleSub').addEventListener('click', ()=>{ isSubscriber=!isSubscriber; store.set(KEYS.sub,isSubscriber); paintTop(); paintWeekly(); });
-
-    /* ===== Courses / Foundations: purchase or redeem ===== */
-    function purchasedQ(id){ return purchased.includes(id); }
-    function repaintCourseLocks(){
-      $$('.course').forEach(card=>{
-        const id=card.dataset.courseId; const locked=!purchasedQ(id);
-        card.classList.toggle('locked', locked);
+    /* ----------------------------------------------------
+     * FOUNDATIONS (subscription-gated) + PAID COURSES + LIVE
+     * ---------------------------------------------------- */
+    function paintFoundationsLocks(){
+      $$('#tab-courses [data-kind="foundation"]').forEach(card=>{
+        const isLocked = !isSubscriber;
+        // Show padlock when locked; remove when unlocked
+        const padlock = card.querySelector('.padlock');
+        if(padlock) padlock.style.display = isLocked ? 'inline' : 'none';
+        // Button enabled/disabled
+        const btn = card.querySelector('.btnStartFoundation');
+        if(isLocked){ btn.setAttribute('disabled',''); }else{ btn.removeAttribute('disabled'); }
+        // Remove “complete” tick if lock toggled on again? Keep completion ring if previously completed.
       });
     }
-    repaintCourseLocks();
+    paintFoundationsLocks();
 
-    let pending = null; // {kind:'course'|'live', id,title,type,days,redeem,link,theme}
-    $$('.btnStartCourse').forEach(btn=>{
+    $$('.btnStartFoundation').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         const card = e.target.closest('.course');
-        const id = card.dataset.courseId, type=card.dataset.courseType, days=+card.dataset.courseDays||1, redeem=+(card.dataset.redeem||0), link=card.dataset.link, theme=card.dataset.theme||'';
-        const title = card.querySelector('.hero-title')?.textContent.replace(/^.*\]\s*/,'') || 'Course';
-        if(purchasedQ(id)){
-          // already unlocked → open + add span to calendar (visual booking window)
-          openCourse(link, {type, days, title, theme});
+        if(!isSubscriber){
+          // When not subscribed, do nothing (no popup)
+          e.preventDefault();
           return;
         }
-        pending = {kind:'course', id,title,type,days,redeem,link,theme};
+        const link = card.dataset.link || '#';
+        // Log a 1-day span (blue) so it appears on calendar
+        history.unshift({ts:Date.now(), type:'1day-span', id:card.dataset.courseId, title:card.querySelector('.title')?.textContent.trim(), pointsDelta:0, extra:{days:1, ts:Date.now()}});
+        store.set(K.hist, history);
+        window.location.href = link;
+      });
+    });
+
+    // Paid courses: open purchase modal (Pay / Redeem) unless purchased
+    let pending = null; // {kind:'course'|'live', id,title,link,redeem}
+    $$('.btnStartPaid').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const card = e.target.closest('.course');
+        const id = card.dataset.courseId, title = card.querySelector('.title')?.textContent.trim() || 'Course', link = card.dataset.link;
+        const canRedeem = +(card.getAttribute('data-redeem') || 0);
+        // Already purchased?
+        if(purchased.includes(id)){
+          // Open and add span for appropriate length (3day pink, 30day red, 1day blue)
+          const theme = card.dataset.theme || '';
+          const days = theme==='pink' ? 3 : (id.startsWith('30d-')?30:1);
+          history.unshift({ts:Date.now(), type:days===3?'3day-span':(days===30?'30day-span':'1day-span'), id, title, pointsDelta:0, extra:{days,ts:Date.now()}});
+          store.set(K.hist, history);
+          return window.location.href = link;
+        }
+        pending = {kind:'course', id, title, link, redeem: canRedeem};
         $('#purchaseTitle').textContent = `Unlock “${title}”`;
-        $('#redeemInfo').textContent = redeem ? `You can redeem this course for ${redeem} points.` : 'This course cannot be redeemed with points.';
-        const rb = $('#btnRedeem');
-        rb.disabled = !redeem;
+        $('#redeemInfo').textContent = canRedeem ? `You can redeem for ${canRedeem} points.` : 'This course is not redeemable with points.';
+        $('#btnRedeem').disabled = !canRedeem;
         openModal('purchaseModal');
       });
     });
-    function openCourse(link, meta){
-      // Add a span bar to calendar representing the run (1, 3 pink, 30 red)
-      const color = meta.type==='3day' ? 'pink' : (meta.type==='30day' ? 'red' : 'blue');
-      addHistory({type: meta.type==='3day' ? '3day-span' : (meta.type==='30day'?'30day-span':'1day'), id:meta.title, title:meta.title, pointsDelta:0, extra:{days:meta.days, ts:Date.now()}});
-      window.location.href = link;
-    }
 
-    // Payment flow for courses
-    $('#btnPayNow').addEventListener('click', ()=>{
-      if(!pending) return;
-      closeModal('purchaseModal');
-      openConfirmPurchase(`Purchase “${pending.title}”`, 'Proceed to secure payment? (You’ll return here automatically after success.)', ()=>{
-        // Write pending to storage for payment.html to read
-        localStorage.setItem('ao_pending_payment', JSON.stringify({ts:Date.now(), type:'course', id:pending.id, title:pending.title}));
-        window.location.href = 'payment.html';
-      });
-    });
-
-    // Redeem flow
-    $('#btnRedeem').addEventListener('click', ()=>{
-      if(!pending) return;
-      if(!pending.redeem){ return; }
-      if(points < pending.redeem){ closeModal('purchaseModal'); openModal('notEnoughModal'); return; }
-      closeModal('purchaseModal'); openModal('redeemConfirmModal');
-    });
-    $('#confirmRedeem').addEventListener('click', ()=>{
-      const u=$('#redeemUser').value.trim(), p=$('#redeemPass').value.trim();
-      if(!u || !p){ alert('Please enter username and password.'); return; }
-      // Redeem
-      const cost = pending.redeem||0;
-      points -= cost; store.set(KEYS.points, points); paintTop();
-      purchased.push(pending.id); store.set(KEYS.purchased, purchased);
-      addHistory({type:'redeem', id:pending.id, title:pending.title, pointsDelta:-cost, extra:`redeemed ${cost} points`});
-      closeModal('redeemConfirmModal'); repaintCourseLocks();
-      // Immediately open course and add span
-      openCourse(pending.link, pending);
-    });
-
-    // Listen for payment success from payment.html
-    window.addEventListener('storage', (ev)=>{
-      if(ev.key===KEYS.payment && ev.newValue){
-        try{
-          const payload = JSON.parse(ev.newValue);
-          handlePaymentSuccess(payload);
-        }catch{}
-      }
-    });
-    function handlePaymentSuccess(payload){
-      // payload: {ts,type:'course'|'live', id, title}
-      if(!payload || !payload.type || !payload.id) return;
-      if(payload.type==='course'){
-        if(!purchased.includes(payload.id)){
-          purchased.push(payload.id); store.set(KEYS.purchased, purchased); repaintCourseLocks();
-          addHistory({type:'purchase', id:payload.id, title:payload.title, pointsDelta:0});
-        }
-      } else if(payload.type==='live'){
-        // Add gold event
-        addHistory({type:'live', id:payload.id, title:payload.title||'Live Demonstration Booking', pointsDelta:0});
-      }
-      // Clear flag (optional)
-      localStorage.removeItem(KEYS.payment);
-      alert('Payment successful — unlocked!');
-    }
-
-    /* ===== Live booking flow ===== */
+    // Live booking: always paid (green)
     $$('.btnBookLive').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
-        const card = e.target.closest('.hero'); const id = card.dataset.liveId; const title = card.querySelector('.hero-title')?.textContent || 'Live Demonstration';
+        const card = e.target.closest('.live');
+        const id = card.dataset.liveId, title = card.querySelector('.title')?.textContent.trim() || 'Live Demo', link = card.dataset.link || 'payment.html';
+        pending = {kind:'live', id, title, link};
         openConfirmPurchase(`Book “${title}”`, 'Proceed to secure payment?', ()=>{
           localStorage.setItem('ao_pending_payment', JSON.stringify({ts:Date.now(), type:'live', id, title}));
           window.location.href = 'payment.html';
@@ -750,6 +1291,44 @@
       });
     });
 
+    // Modal helpers
+    function openModal(id){ const m = document.getElementById(id); if(m){ m.classList.add('open'); m.setAttribute('aria-hidden', 'false'); } }
+    function closeModal(id){ const m = document.getElementById(id); if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden', 'true'); } }
+    $$('[data-close]').forEach(b=> b.addEventListener('click', e=> closeModal(e.target.getAttribute('data-close'))));
+    ['purchaseModal','notEnoughModal','redeemConfirmModal','confirmPurchaseModal','dayPopover','totalsOverlay'].forEach(mid=>{
+      const m = document.getElementById(mid); if(!m) return;
+      m.addEventListener('click', e=>{ if(e.target===m) closeModal(mid); });
+    });
+
+    // Purchase modal buttons
+    $('#btnPayNow').addEventListener('click', ()=>{
+      if(!pending) return;
+      closeModal('purchaseModal');
+      openConfirmPurchase(`Purchase “${pending.title}”`, 'Proceed to payment? (You’ll return here automatically after success.)', ()=>{
+        localStorage.setItem('ao_pending_payment', JSON.stringify({ts:Date.now(), type:'course', id:pending.id, title:pending.title}));
+        window.location.href = 'payment.html';
+      });
+    });
+
+    $('#btnRedeem').addEventListener('click', ()=>{
+      if(!pending || !pending.redeem) return;
+      if(points < pending.redeem){ closeModal('purchaseModal'); return openModal('notEnoughModal'); }
+      closeModal('purchaseModal'); openModal('redeemConfirmModal');
+    });
+
+    $('#confirmRedeem').addEventListener('click', ()=>{
+      const u = $('#redeemUser').value.trim(), p = $('#redeemPass').value.trim();
+      if(!u || !p){ alert('Please enter username & password.'); return; }
+      const cost = pending.redeem || 0;
+      points -= cost; store.set(K.points, points); paintTopChrome();
+      if(!purchased.includes(pending.id)){ purchased.push(pending.id); store.set(K.purchased, purchased); }
+      history.unshift({ts:Date.now(), type:'redeem', id:pending.id, title:pending.title, pointsDelta:-cost});
+      closeModal('redeemConfirmModal');
+      // Immediately open course
+      window.location.href = pending.link || '#';
+    });
+
+    // Confirm purchase generic modal
     function openConfirmPurchase(title, text, onProceed){
       $('#confirmPurchaseTitle').textContent = title;
       $('#confirmPurchaseText').textContent = text;
@@ -759,165 +1338,482 @@
       proceed.addEventListener('click', handler);
     }
 
-    /* ===== Completion API for course/live pages ===== */
+    // Payment success listener
+    window.addEventListener('storage', (ev)=>{
+      if(ev.key===K.payment && ev.newValue){
+        try{
+          const payload = JSON.parse(ev.newValue);
+          if(payload.type==='course'){
+            if(!purchased.includes(payload.id)){ purchased.push(payload.id); store.set(K.purchased,purchased); }
+            history.unshift({ts:Date.now(), type:'purchase', id:payload.id, title:payload.title, pointsDelta:0});
+          }else if(payload.type==='live'){
+            history.unshift({ts:Date.now(), type:'live', id:payload.id, title:payload.title||'Live Demonstration Booking', pointsDelta:0});
+          }
+          store.set(K.hist, history);
+          alert('Payment successful — unlocked!');
+          applyPricingToCards(); paintFoundationsLocks(); renderCalendar(); transmitProfileShadow();
+        }catch{}
+        localStorage.removeItem(K.payment);
+      }
+    });
+
+    // Per-course share buttons
+    $$('.btnShare').forEach(btn=>{
+      btn.addEventListener('click', ()=> shareElementAsCard(btn.closest('.hero'), 'course.png'));
+    });
+
+    /* Public completion APIs for course/live pages (kept for integration) */
     window.AO_markCourseComplete = function(courseId, title){
       const card = document.querySelector(`[data-course-id="${courseId}"]`);
-      if(card){ card.classList.add('is-complete'); const t=card.querySelector('.hero-title'); if(t && !t.textContent.includes('✓')) t.insertAdjacentHTML('beforeend',' <span style="color:var(--green); font-weight:900;">✓</span>'); }
-      addHistory({type:'course-complete', id:courseId, title, pointsDelta:0});
+      if(card){ card.classList.add('complete'); }
+      history.unshift({ts:Date.now(), type:'course-complete', id:courseId, title, pointsDelta:0});
+      store.set(K.hist, history); renderCalendar(); transmitProfileShadow();
     };
     window.AO_markLiveComplete = function(liveId, title){
       const card = document.querySelector(`[data-live-id="${liveId}"]`);
-      if(card){ card.classList.add('is-complete'); const t=card.querySelector('.hero-title'); if(t && !t.textContent.includes('✓')) t.insertAdjacentHTML('beforeend',' <span style="color:var(--green); font-weight:900;">✓</span>'); }
-      addHistory({type:'live-complete', id:liveId, title, pointsDelta:0});
+      if(card){ card.classList.add('complete'); }
+      history.unshift({ts:Date.now(), type:'live-complete', id:liveId, title, pointsDelta:0});
+      store.set(K.hist, history); renderCalendar(); transmitProfileShadow();
     };
 
-    /* ===== Achievements ===== */
-    const PAGE=20; let page=0;
-    function renderAchievements(){
-      $('#achPoints').textContent = points;
-      const b = $('#badgesGrid'); b.innerHTML='';
-      weeklyDone.forEach(w=>{ const def=WEEKLY.find(d=>d.id===w.id); const el=document.createElement('span'); el.className='badge'; el.title=def?def.title:w.id; el.textContent=w.id; b.appendChild(el); });
-      const now=new Date(); const monthDailies=dailyDone.filter(iso=>{const d=new Date(iso); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();});
-      $('#streakDisplay').textContent = `Daily completions this month: ${monthDailies.length}`;
-      const ticks=$('#dailyTicks'); ticks.innerHTML=''; if(monthDailies.length){ const s=document.createElement('div'); s.textContent='✓ '.repeat(Math.min(monthDailies.length,200)); ticks.appendChild(s); }
-      paintHistory();
+    /* ----------------------------------------------------
+     * TABS
+     * ---------------------------------------------------- */
+    const tabBtns = $$('.tabs .tab'), panels = $$('.tab-panel');
+    tabBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        tabBtns.forEach(b=>{ const a = (b===btn); b.classList.toggle('is-active', a); b.setAttribute('aria-selected', a?'true':'false'); });
+        panels.forEach(p=> p.classList.remove('is-active'));
+        $('#'+btn.getAttribute('aria-controls')).classList.add('is-active');
+        window.scrollTo({top:0, behavior:'smooth'});
+        // Lazy operations on entering tabs
+        if(btn.id==='tabbtn-courses'){ tryLoadPricing().then(applyPricingToCards); }
+        if(btn.id==='tabbtn-calendar'){ renderCalendar(); }
+      });
+    });
+
+    /* ----------------------------------------------------
+     * CALENDAR (Year / Month / Week / Day)
+     * ---------------------------------------------------- */
+    const cal = {
+      view: 'month',           // 'year' | 'month' | 'week' | 'day'
+      cursor: new Date(today.getFullYear(), today.getMonth(), 1), // month anchor
+      day: new Date(),         // selected day for day view
+      filters: { daily:true, weekly:true, '3day':true, '30day':true, live:true, manual:true },
+      search: ''
+    };
+
+    // Top controls
+    $('#viewYear').addEventListener('click', ()=>{ cal.view='year'; paintViewToggles(); renderCalendar(); });
+    $('#viewMonth').addEventListener('click', ()=>{ cal.view='month'; paintViewToggles(); renderCalendar(); });
+    $('#viewWeek').addEventListener('click', ()=>{ cal.view='week'; paintViewToggles(); renderCalendar(); });
+    $('#viewDay').addEventListener('click', ()=>{ cal.view='day'; paintViewToggles(); renderCalendar(); });
+
+    function paintViewToggles(){
+      $('#viewYear').classList.toggle('is-active', cal.view==='year');
+      $('#viewMonth').classList.toggle('is-active', cal.view==='month');
+      $('#viewWeek').classList.toggle('is-active', cal.view==='week');
+      $('#viewDay').classList.toggle('is-active', cal.view==='day');
     }
-    function paintHistory(){
-      const ul=$('#historyList'); ul.innerHTML='';
-      const start=page*PAGE, end=start+PAGE;
-      history.slice(start,end).forEach(h=>{
-        const d=new Date(h.ts), when=`${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        const delta=h.pointsDelta>0?`(+${h.pointsDelta})`:(h.pointsDelta<0?`(${h.pointsDelta})`:'');
-        const li=document.createElement('li'); li.className='history-item';
-        li.innerHTML = `<strong>${h.type.toUpperCase()}</strong> — ${h.title||h.id} ${delta} <span class="hero-meta">• ${when}</span>`;
-        ul.appendChild(li);
+
+    $('#calPrev').addEventListener('click', ()=>{
+      if(cal.view==='year'){ cal.cursor.setFullYear(cal.cursor.getFullYear()-1); }
+      else if(cal.view==='month'){ cal.cursor.setMonth(cal.cursor.getMonth()-1); }
+      else if(cal.view==='week'){ cal.day.setDate(cal.day.getDate()-7); }
+      else { cal.day.setDate(cal.day.getDate()-1); }
+      renderCalendar();
+    });
+    $('#calNext').addEventListener('click', ()=>{
+      if(cal.view==='year'){ cal.cursor.setFullYear(cal.cursor.getFullYear()+1); }
+      else if(cal.view==='month'){ cal.cursor.setMonth(cal.cursor.getMonth()+1); }
+      else if(cal.view==='week'){ cal.day.setDate(cal.day.getDate()+7); }
+      else { cal.day.setDate(cal.day.getDate()+1); }
+      renderCalendar();
+    });
+
+    // Filters
+    $('#fDaily').addEventListener('change', e=>{ cal.filters.daily = e.target.checked; renderCalendar(); });
+    $('#fWeekly').addEventListener('change', e=>{ cal.filters.weekly = e.target.checked; renderCalendar(); });
+    $('#f3d').addEventListener('change', e=>{ cal.filters['3day'] = e.target.checked; renderCalendar(); });
+    $('#f30d').addEventListener('change', e=>{ cal.filters['30day'] = e.target.checked; renderCalendar(); });
+    $('#fLive').addEventListener('change', e=>{ cal.filters.live = e.target.checked; renderCalendar(); });
+    $('#fManual').addEventListener('change', e=>{ cal.filters.manual = e.target.checked; renderCalendar(); });
+
+    // Search
+    $('#calSearch').addEventListener('input', e=>{ cal.search = e.target.value.toLowerCase().trim(); renderCalendar(); });
+
+    // Share calendar view
+    $('#shareCalendar').addEventListener('click', ()=>{
+      // Quick poster summarising current view totals and title
+      const holder = document.createElement('div');
+      holder.className='hero'; holder.style.padding='24px'; holder.style.width='1100px';
+      const h = document.createElement('h2'); h.className='title'; h.textContent = currentRangeTitle();
+      const p = document.createElement('p'); p.className='meta';
+      const t = computeTotalsVisible();
+      p.textContent = `Daily ${t.daily} • Weekly ${t.weekly} • 3-Day ${t['3day']} • 30-Day ${t['30day']} • Live ${t.live}`;
+      holder.appendChild(h); holder.appendChild(p);
+      shareElementAsCard(holder, `calendar-${cal.view}.png`, 'My Calendar');
+    });
+
+    // Totals overlay
+    $$('#totalsBar .total').forEach(item=>{
+      item.addEventListener('click', ()=>{
+        const key = item.dataset.key;
+        const list = $('#totalsList'); list.innerHTML='';
+        const set = listVisibleEvents().filter(ev=> mapType(ev.type) === key );
+        set.forEach(h=>{
+          const d = new Date(h.ts);
+          const row = document.createElement('div'); row.className='history-item';
+          row.textContent = `${h.title||h.id} • ${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+          list.appendChild(row);
+        });
+        $('#totalsTitle').textContent = `${key.toUpperCase()} — ${set.length}`;
+        openModal('totalsOverlay');
+      });
+    });
+
+    function currentRangeTitle(){
+      if(cal.view==='year'){ return `${cal.cursor.getFullYear()}`; }
+      if(cal.view==='month'){ return `${cal.cursor.toLocaleString(undefined,{month:'long'})} ${cal.cursor.getFullYear()}`; }
+      if(cal.view==='week'){
+        const wStart = startOfSunday(cal.day);
+        const wEnd = addWeeks(wStart,1); wEnd.setDate(wEnd.getDate()-1);
+        return `Week of ${fmtD_M(wStart)} – ${fmtD_M(wEnd)}`;
+      }
+      return `${cal.day.toDateString()}`;
+    }
+
+    function listVisibleEvents(){
+      // Apply filters + search + range based on view
+      const q = cal.search;
+      const within = (ts) => {
+        const d = new Date(ts);
+        if(cal.view==='year'){
+          return d.getFullYear() === cal.cursor.getFullYear();
+        } else if(cal.view==='month'){
+          return d.getFullYear()===cal.cursor.getFullYear() && d.getMonth()===cal.cursor.getMonth();
+        } else if(cal.view==='week'){
+          const s = startOfSunday(cal.day); const e = addWeeks(s,1);
+          return d >= s && d < e;
+        } else {
+          return d.toDateString() === cal.day.toDateString();
+        }
+      };
+      return history.filter(h=>{
+        const key = mapType(h.type);
+        if(!cal.filters[key]) return false;
+        if(!within(h.ts)) return false;
+        if(q && !(`${h.title||h.id}`.toLowerCase().includes(q))) return false;
+        return true;
       });
     }
-    $('#prevPage').addEventListener('click', ()=>{ if(page>0){ page--; paintHistory(); }});
-    $('#nextPage').addEventListener('click', ()=>{ if((page+1)*PAGE<history.length){ page++; paintHistory(); }});
 
-    /* ===== Calendar ===== */
-    let calMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    function computeTotalsVisible(){
+      const set = listVisibleEvents();
+      return {
+        daily: set.filter(h=>mapType(h.type)==='daily').length,
+        weekly: set.filter(h=>mapType(h.type)==='weekly').length,
+        '3day': set.filter(h=>mapType(h.type)==='3day' || h.type==='3day-span').length,
+        '30day': set.filter(h=>mapType(h.type)==='30day' || h.type==='30day-span').length,
+        live: set.filter(h=>mapType(h.type)==='live').length
+      };
+    }
+
+    function mapType(t){
+      if(t==='daily') return 'daily';
+      if(t==='weekly' || t==='weekly-span') return 'weekly';
+      if(t.startsWith('3day')) return '3day';
+      if(t.startsWith('30day')) return '30day';
+      if(t.startsWith('live')) return 'live';
+      if(t==='purchase' || t==='redeem' || t==='course-complete') return 'manual'; // treated as misc
+      if(t==='1day-span') return 'daily';
+      return 'manual';
+    }
+
+    function paintTotals(){
+      const T = computeTotalsVisible();
+      $('#tDaily').textContent = T.daily;
+      $('#tWeekly').textContent = T.weekly;
+      $('#t3d').textContent = T['3day'];
+      $('#t30d').textContent = T['30day'];
+      $('#tLive').textContent = T.live;
+    }
+
     function renderCalendar(){
-      const y=calMonth.getFullYear(), m=calMonth.getMonth();
-      $('#calTitle').textContent = `${calMonth.toLocaleString(undefined,{month:'long'})} ${y}`;
-      const first = new Date(y,m,1); const start = new Date(first); start.setDate(1-first.getDay());
-      const grid=$('#calGrid'); grid.innerHTML='';
+      $('#calTitle').textContent = currentRangeTitle();
+      const grid = $('#calGrid'); grid.className = 'cal-grid'; grid.innerHTML='';
+      if(cal.view==='year'){ paintYear(grid); }
+      else if(cal.view==='week'){ paintWeek(grid); }
+      else if(cal.view==='day'){ paintDay(grid); }
+      else { paintMonth(grid); }
+      paintTotals();
+    }
 
-      const counts = {daily:0, weekly:0, '3day':0, '30day':0, live:0};
-
+    /* Month view (7 x ~5/6) */
+    function paintMonth(grid){
+      const y = cal.cursor.getFullYear(), m = cal.cursor.getMonth();
+      const first = new Date(y,m,1); const start = new Date(first); start.setDate(1 - first.getDay());
       for(let i=0;i<42;i++){
-        const d=new Date(start); d.setDate(start.getDate()+i);
-        const cell=document.createElement('div'); cell.className='cal-cell';
-        cell.dataset.iso = d.toISOString().slice(0,10);
-        cell.innerHTML=`<div class="cal-date">${d.getDate()}</div>`;
-
-        // Collect per-day discrete events
-        const dayEvents = history.filter(h=> {
-          const ht=new Date(h.ts);
-          return ht.getFullYear()===d.getFullYear() && ht.getMonth()===d.getMonth() && ht.getDate()===d.getDate() &&
-                 (h.type==='daily' || h.type==='weekly' || h.type==='live' || h.type==='purchase' || h.type==='redeem' || h.type==='course-complete' || h.type==='live-complete');
+        const d = new Date(start); d.setDate(start.getDate()+i);
+        const cell = document.createElement('div'); cell.className='cell';
+        cell.dataset.iso = toISODate(d);
+        cell.innerHTML = `<div class="date">${d.getDate()}</div>`;
+        // Events
+        const events = listVisibleEvents().filter(h=> new Date(h.ts).toDateString() === d.toDateString() );
+        events.slice(0,3).forEach(ev=>{
+          const evEl = document.createElement('div');
+          evEl.className = 'ev ' + colorFor(mapType(ev.type));
+          evEl.textContent = labelFor(ev); // include time/category
+          cell.appendChild(evEl);
         });
-
-        // Show up to 3 bars
-        const colorFor = (t)=> t==='daily'?'blue' : t==='weekly'?'green' : t==='live'?'gold' : (t==='course-complete'?'green' : 'blue');
-        dayEvents.slice(0,3).forEach(ev=>{ addDayEventBar(cell, colorFor(ev.type)); });
-        if(dayEvents.length>3){ const keb=document.createElement('div'); keb.className='kebab'; cell.appendChild(keb); }
-
-        // Spans (weekly/3day/30day)
+        if(events.length>3){
+          const evEl = document.createElement('div'); evEl.className='ev '+colorFor('manual'); evEl.textContent = `+${events.length-3} more`;
+          cell.appendChild(evEl);
+        }
+        // Spans (3-day / 30-day / weekly)
         history.filter(h=>h.type.endsWith('-span')).forEach(h=>{
           const meta=h.extra||{}; const startTs=meta.ts||h.ts; const sD=new Date(startTs);
           const days=meta.days|| (h.type.startsWith('3day')?3 : h.type.startsWith('30day')?30 : 7);
           const spanStart=new Date(sD.getFullYear(), sD.getMonth(), sD.getDate());
           const spanEnd=new Date(spanStart); spanEnd.setDate(spanEnd.getDate()+days-1);
           if(d>=spanStart && d<=spanEnd){
-            const bar=document.createElement('div'); bar.className='span ' + (
-              h.type.startsWith('weekly')?'green' : h.type.startsWith('3day')?'pink' : 'red'
-            );
+            const bar = document.createElement('div'); bar.className='span '+(h.type.startsWith('3day')?'pink' : (h.type.startsWith('30day')?'red':'green'));
             cell.appendChild(bar);
-            // increment counts once per starting day to avoid inflation
-            if(d.getTime()===spanStart.getTime()){
-              if(h.type.startsWith('3day')) counts['3day']++;
-              if(h.type.startsWith('30day')) counts['30day']++;
-              if(h.type.startsWith('weekly')) counts['weekly']++;
-            }
           }
         });
 
-        // Count discrete events
-        dayEvents.forEach(ev=>{
-          if(ev.type==='daily') counts.daily++;
-          if(ev.type==='weekly') counts.weekly++;
-          if(ev.type==='live') counts.live++;
-        });
-
-        // Day click → detail modal
-        cell.addEventListener('click', ()=> openDayDetail(d));
+        cell.addEventListener('click', ()=> openDayPopover(d));
         grid.appendChild(cell);
       }
-
-      // Paint tallies
-      $('#tallyDaily').textContent = counts.daily;
-      $('#tallyWeekly').textContent = counts.weekly;
-      $('#tally3d').textContent = counts['3day'];
-      $('#tally30d').textContent = counts['30day'];
-      $('#tallyLive').textContent = counts.live;
     }
-    $('#calPrev').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); });
-    $('#calNext').addEventListener('click', ()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); });
 
-    function paintTallies(){
-      const box = $('#tallyLists'); box.style.display='none'; box.innerHTML='';
-      $$('.tally').forEach(t=>t.onclick=()=>{
-        const type=t.dataset.tally; box.style.display='block'; box.innerHTML='';
-        const mapType = {
-          daily: h=>h.type==='daily',
-          weekly: h=>h.type==='weekly' || h.type==='weekly-span',
-          '3day': h=>h.type.startsWith('3day'),
-          '30day': h=>h.type.startsWith('30day'),
-          live: h=>h.type==='live' || h.type==='live-complete'
-        };
-        history.filter(mapType[type]).forEach(h=>{
-          const d=new Date(h.ts);
-          const row=document.createElement('div'); row.className='history-item';
-          row.textContent = `${h.title||h.id} • ${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-          box.appendChild(row);
+    /* Week view (7 columns, taller cells) */
+    function paintWeek(grid){
+      grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+      const s = startOfSunday(cal.day);
+      for(let i=0;i<7;i++){
+        const d = new Date(s); d.setDate(s.getDate()+i);
+        const col = document.createElement('div'); col.className='cell'; col.style.minHeight='180px';
+        col.innerHTML = `<div class="date">${dayNames[d.getDay()]} ${fmtD_M(d)}</div>`;
+        const events = listVisibleEvents().filter(h=> new Date(h.ts).toDateString() === d.toDateString());
+        events.forEach(ev=>{
+          const el = document.createElement('div'); el.className='ev '+colorFor(mapType(ev.type));
+          el.textContent = labelFor(ev);
+          col.appendChild(el);
         });
-      });
-    }
-
-    function openDayDetail(dateObj){
-      const iso = dateObj.toISOString().slice(0,10);
-      $('#dayDetailTitle').textContent = `${pad(dateObj.getDate())}/${pad(dateObj.getMonth()+1)}/${dateObj.getFullYear()}`;
-      const list=$('#dayDetailList'); list.innerHTML='';
-      const items = history.filter(h=>{const d=new Date(h.ts); return d.toISOString().slice(0,10)===iso;});
-      if(items.length===0){ list.textContent='No items.'; }
-      else {
-        items.forEach(h=>{ const row=document.createElement('div'); row.className='history-item'; row.textContent = `${h.type.toUpperCase()} — ${h.title||h.id}`; list.appendChild(row); });
+        col.addEventListener('click', ()=> openDayPopover(d));
+        grid.appendChild(col);
       }
-      openModal('dayDetailModal');
     }
 
-    /* ===== Modals helpers ===== */
-    function openModal(id){ const m=document.getElementById(id); if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); } }
-    function closeModal(id){ const m=document.getElementById(id); if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); } }
-    $$('[data-close]').forEach(b=>b.addEventListener('click', e=>closeModal(e.target.getAttribute('data-close'))));
-    ['purchaseModal','notEnoughModal','redeemConfirmModal','confirmPurchaseModal','dayDetailModal'].forEach(mid=>{
-      const m=document.getElementById(mid); if(!m) return;
-      m.addEventListener('click', e=>{ if(e.target===m) closeModal(mid); });
+    /* Day view (hour grid, similar to popover layout) */
+    function paintDay(grid){
+      grid.style.gridTemplateColumns = '1fr';
+      const shell = document.createElement('div'); shell.className='cell'; shell.style.minHeight='560px';
+      shell.innerHTML = `<div class="date">Day • ${cal.day.toDateString()}</div>`;
+      shell.addEventListener('click', ()=> openDayPopover(cal.day));
+      grid.appendChild(shell);
+    }
+
+    /* Year view (12 mini months) */
+    function paintYear(grid){
+      grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+      for(let m=0;m<12;m++){
+        const block = document.createElement('div'); block.className='cell'; block.style.minHeight='140px';
+        const title = document.createElement('div'); title.className='date'; title.textContent = monthNames[m];
+        block.appendChild(title);
+        // Small heat bar: count of events that month
+        const count = history.filter(h=> new Date(h.ts).getFullYear()===cal.cursor.getFullYear() && new Date(h.ts).getMonth()===m).length;
+        const evEl = document.createElement('div'); evEl.className='ev blue'; evEl.textContent = `${count} items`;
+        block.appendChild(evEl);
+        block.addEventListener('click', ()=>{ cal.view='month'; cal.cursor.setMonth(m); paintViewToggles(); renderCalendar(); });
+        grid.appendChild(block);
+      }
+    }
+
+    function colorFor(key){
+      if(key==='daily') return 'blue';
+      if(key==='weekly') return 'green';
+      if(key==='3day') return 'pink';
+      if(key==='30day') return 'red';
+      if(key==='live') return 'gold';
+      return 'blue';
+    }
+    function nearestHour(ts){ const d=new Date(ts); const hh=d.getHours(); return `${pad(hh)}:00`; }
+    function labelFor(ev){
+      const time = nearestHour(ev.ts);
+      const type = mapType(ev.type);
+      const label = `${time} • ${type.toUpperCase()} — ${ev.title||ev.id}`;
+      return label;
+    }
+
+    // Day popover (hour grid with positioned items)
+    function openDayPopover(dateObj){
+      const pop = $('#dayPopover'); const grid = $('#popHours');
+      $('#popDate').textContent = `${dayNames[dateObj.getDay()]} ${fmtD_M(dateObj)} ${dateObj.getFullYear()}`;
+      grid.innerHTML='';
+      // Draw 24 rows
+      for(let h=0;h<24;h++){
+        const rowL = document.createElement('div'); rowL.className='hour'; rowL.textContent = `${pad(h)}:00`;
+        const rowR = document.createElement('div'); rowR.className='hour-line';
+        grid.appendChild(rowL); grid.appendChild(rowR);
+      }
+      // Place events (approx at nearest hour)
+      const items = history.filter(h=> new Date(h.ts).toDateString() === dateObj.toDateString());
+      items.forEach(ev=>{
+        const d = new Date(ev.ts); const hour = d.getHours();
+        const targetLine = grid.children[hour*2 + 1]; // right column
+        const block = document.createElement('div'); block.className='hour-ev ev '+colorFor(mapType(ev.type));
+        block.style.top='2px'; // inside the hour band
+        block.textContent = `${fmtHM(d)} • ${ev.title||ev.id}`;
+        targetLine.appendChild(block);
+      });
+      openModal('dayPopover');
+    }
+    $('#popShare').addEventListener('click', ()=>{
+      const holder = document.createElement('div'); holder.className='hero'; holder.style.padding='24px'; holder.style.width='1100px';
+      const h = document.createElement('h2'); h.className='title'; h.textContent = `Day — ${cal.day.toDateString()}`;
+      const list = listVisibleEvents().filter(h=> new Date(h.ts).toDateString()===cal.day.toDateString());
+      const p = document.createElement('p'); p.className='meta'; p.textContent = list.map(e=> `${fmtHM(new Date(e.ts))} ${e.title||e.id}`).join('  •  ') || 'No items';
+      holder.appendChild(h); holder.appendChild(p);
+      shareElementAsCard(holder, 'day.png', 'My Day');
     });
 
-    /* ===== Initial paints ===== */
-    renderAchievements();
-    renderCalendar();
+    /* ----------------------------------------------------
+     * Manual Event Editor (add/edit/delete + reminder)
+     * ---------------------------------------------------- */
+    const f = {
+      id: $('#evtId'), title: $('#evtTitle'), date: $('#evtDate'), time: $('#evtTime'),
+      type: $('#evtType'), notes: $('#evtNotes'), reminder: $('#evtReminder')
+    };
+    let editKey = null; // index in history being edited (for manual events only)
 
-    // Ensure daily “Undo” resets at midnight automatically
+    $('#evtSave').addEventListener('click', ()=>{
+      const title = f.title.value.trim() || 'My Event';
+      const iso = f.date.value || toISODate(new Date());
+      const t = f.time.value || '09:00';
+      const [hh,mm] = t.split(':').map(x=>+x);
+      const when = new Date(iso); when.setHours(hh,mm||0,0,0);
+      const type = f.type.value;
+      const notes = f.notes.value.trim();
+      const id = f.id.value.trim() || `evt_${Date.now()}`;
+
+      const ev = {ts: +when, type: type, id, title, pointsDelta:0, notes, reminder: f.reminder.value};
+      if(editKey!=null){ history[editKey] = ev; editKey = null; }
+      else { history.unshift(ev); }
+      store.set(K.hist, history);
+      scheduleReminder(ev);
+      clearEditor();
+      renderCalendar();
+    });
+    $('#evtDelete').addEventListener('click', ()=>{
+      if(editKey!=null){ history.splice(editKey,1); store.set(K.hist, history); clearEditor(); renderCalendar(); }
+    });
+    $('#evtClear').addEventListener('click', clearEditor);
+
+    function clearEditor(){
+      ['id','title','date','time','notes'].forEach(k=> f[k].value='');
+      f.type.value='manual'; f.reminder.value='none';
+      editKey = null;
+    }
+    function scheduleReminder(ev){
+      // Client-only reminder (while page is open)
+      if(ev.reminder==='none') return;
+      let offset = 0;
+      if(ev.reminder==='at') offset = 0;
+      if(ev.reminder==='1h') offset = -3600000;
+      if(ev.reminder==='1d') offset = -24*3600000;
+      const when = ev.ts + offset - Date.now();
+      if(when > 0){
+        setTimeout(()=> alert(`Reminder: ${ev.title}`), when);
+      }
+    }
+
+    /* ----------------------------------------------------
+     * Totals / Tallies are overlay-based (already wired)
+     * ---------------------------------------------------- */
+
+    /* ----------------------------------------------------
+     * Tabs: initial renders
+     * ---------------------------------------------------- */
+    function initialCalendar(){
+      cal.view='month'; cal.cursor = new Date(today.getFullYear(), today.getMonth(), 1);
+      paintViewToggles(); renderCalendar();
+    }
+    initialCalendar();
+
+    /* ----------------------------------------------------
+     * Midnight reset for daily button + calendar refresh
+     * ---------------------------------------------------- */
     function midnightReset(){
-      const now=new Date(); const next=new Date(now); next.setDate(now.getDate()+1); next.setHours(0,0,0,200); // a hair after midnight
-      setTimeout(()=>{ setDailyButtonState(); renderCalendar(); midnightReset(); }, next-now);
+      const now=new Date(); const next=new Date(now); next.setDate(now.getDate()+1); next.setHours(0,0,0,300);
+      setTimeout(()=>{ paintDailyButton(); renderCalendar(); midnightReset(); }, next-now);
     }
     midnightReset();
+
+    /* ----------------------------------------------------
+     * Pricing feed hookup (optional, non-blocking)
+     * ---------------------------------------------------- */
+    tryLoadPricing().then(applyPricingToCards);
+
+    /* ----------------------------------------------------
+     * Profile sync (shadow transmit out) — for profile.html to ingest
+     * ---------------------------------------------------- */
+    function transmitProfileShadow(){
+      const shadow = {
+        ts: Date.now(),
+        isSubscriber,
+        points,
+        purchased,
+        dailyDone,
+        weeklyDone,
+        history
+      };
+      store.set(K.profileShadow, shadow);
+    }
+    // Transmit once on load as well:
+    transmitProfileShadow();
+
+    /* ====================================================
+     * ========  DATA IN / OUT MAP (for developers) =======
+     * ====================================================
+     * This section documents all signals in/out of home.html.
+     * It’s deliberately in code so you can grep or update quickly.
+     */
+    const DATA_IO = {
+      incoming: [
+        { key:'ao_payment_success', from:'payment.html', schema:'{ts, type:"course"|"live", id, title}', effect:'unlocks course or logs live booking' },
+        { key:'PRICE_LIST (window) OR #pricingData JSON', from:'pricing.html', effect:'fills .price and points bubbles on paid items' },
+        { key:'profile.html (future)', note:'may push back stored profile to localStorage before returning to home' }
+      ],
+      outgoing: [
+        { key:'ao_profile_shadow', to:'profile.html', contains:'{isSubscriber, points, purchased, dailyDone, weeklyDone, history}' },
+        { fn:'AO_markWeeklyComplete(weekId, title)', to:'home.html (public API from weekly pages)', effect:'adds +10, calendar log, green ring' },
+        { fn:'AO_markCourseComplete(courseId, title)', to:'home.html (public API from course pages)', effect:'calendar log, green ring' },
+        { fn:'AO_markLiveComplete(liveId, title)', to:'home.html (public API from live pages)', effect:'calendar log, green ring' },
+        { key:'ao_pending_payment', to:'payment.html', schema:'{ts, type, id, title}', effect:'tells checkout what is being paid' }
+      ],
+      storageKeys: Object.assign({}, K),
+      notes: [
+        'Weekly challenges are subscription-gated. Foundations also gated by subscription.',
+        'Paid courses & live: green buttons; can be paid or redeemed with points (if configured).',
+        'Calendar supports Year/Month/Week/Day; totals reflect current view; overlays show details.',
+        'Share buttons generate lightweight image posters without external libs.',
+        'All heroes are solid black; padlocks appear left of title if locked; disappear when unlocked.',
+        'Daily Complete toggles to Undo same-day; adds 1 calendar entry, not three.'
+      ]
+    };
+    // Expose for quick inspection in devtools:
+    window.__AO_DATA_IO__ = DATA_IO;
+
   })();
   </script>
+
+  <!-- End of main app logic. Close body/html. -->
 </body>
 </html>
+
+
+
+
+
