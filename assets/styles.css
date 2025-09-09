@@ -315,5 +315,80 @@ input{
 /* ===== Responsive tweaks ===== */
 @media (max-width:680px){
   .nav{ padding:8px 16px }
-  .wrap{ padding-left:16px; padding-right:16px }
+  .wrap{ padding-left:16px; padding-right:16px }  
 }
+/* =====================================================
+   HOME PAGE — TABS & WEEKLY LOCK (append-only, scoped)
+   ===================================================== */
+
+/* Top tabs */
+body.home-bg .tabs{
+  display:flex; gap:8px; padding:6px; margin:-8px 0 12px;
+  position:sticky; top:64px; z-index:4;
+  background:linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.35) 60%, rgba(0,0,0,0));
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-radius:14px;
+}
+body.home-bg .tab{
+  appearance:none; border:1px solid var(--stroke); background:rgba(0,0,0,.45);
+  color:var(--ink); padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:700;
+  transition: background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
+}
+body.home-bg .tab.is-active{ background:var(--blue); color:#fff; border-color:transparent }
+body.home-bg .tab:focus-visible{ outline:2px solid var(--blue); outline-offset:2px }
+
+/* Tab panels */
+body.home-bg .tab-panel{ display:none; animation: fadeInHome .2s ease }
+body.home-bg .tab-panel.is-active{ display:block }
+@keyframes fadeInHome { from{opacity:.6; transform:translateY(4px)} to{opacity:1; transform:none} }
+
+/* Section headings (won’t clash; uses your vars) */
+body.home-bg .section-title{
+  margin:10px 2px; font-size:20px; font-weight:800; letter-spacing:.2px;
+}
+body.home-bg .section-title.small{ font-size:16px; opacity:.95; margin-top:18px }
+body.home-bg .section-sub{ color:var(--muted); margin:0 2px 10px }
+
+/* Weekly expiry badge on cards */
+body.home-bg .hero-expiry{
+  position:absolute; left:10px; right:10px; bottom:10px;
+  border-radius:12px; padding:6px 10px;
+  background:rgba(0,0,0,.55); border:1px solid var(--stroke);
+  color:var(--ink); font-size:.85rem; display:flex; justify-content:center;
+  backdrop-filter: blur(4px);
+}
+body.home-bg .hero-expiry.is-expired{
+  background:rgba(255,91,98,.18); border-color:rgba(255,91,98,.35)
+}
+
+/* “Subscribers only” overlay for Weekly */
+body.home-bg .lock-overlay{
+  position:relative; display:grid; place-items:center; margin-top:-24px;
+}
+body.home-bg .lock-card{
+  border-radius:16px; padding:16px; max-width:720px; width:100%;
+  background:rgba(0,0,0,.45); border:1px solid var(--stroke); box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+body.home-bg .lock-title{ font-weight:800; margin-bottom:4px }
+body.home-bg .lock-text{ color:var(--muted); margin:0 0 10px }
+body.home-bg .lock-actions{ display:flex; gap:8px }
+body.home-bg .lock-overlay.peek .lock-card{ animation:peekLock .9s ease }
+@keyframes peekLock { 0%{transform:scale(.98); opacity:.9} 100%{transform:none; opacity:1} }
+
+/* Gentle tweaks for card media heights on Home only */
+@media (min-width:900px){
+  body.home-bg .grid-1 .hero{ min-height:260px }
+  body.home-bg .grid-1 .hero-media{ height:160px }
+}
+body.home-bg .hero.weekly .hero-media{ height:120px }
+
+/* Button focus for accessibility, Home only (doesn’t fight global) */
+body.home-bg .hero .btn:focus-visible{ outline:2px solid var(--blue); outline-offset:2px }
+
+
+
+
+
+
+
+
